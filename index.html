@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Il Forgiatore — Personaggi e Combattimenti D&D 2024</title>
+<meta name="theme-color" content="#0a0503">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Forgiatore">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -159,13 +164,17 @@ header.site::before{ content:none; }
   padding:18px 20px;
   margin-top:6px;
 }
-.header-icon-btn.left{
+.header-icon-group.left{
   left:22px;
   right:auto;
 }
+#ios-install-modal .modal-card{max-width:360px; text-align:center;}
+#ios-install-modal .ios-step{display:flex; align-items:center; gap:10px; text-align:left; margin:14px 0; font-size:14px; color:var(--text-main);}
+#ios-install-modal .ios-step svg{flex:none; width:22px; height:22px; color:var(--gold-bright);}
+#ios-install-modal .ios-step b{color:var(--ink);}
 @media (max-width:560px){
   .header-icon-btn{ top:14px; right:14px; width:42px; height:42px; font-size:18px; }
-  .header-icon-btn.left{ left:14px; right:auto; }
+  .header-icon-group.left{ left:14px; right:auto; }
   .header-icon-btn svg{ width:20px; height:20px; }
   .header-icon-group{ top:14px; right:14px; gap:8px; }
 }
@@ -1284,8 +1293,8 @@ footer.site{
 
 
   .header-icon-btn{width:40px; height:40px; font-size:17px; top:16px;}
-  .header-icon-btn.left{left:12px;}
-  .header-icon-btn:not(.left){right:12px;}
+  .header-icon-group.left{left:12px;}
+  .header-icon-btn:not(.header-icon-group .header-icon-btn){right:12px;}
   .header-icon-btn svg{width:20px; height:20px;}
   .header-icon-group{top:16px; right:12px; gap:6px;}
 
@@ -1315,14 +1324,24 @@ footer.site{
 <body>
 
 <header class="site">
-  <button class="header-icon-btn left" id="fullscreen-btn" onclick="toggleFullscreen()" title="Schermo intero" aria-label="Attiva schermo intero">
-    <svg id="fullscreen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
-      <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
-      <path d="M21 16v3a2 2 0 0 1-2 2h-3"></path>
-      <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
-    </svg>
-  </button>
+  <div class="header-icon-group left">
+    <button class="header-icon-btn" id="fullscreen-btn" onclick="toggleFullscreen()" title="Schermo intero" aria-label="Attiva schermo intero">
+      <svg id="fullscreen-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+        <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+        <path d="M21 16v3a2 2 0 0 1-2 2h-3"></path>
+        <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+      </svg>
+    </button>
+    <button class="header-icon-btn" id="install-app-btn" onclick="handleInstallClick()" title="Aggiungi a Home" aria-label="Aggiungi a Home" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+        <path d="M12 8v6"></path>
+        <path d="M9 11l3 3 3-3"></path>
+        <path d="M9 21h6"></path>
+      </svg>
+    </button>
+  </div>
   <div class="header-icon-group">
     <button class="header-icon-btn" onclick="openAdventureGenModal()" title="Genera Avventura" aria-label="Genera Avventura">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1598,6 +1617,18 @@ footer.site{
     <button class="modal-close" onclick="closeEditModal()">✕</button>
     <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:24px;">Modifica Personaggio</h2>
     <div id="edit-modal-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ios-install-modal" onclick="if(event.target.id==='ios-install-modal') closeIosInstallModal();">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeIosInstallModal()">✕</button>
+    <h2 style="font-family:inherit; font-weight:800; color:var(--ink); margin-top:0; font-size:20px;">📲 Aggiungi a Home</h2>
+    <p id="install-modal-intro" style="font-size:14px; line-height:1.5; color:var(--text-dim); margin-top:4px;">Per installare Il Forgiatore come app:</p>
+    <div id="install-modal-steps"></div>
+    <div class="sheet-actions" style="margin-top:16px; justify-content:center;">
+      <button class="btn secondary small" type="button" onclick="closeIosInstallModal()">Ho capito</button>
+    </div>
   </div>
 </div>
 
@@ -6619,6 +6650,173 @@ function initModalScrollLock(){
   });
 }
 
+/* ===== Aggiungi a Home (PWA install) ===== */
+let deferredInstallPrompt = null;
+
+function isMobileDevice(){
+  const ua = navigator.userAgent || '';
+  const uaMobile = /Android|iPhone|iPad|iPod/i.test(ua);
+  const iPadOS13 = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+  const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  return uaMobile || iPadOS13 || (coarse && window.matchMedia('(max-width: 900px)').matches);
+}
+function isStandaloneMode(){
+  return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+}
+function isIosDevice(){
+  const ua = navigator.userAgent || '';
+  const iPadOS13 = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+  return /iPhone|iPad|iPod/i.test(ua) || iPadOS13;
+}
+function drawAppIcon(size){
+  const canvas = document.createElement('canvas');
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const s = size / 512;
+  ctx.fillStyle = '#0a0503';
+  ctx.fillRect(0, 0, size, size);
+  ctx.strokeStyle = '#7a5a1e';
+  ctx.lineWidth = 8 * s;
+  const r = 64 * s, pad = 16 * s;
+  ctx.beginPath();
+  ctx.moveTo(pad + r, pad);
+  ctx.arcTo(size - pad, pad, size - pad, size - pad, r);
+  ctx.arcTo(size - pad, size - pad, pad, size - pad, r);
+  ctx.arcTo(pad, size - pad, pad, pad, r);
+  ctx.arcTo(pad, pad, size - pad, pad, r);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.strokeStyle = '#fbf1da';
+  ctx.lineWidth = 18 * s;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const cx = 256 * s, top = 96 * s, bot = 304 * s, hw = 90 * s;
+  ctx.beginPath();
+  ctx.moveTo(cx, top);
+  ctx.lineTo(cx + hw, top + 52 * s);
+  ctx.lineTo(cx + hw, top + 156 * s);
+  ctx.lineTo(cx, bot);
+  ctx.lineTo(cx - hw, top + 156 * s);
+  ctx.lineTo(cx - hw, top + 52 * s);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx, top);
+  ctx.lineTo(cx, bot);
+  ctx.moveTo(cx - hw, top + 52 * s);
+  ctx.lineTo(cx, top + 52 * s + 52 * s);
+  ctx.lineTo(cx + hw, top + 52 * s);
+  ctx.stroke();
+  return canvas.toDataURL('image/png');
+}
+function setupInstallManifest(){
+  let icon192, icon512;
+  try{
+    icon192 = drawAppIcon(192);
+    icon512 = drawAppIcon(512);
+  } catch(err){
+    icon192 = icon512 = null;
+  }
+  const manifest = {
+    name: "Il Forgiatore — Personaggi e Combattimenti",
+    short_name: "Forgiatore",
+    start_url: location.href.split('#')[0],
+    scope: location.href.split('#')[0],
+    display: "standalone",
+    background_color: "#0a0503",
+    theme_color: "#0a0503",
+    icons: icon192 && icon512 ? [
+      { src: icon192, sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: icon512, sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: icon192, sizes: "192x192", type: "image/png", purpose: "maskable" },
+      { src: icon512, sizes: "512x512", type: "image/png", purpose: "maskable" }
+    ] : []
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+  const manifestUrl = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = manifestUrl;
+  document.head.appendChild(link);
+
+  if(icon512){
+    const appleIcon = document.createElement('link');
+    appleIcon.rel = 'apple-touch-icon';
+    appleIcon.href = icon512;
+    document.head.appendChild(appleIcon);
+  }
+}
+function updateInstallBtnVisibility(){
+  const btn = document.getElementById('install-app-btn');
+  if(!btn) return;
+  if(isStandaloneMode() || !isMobileDevice()){
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = '';
+  }
+}
+function handleInstallClick(){
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.finally(()=>{ deferredInstallPrompt = null; });
+  } else {
+    openIosInstallModal();
+  }
+}
+function stepHtml(iconSvg, html){
+  return '<div class="ios-step">'+iconSvg+'<span>'+html+'</span></div>';
+}
+const ICON_SHARE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"></path><path d="M7 8l5-5 5 5"></path><path d="M5 21h14"></path></svg>';
+const ICON_GRID = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>';
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>';
+const ICON_DOTS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.4"></circle><circle cx="12" cy="12" r="1.4"></circle><circle cx="12" cy="19" r="1.4"></circle></svg>';
+const ICON_WARN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 17h.01"></path><circle cx="12" cy="12" r="9"></circle></svg>';
+function openIosInstallModal(){
+  const intro = document.getElementById('install-modal-intro');
+  const stepsBox = document.getElementById('install-modal-steps');
+  if(intro && stepsBox){
+    if(location.protocol === 'file:'){
+      intro.innerHTML = 'Il browser blocca l\'installazione automatica quando la pagina è aperta come <b>file locale</b> (non da internet). Per installarla come app vera:';
+      stepsBox.innerHTML =
+        stepHtml(ICON_WARN, 'Carica questo file su un sito/hosting (es. GitHub Pages, Netlify) oppure aprilo tramite un link <b>https://</b>') +
+        stepHtml(ICON_DOTS, 'In alternativa, puoi comunque aggiungerlo come collegamento: apri il menu <b>⋮</b> del browser') +
+        stepHtml(ICON_GRID, 'Seleziona <b>Aggiungi a schermata Home</b> (potrebbe aprirsi come scheda del browser, non a schermo intero)');
+    } else if(isIosDevice()){
+      intro.innerHTML = 'Per installare Il Forgiatore come app sul tuo iPhone/iPad:';
+      stepsBox.innerHTML =
+        stepHtml(ICON_SHARE, 'Tocca l\'icona <b>Condividi</b> nella barra di Safari') +
+        stepHtml(ICON_GRID, 'Scorri e seleziona <b>Aggiungi a Home</b>') +
+        stepHtml(ICON_CHECK, 'Conferma toccando <b>Aggiungi</b>');
+    } else {
+      intro.innerHTML = 'Per installare Il Forgiatore come app sul tuo telefono:';
+      stepsBox.innerHTML =
+        stepHtml(ICON_DOTS, 'Tocca il menu <b>⋮</b> in alto a destra del browser') +
+        stepHtml(ICON_GRID, 'Seleziona <b>Aggiungi a schermata Home</b> (o <b>Installa app</b>)') +
+        stepHtml(ICON_CHECK, 'Conferma toccando <b>Aggiungi/Installa</b>');
+    }
+  }
+  const m = document.getElementById('ios-install-modal');
+  if(m){ m.classList.add('active'); syncModalScrollLock(); }
+}
+function closeIosInstallModal(){
+  const m = document.getElementById('ios-install-modal');
+  if(m){ m.classList.remove('active'); syncModalScrollLock(); }
+}
+function initInstallToHome(){
+  setupInstallManifest();
+  updateInstallBtnVisibility();
+  window.addEventListener('resize', updateInstallBtnVisibility);
+  window.addEventListener('beforeinstallprompt', (e)=>{
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    updateInstallBtnVisibility();
+  });
+  window.addEventListener('appinstalled', ()=>{
+    deferredInstallPrompt = null;
+    updateInstallBtnVisibility();
+  });
+}
+
 loadState();
 initSelects();
 renderRoster();
@@ -6629,6 +6827,7 @@ initDice();
 renderDiceHistory();
 initModalScrollLock();
 initFullscreenToggle();
+initInstallToHome();
 </script>
 </body>
 </html>
