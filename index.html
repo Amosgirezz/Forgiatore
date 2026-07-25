@@ -6817,17 +6817,21 @@ function initInstallToHome(){
   });
 }
 
-loadState();
-initSelects();
-renderRoster();
-renderRosterSelect();
-if(currentChar){ renderSheet(); }
-renderCombat();
-initDice();
-renderDiceHistory();
-initModalScrollLock();
-initFullscreenToggle();
-initInstallToHome();
+try{ initInstallToHome(); } catch(err){ console.error('initInstallToHome failed:', err); }
+
+function safeInit(fn, label){
+  try{ fn(); } catch(err){ console.error('Init failed: ' + label, err); }
+}
+safeInit(loadState, 'loadState');
+safeInit(initSelects, 'initSelects');
+safeInit(renderRoster, 'renderRoster');
+safeInit(renderRosterSelect, 'renderRosterSelect');
+safeInit(function(){ if(currentChar){ renderSheet(); } }, 'renderSheet');
+safeInit(renderCombat, 'renderCombat');
+safeInit(initDice, 'initDice');
+safeInit(renderDiceHistory, 'renderDiceHistory');
+safeInit(initModalScrollLock, 'initModalScrollLock');
+safeInit(initFullscreenToggle, 'initFullscreenToggle');
 </script>
 </body>
 </html>
