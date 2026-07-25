@@ -916,6 +916,31 @@ label{font-family:inherit; font-size:12.5px; font-weight:600; letter-spacing:0; 
 .add-combatant .field{min-width:120px;}
 .add-combatant .field.grow{flex:2; min-width:180px;}
 
+.notes-card{
+  background:var(--panel);
+  border:1px solid var(--panel-line);
+  border-radius:var(--radius-lg);
+  padding:20px;
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:0 8px 30px rgba(0,0,0,0.35);
+}
+.notes-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;}
+.note-item{
+  background:var(--panel);
+  border:1px solid var(--panel-line);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:0 6px 22px rgba(0,0,0,0.3);
+}
+.note-item-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:6px;}
+.note-item-title{font-weight:800; color:var(--gold-bright); font-size:16px; margin:0;}
+.note-item-date{font-size:11.5px; color:var(--text-dim); white-space:nowrap; margin-top:2px;}
+.note-item-text{font-size:14px; line-height:1.55; color:var(--text-main); white-space:pre-wrap; margin:0;}
+.note-item-actions{display:flex; gap:8px; margin-top:10px;}
+
 .initiative-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
 .combatant{
   display:grid;
@@ -1380,6 +1405,7 @@ footer.site{
   <button class="tab-btn active" onclick="switchView('gen')" id="tabbtn-gen">Generatore</button>
   <button class="tab-btn" onclick="switchView('bestiary')" id="tabbtn-bestiary">Avversari</button>
   <button class="tab-btn" onclick="switchView('combat')" id="tabbtn-combat">Combattimento & Dadi</button>
+  <button class="tab-btn" onclick="switchView('notes')" id="tabbtn-notes">Note di Campagna</button>
 </nav>
 
 <main>
@@ -1601,6 +1627,27 @@ footer.site{
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="view" id="view-notes">
+    <div class="notes-card" style="margin-bottom:20px;">
+      <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:20px;">📖 Note di Campagna</h2>
+      <p style="font-size:13px; color:var(--text-dim); margin:0 0 14px;">Annota qui ciò che succede durante le sessioni: eventi, PNG incontrati, decisioni prese, indizi, tesori trovati... tutto ciò che vuoi ricordare per la prossima partita.</p>
+      <div class="field">
+        <label for="new-note-title">Titolo (es. "Sessione 4 — La caduta di Val Nera")</label>
+        <input type="text" id="new-note-title" placeholder="Titolo della nota">
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label for="new-note-text">Cosa è successo</label>
+        <textarea id="new-note-text" rows="4" placeholder="Scrivi qui gli eventi della sessione..."></textarea>
+      </div>
+      <div class="sheet-actions" style="margin-top:14px;">
+        <button class="btn small" type="button" onclick="addCampaignNote()">➕ Aggiungi nota</button>
+      </div>
+    </div>
+
+    <ul class="notes-list" id="campaign-notes-list"></ul>
+    <div class="empty-state" id="campaign-notes-empty">Nessuna nota di campagna ancora. Scrivi cosa è successo nella tua ultima sessione!</div>
   </section>
 
 </main>
@@ -3460,6 +3507,7 @@ let combatants = [];
 let round = 1;
 let turnIndex = 0;
 let combatStarted = false;
+let campaignNotes = [];
 
 const SAVE_KEY = "forgiatore_save_v1";
 
@@ -3471,7 +3519,8 @@ function saveState(){
       combatants,
       round,
       turnIndex,
-      combatStarted
+      combatStarted,
+      campaignNotes
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   }catch(e){
@@ -3490,6 +3539,7 @@ function loadState(){
     if(typeof data.round === "number") round = data.round;
     if(typeof data.turnIndex === "number") turnIndex = data.turnIndex;
     if(typeof data.combatStarted === "boolean") combatStarted = data.combatStarted;
+    if(Array.isArray(data.campaignNotes)) campaignNotes = data.campaignNotes;
   }catch(e){
     console.warn("Impossibile caricare il salvataggio locale:", e);
   }
@@ -3537,6 +3587,7 @@ function confirmClearSavedState(){
   round = 1;
   turnIndex = 0;
   combatStarted = false;
+  campaignNotes = [];
   lastInlineDamage = null;
   lastInlineDamageLabel = '';
   lastInlineDamageBaseHtml = '';
@@ -3563,11 +3614,70 @@ function confirmClearSavedState(){
   renderRosterSelect();
   renderCombat();
   renderDiceHistory();
+  renderCampaignNotes();
   closeModal();
   closeEditModal();
   closeClearDataModal();
 
   alert("Tutti i dati salvati sono stati cancellati.");
+}
+
+function formatNoteDate(ts){
+  try{
+    const d = new Date(ts);
+    return d.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' · ' + d.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
+  }catch(e){ return ''; }
+}
+
+function addCampaignNote(){
+  const titleEl = document.getElementById('new-note-title');
+  const textEl = document.getElementById('new-note-text');
+  const title = titleEl ? titleEl.value.trim() : '';
+  const text = textEl ? textEl.value.trim() : '';
+  if(!title && !text){
+    if(titleEl) titleEl.focus();
+    return;
+  }
+  campaignNotes.unshift({
+    id: 'note_' + Date.now() + '_' + Math.floor(Math.random()*10000),
+    title: title || 'Senza titolo',
+    text: text,
+    createdAt: Date.now()
+  });
+  if(titleEl) titleEl.value = '';
+  if(textEl) textEl.value = '';
+  saveState();
+  renderCampaignNotes();
+}
+
+function deleteCampaignNote(id){
+  campaignNotes = campaignNotes.filter(n => n.id !== id);
+  saveState();
+  renderCampaignNotes();
+}
+
+function renderCampaignNotes(){
+  const list = document.getElementById('campaign-notes-list');
+  const empty = document.getElementById('campaign-notes-empty');
+  if(!list) return;
+  if(!campaignNotes.length){
+    list.innerHTML = '';
+    if(empty) empty.style.display = 'block';
+    return;
+  }
+  if(empty) empty.style.display = 'none';
+  list.innerHTML = campaignNotes.map(n => `
+    <li class="note-item">
+      <div class="note-item-head">
+        <h3 class="note-item-title">${escHtml(n.title)}</h3>
+        <span class="note-item-date">${escHtml(formatNoteDate(n.createdAt))}</span>
+      </div>
+      ${n.text ? `<p class="note-item-text">${escHtml(n.text)}</p>` : ''}
+      <div class="note-item-actions">
+        <button class="btn secondary small" type="button" onclick="deleteCampaignNote('${n.id}')">🗑 Elimina</button>
+      </div>
+    </li>
+  `).join('');
 }
 
 function exportAppData(){
@@ -3582,7 +3692,8 @@ function exportAppData(){
       round,
       turnIndex,
       combatStarted,
-      diceHistory
+      diceHistory,
+      campaignNotes
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
     const url = URL.createObjectURL(blob);
@@ -3641,6 +3752,7 @@ function applyImportedAppData(data){
   turnIndex = typeof data.turnIndex === "number" ? data.turnIndex : 0;
   combatStarted = typeof data.combatStarted === "boolean" ? data.combatStarted : false;
   diceHistory = Array.isArray(data.diceHistory) ? data.diceHistory : [];
+  campaignNotes = Array.isArray(data.campaignNotes) ? data.campaignNotes : [];
 
   // Azzero ogni stato transitorio della UI: i riferimenti (id combattenti,
   // personaggio in modifica, bersagli selezionati...) appartengono ai dati
@@ -3689,6 +3801,7 @@ function applyImportedAppData(data){
   renderRosterSelect();
   renderCombat();
   renderDiceHistory();
+  renderCampaignNotes();
 
   // Il roster importato può cambiare livello/dimensione del gruppo suggerito
   // e la lista mostri disponibili in combattimento: aggiorno anche quelli.
@@ -5020,7 +5133,7 @@ function renderRoster(){
 }
 
 function switchView(view){
-  const views = ['gen', 'bestiary', 'combat'];
+  const views = ['gen', 'bestiary', 'combat', 'notes'];
   views.forEach(v => {
     const vEl = document.getElementById('view-' + v);
     const bEl = document.getElementById('tabbtn-' + v);
@@ -5028,6 +5141,7 @@ function switchView(view){
     if(bEl) bEl.classList.toggle('active', v === view);
   });
   if(view==='combat') renderRosterSelect();
+  if(view==='notes') renderCampaignNotes();
 }
 
 
@@ -6830,6 +6944,7 @@ safeInit(function(){ if(currentChar){ renderSheet(); } }, 'renderSheet');
 safeInit(renderCombat, 'renderCombat');
 safeInit(initDice, 'initDice');
 safeInit(renderDiceHistory, 'renderDiceHistory');
+safeInit(renderCampaignNotes, 'renderCampaignNotes');
 safeInit(initModalScrollLock, 'initModalScrollLock');
 safeInit(initFullscreenToggle, 'initFullscreenToggle');
 </script>
