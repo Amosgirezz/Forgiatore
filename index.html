@@ -310,6 +310,62 @@ select:focus, input:focus, textarea:focus{outline:none; border-color:var(--gold-
 select option{ background:#1c130c; color:var(--text-main); }
 label{font-family:inherit; font-size:12.5px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--text-dim); display:block; margin-bottom:7px;}
 
+.combat-free-note{
+  width:50%;
+  min-width:220px;
+  min-height:220px;
+  resize:none;
+  overflow:hidden;
+  line-height:1.5;
+  display:block;
+}
+@media (max-width:640px){
+  .combat-free-note{ width:100%; }
+}
+
+.bestiary-search-results{
+  background:var(--panel);
+  border:1px solid var(--panel-line);
+  border-radius:var(--radius-lg);
+  padding:16px 18px;
+  margin-bottom:18px;
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:0 8px 30px rgba(0,0,0,0.35);
+}
+.bestiary-search-results h4{
+  margin:0 0 10px;
+  font-family:inherit;
+  font-weight:700;
+  font-size:13px;
+  color:var(--gold-bright);
+}
+.bestiary-search-list{display:flex; flex-wrap:wrap; gap:8px;}
+.bestiary-search-empty{font-size:14px; color:var(--text-dim); margin:0 0 12px;}
+
+.cm-terreni-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+  gap:8px 14px;
+  max-height:180px;
+  overflow-y:auto;
+  padding:12px;
+  border:1px solid var(--panel-line);
+  border-radius:var(--radius-sm);
+  background:#1c130c;
+}
+.cm-terreni-grid label{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:13px;
+  font-weight:500;
+  color:var(--text-main);
+  margin-bottom:0;
+  cursor:pointer;
+}
+.cm-terreni-grid input[type=checkbox]{width:auto; accent-color:var(--gold-bright); cursor:pointer;}
+
 .weapon-table {
   width: 100%;
   border-collapse: separate;
@@ -1474,6 +1530,14 @@ footer.site{
   <section class="view" id="view-bestiary">
 
     <div class="gen-controls" style="margin-bottom:14px;">
+      <div class="field" style="flex:2; min-width:260px;">
+        <label for="bestiary-search-input">🔍 Cerca nemico per nome (tra tutti quelli inseriti)</label>
+        <input type="text" id="bestiary-search-input" placeholder="Es. Goblin, Drago, Troll..." oninput="onBestiarySearchInput()" autocomplete="off">
+      </div>
+    </div>
+    <div id="bestiary-search-results" class="bestiary-search-results" style="display:none;"></div>
+
+    <div class="gen-controls" style="margin-bottom:14px;">
       <div class="field" style="max-width:180px;">
         <label for="party-size">Numero Personaggi</label>
         <input type="number" id="party-size" value="1" min="1" max="12" oninput="onPartyChange()">
@@ -1820,6 +1884,71 @@ footer.site{
       <button class="btn" type="button" onclick="generateRandomAdventure()">⚄ Genera avventura</button>
     </div>
     <div id="adventure-gen-result" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="create-monster-modal" onclick="closeCreateMonsterModalOnBg(event)">
+  <div class="modal-card" style="max-width:640px;">
+    <button class="modal-close" onclick="closeCreateMonsterModal()">✕</button>
+    <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:24px;">➕ Crea Nuovo Nemico</h2>
+    <p style="font-size:13.5px; color:var(--text-dim); margin-top:-6px;">Aggiungi un avversario personalizzato al tuo bestiario: resterà salvato e potrai cercarlo e usarlo anche in futuro.</p>
+
+    <div class="row" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;">
+      <div class="field grow" style="flex:2; min-width:220px;">
+        <label for="cm-nome">Nome</label>
+        <input type="text" id="cm-nome" placeholder="Es. Troll delle Nebbie">
+      </div>
+      <div class="field" style="max-width:150px;">
+        <label for="cm-cr">Grado di Sfida (CR)</label>
+        <input type="text" id="cm-cr" placeholder="Es. 1/4, 1, 5">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:12px;">
+      <label for="cm-tipo">Tipo</label>
+      <input type="text" id="cm-tipo" placeholder="Es. Gigante Grande (Troll)">
+    </div>
+
+    <div class="row" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+      <div class="field" style="max-width:110px;">
+        <label for="cm-ca">CA</label>
+        <input type="number" id="cm-ca" value="12" min="0">
+      </div>
+      <div class="field" style="max-width:110px;">
+        <label for="cm-hp">PF</label>
+        <input type="number" id="cm-hp" value="10" min="1">
+      </div>
+      <div class="field" style="max-width:130px;">
+        <label for="cm-vel">Velocità</label>
+        <input type="text" id="cm-vel" value="9m">
+      </div>
+      <div class="field" style="max-width:110px;">
+        <label for="cm-init">Iniziativa (+)</label>
+        <input type="number" id="cm-init" value="0">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:12px;">
+      <label>Terreni / Ambientazioni tipiche</label>
+      <div id="cm-terreni-checks" class="cm-terreni-grid"></div>
+    </div>
+
+    <div class="field" style="margin-top:12px;">
+      <label for="cm-attacchi">Attacchi e Danni</label>
+      <textarea id="cm-attacchi" rows="3" placeholder="Es. Morso: +4 al tiro, 1d6+2 (5) perforanti."></textarea>
+    </div>
+
+    <div class="field" style="margin-top:12px;">
+      <label for="cm-tratti">Caratteristiche / Tratti</label>
+      <textarea id="cm-tratti" rows="3" placeholder="Es. Rigenerazione: recupera 10 PF all'inizio del turno, a meno che non abbia subito danni da fuoco o acido."></textarea>
+    </div>
+
+    <p id="cm-error" style="display:none; color:var(--blood-bright); font-size:13px; margin-top:10px;"></p>
+
+    <div class="sheet-actions" style="margin-top:16px;">
+      <button class="btn secondary small" type="button" onclick="closeCreateMonsterModal()">Annulla</button>
+      <button class="btn small" type="button" onclick="submitCreateMonster()">✅ Crea e aggiungi al bestiario</button>
+    </div>
   </div>
 </div>
 
@@ -3508,6 +3637,7 @@ let round = 1;
 let turnIndex = 0;
 let combatStarted = false;
 let campaignNotes = [];
+let customMonsters = [];
 
 const SAVE_KEY = "forgiatore_save_v1";
 
@@ -3520,7 +3650,8 @@ function saveState(){
       round,
       turnIndex,
       combatStarted,
-      campaignNotes
+      campaignNotes,
+      customMonsters
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   }catch(e){
@@ -3540,6 +3671,7 @@ function loadState(){
     if(typeof data.turnIndex === "number") turnIndex = data.turnIndex;
     if(typeof data.combatStarted === "boolean") combatStarted = data.combatStarted;
     if(Array.isArray(data.campaignNotes)) campaignNotes = data.campaignNotes;
+    if(Array.isArray(data.customMonsters)) customMonsters = data.customMonsters;
   }catch(e){
     console.warn("Impossibile caricare il salvataggio locale:", e);
   }
@@ -3588,6 +3720,7 @@ function confirmClearSavedState(){
   turnIndex = 0;
   combatStarted = false;
   campaignNotes = [];
+  customMonsters = [];
   lastInlineDamage = null;
   lastInlineDamageLabel = '';
   lastInlineDamageBaseHtml = '';
@@ -3615,6 +3748,9 @@ function confirmClearSavedState(){
   renderCombat();
   renderDiceHistory();
   renderCampaignNotes();
+  populateCRFilterOptions();
+  updateMonsterDropdown();
+  onBestiarySearchInput();
   closeModal();
   closeEditModal();
   closeClearDataModal();
@@ -3693,7 +3829,8 @@ function exportAppData(){
       turnIndex,
       combatStarted,
       diceHistory,
-      campaignNotes
+      campaignNotes,
+      customMonsters
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
     const url = URL.createObjectURL(blob);
@@ -3753,6 +3890,7 @@ function applyImportedAppData(data){
   combatStarted = typeof data.combatStarted === "boolean" ? data.combatStarted : false;
   diceHistory = Array.isArray(data.diceHistory) ? data.diceHistory : [];
   campaignNotes = Array.isArray(data.campaignNotes) ? data.campaignNotes : [];
+  customMonsters = Array.isArray(data.customMonsters) ? data.customMonsters : [];
 
   // Azzero ogni stato transitorio della UI: i riferimenti (id combattenti,
   // personaggio in modifica, bersagli selezionati...) appartengono ai dati
@@ -3802,6 +3940,7 @@ function applyImportedAppData(data){
   renderCombat();
   renderDiceHistory();
   renderCampaignNotes();
+  populateCRFilterOptions();
 
   // Il roster importato può cambiare livello/dimensione del gruppo suggerito
   // e la lista mostri disponibili in combattimento: aggiorno anche quelli.
@@ -4110,8 +4249,7 @@ function applyInlineDamageToTarget(){
 }
 
 function goToNextTurn(){
-  const noInitiativeRolled = combatants.every(c => c.init === null);
-  if(noInitiativeRolled && currentDetailId != null){
+  if(currentDetailId != null){
     const attackerIndex = combatants.findIndex(c => c.id === currentDetailId);
     if(attackerIndex !== -1) turnIndex = attackerIndex;
   }
@@ -5178,9 +5316,167 @@ function monsterMatchesArea(m, areaValue){
   return Array.isArray(m.terreni) && m.terreni.includes(areaValue);
 }
 
+function getAllMonsters(){
+  return BESTIARIO.concat(customMonsters);
+}
+
+function normalizeSearchStr(s){
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function onBestiarySearchInput(){
+  const input = document.getElementById('bestiary-search-input');
+  const box = document.getElementById('bestiary-search-results');
+  if(!input || !box) return;
+  const query = input.value.trim();
+
+  if(!query){
+    box.style.display = 'none';
+    box.innerHTML = '';
+    return;
+  }
+
+  const nq = normalizeSearchStr(query);
+  const matches = getAllMonsters()
+    .map((m, idx) => ({...m, idx}))
+    .filter(m => normalizeSearchStr(m.nome).includes(nq));
+
+  box.style.display = 'block';
+
+  if(matches.length === 0){
+    box.innerHTML = `
+      <p class="bestiary-search-empty">Nessun nemico chiamato "<b>${escHtml(query)}</b>" trovato nel bestiario.</p>
+      <button class="btn small" type="button" onclick="openCreateMonsterModal('${escAttr(query)}')">➕ Crea "${escHtml(query)}" come nuovo nemico</button>
+    `;
+    return;
+  }
+
+  box.innerHTML = `
+    <h4>Risultati per "${escHtml(query)}" (${matches.length})</h4>
+    <div class="bestiary-search-list">
+      ${matches.map(m => `<button class="btn secondary small" type="button" onclick="selectSearchedMonster(${m.idx})">${escHtml(m.nome)} (CR ${escHtml(String(m.cr))})</button>`).join('')}
+    </div>
+  `;
+}
+
+function selectSearchedMonster(idx){
+  const m = getAllMonsters()[idx];
+  if(!m) return;
+
+  const crSel = document.getElementById('bestiary-cr-filter');
+  if(crSel) crSel.value = 'all';
+  const areaSel = document.getElementById('bestiary-area-filter');
+  if(areaSel) areaSel.value = 'all';
+  onAreaChange();
+
+  const monsterSel = document.getElementById('bestiary-monster-select');
+  if(monsterSel) monsterSel.value = String(idx);
+
+  generateBestiaryEncounter();
+
+  const gridDiv = document.getElementById('bestiary-grid');
+  if(gridDiv) gridDiv.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderCreateMonsterTerreniChecks(){
+  const box = document.getElementById('cm-terreni-checks');
+  if(!box) return;
+  box.innerHTML = AREE.map(a => `
+    <label><input type="checkbox" class="cm-terreno-check" value="${escAttr(a.id)}"> ${escHtml(a.nome)}</label>
+  `).join('');
+}
+
+function openCreateMonsterModal(prefillName){
+  const modal = document.getElementById('create-monster-modal');
+  if(!modal) return;
+
+  document.getElementById('cm-nome').value = prefillName || '';
+  document.getElementById('cm-cr').value = '';
+  document.getElementById('cm-tipo').value = '';
+  document.getElementById('cm-ca').value = '12';
+  document.getElementById('cm-hp').value = '10';
+  document.getElementById('cm-vel').value = '9m';
+  document.getElementById('cm-init').value = '0';
+  document.getElementById('cm-attacchi').value = '';
+  document.getElementById('cm-tratti').value = '';
+  const err = document.getElementById('cm-error');
+  if(err) err.style.display = 'none';
+
+  renderCreateMonsterTerreniChecks();
+
+  modal.classList.add('active');
+  syncModalScrollLock();
+  setTimeout(()=>document.getElementById('cm-nome').focus(), 50);
+}
+
+function closeCreateMonsterModal(){
+  const modal = document.getElementById('create-monster-modal');
+  if(modal) modal.classList.remove('active');
+  syncModalScrollLock();
+}
+
+function closeCreateMonsterModalOnBg(event){
+  if(event.target && event.target.id === 'create-monster-modal') closeCreateMonsterModal();
+}
+
+function submitCreateMonster(){
+  const nome = document.getElementById('cm-nome').value.trim();
+  const cr = document.getElementById('cm-cr').value.trim();
+  const tipo = document.getElementById('cm-tipo').value.trim();
+  const ca = parseInt(document.getElementById('cm-ca').value) || 10;
+  const hp = parseInt(document.getElementById('cm-hp').value) || 1;
+  const vel = document.getElementById('cm-vel').value.trim() || '9m';
+  const init = parseInt(document.getElementById('cm-init').value) || 0;
+  const attacchi = document.getElementById('cm-attacchi').value.trim();
+  const tratti = document.getElementById('cm-tratti').value.trim();
+  const terreni = Array.from(document.querySelectorAll('.cm-terreno-check:checked')).map(el => el.value);
+
+  const err = document.getElementById('cm-error');
+  if(!nome || !cr){
+    if(err){ err.textContent = 'Nome e Grado di Sfida (CR) sono obbligatori.'; err.style.display = 'block'; }
+    return;
+  }
+
+  const newMonster = {
+    nome,
+    cr,
+    tipo: tipo || 'Personalizzato',
+    terreni,
+    ca, hp, vel, init,
+    attacchi: attacchi || '—',
+    tratti: tratti || '—'
+  };
+
+  customMonsters.push(newMonster);
+  saveState();
+  closeCreateMonsterModal();
+
+  populateCRFilterOptions();
+  const areaSel = document.getElementById('bestiary-area-filter');
+  if(areaSel) areaSel.value = 'all';
+  const crSel = document.getElementById('bestiary-cr-filter');
+  if(crSel) crSel.value = 'all';
+  onAreaChange();
+
+  const newIdx = getAllMonsters().length - 1;
+  const monsterSel = document.getElementById('bestiary-monster-select');
+  if(monsterSel) monsterSel.value = String(newIdx);
+
+  const searchInput = document.getElementById('bestiary-search-input');
+  if(searchInput) searchInput.value = '';
+  const searchBox = document.getElementById('bestiary-search-results');
+  if(searchBox){ searchBox.style.display = 'none'; searchBox.innerHTML = ''; }
+
+  generateBestiaryEncounter();
+  const gridDiv = document.getElementById('bestiary-grid');
+  if(gridDiv) gridDiv.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 function populateCRFilterOptions(){
   const sel = document.getElementById('bestiary-cr-filter');
-  const uniqueCRs = [...new Set(BESTIARIO.map(m => m.cr))]
+  const uniqueCRs = [...new Set(getAllMonsters().map(m => m.cr))]
     .sort((a,b) => crToNumber(a) - crToNumber(b));
 
   sel.innerHTML = `
@@ -5251,7 +5547,7 @@ function updateMonsterDropdown(){
   const sel = document.getElementById('bestiary-monster-select');
   sel.innerHTML = '<option value="random">🎲 Casuale (tra quelli del filtro scelto)</option>';
 
-  let pool = BESTIARIO.map((m, originalIdx) => ({...m, originalIdx}))
+  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
     .filter(m => monsterMatchesFilter(m, cr) && monsterMatchesArea(m, area));
 
   pool.forEach(m => {
@@ -5281,7 +5577,7 @@ function generateBestiaryEncounter(){
   let idxToSpawn = -1;
 
   if(selectedVal === 'random'){
-    let pool = BESTIARIO.map((m, originalIdx) => ({...m, originalIdx}))
+    let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
       .filter(m => monsterMatchesFilter(m, cr) && monsterMatchesArea(m, area));
     if(pool.length === 0){ alert("Nessun mostro disponibile per questo filtro (Area/CR)."); return; }
     
@@ -5289,7 +5585,7 @@ function generateBestiaryEncounter(){
     idxToSpawn = selectedMonster.originalIdx;
   } else {
     idxToSpawn = parseInt(selectedVal);
-    selectedMonster = BESTIARIO[idxToSpawn];
+    selectedMonster = getAllMonsters()[idxToSpawn];
   }
 
   const areaInfo = AREE.find(a => a.id === area);
@@ -5342,7 +5638,7 @@ function generateBestiaryEncounter(){
 }
 
 function addMultipleToCombat(idx, qty){
-  const m = BESTIARIO[idx];
+  const m = getAllMonsters()[idx];
   if(!m) return;
   for(let i=0; i<qty; i++){
     const suffix = qty > 1 ? ` #${i+1}` : '';
@@ -6064,6 +6360,9 @@ function showDetails(id){
 
       <h4 style="font-family:inherit; font-weight:700; color:var(--gold-bright); margin:12px 0 6px; font-size:13px;">Equipaggiamento Generale</h4>
       <ul style="margin:0 0 14px; padding-left:20px; font-size:15px; color:var(--text-main);">${char.equipaggiamentoGenerale.map(e=>`<li>${e}</li>`).join('')}</ul>
+
+      <h4 style="font-family:inherit; font-weight:700; color:var(--gold-bright); margin:12px 0 6px; font-size:13px;">Note</h4>
+      <textarea id="combat-free-note" class="combat-free-note" rows="10" placeholder="Scrivi qui liberamente qualsiasi appunto su questo personaggio durante il combattimento..." oninput="onCombatFreeNoteInput(this)">${escHtml(char.noteCombattimento || '')}</textarea>
     `;
     detailIsWide = !!tablesHtml;
   } else if(c.refType === 'monster' && c.details){
@@ -6175,6 +6474,24 @@ function showDetails(id){
   document.getElementById('details-modal').classList.add('active');
   document.querySelector('#details-modal .modal-card').classList.toggle('wide', detailIsWide);
   initModalDice();
+  const freeNoteEl = document.getElementById('combat-free-note');
+  if(freeNoteEl) autoGrowInvNotes(freeNoteEl);
+}
+
+function onCombatFreeNoteInput(el){
+  autoGrowInvNotes(el);
+  const c = combatants.find(x => x.id === currentDetailId);
+  if(c && c.details){
+    c.details.noteCombattimento = el.value;
+    if(c.charRefId != null){
+      const rc = roster.find(r => String(r.id) === String(c.charRefId));
+      if(rc) rc.noteCombattimento = el.value;
+      if(currentChar && String(currentChar.id) === String(c.charRefId)){
+        currentChar.noteCombattimento = el.value;
+      }
+    }
+    saveState();
+  }
 }
 
 function initDice(){
