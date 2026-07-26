@@ -1650,7 +1650,7 @@ footer.site{
     <div id="integral-adventure-combat-box" style="display:none; margin-bottom:20px; background:linear-gradient(155deg, rgba(198,145,71,0.03), rgba(198,145,71,0) 40%), var(--parchment); border-radius:var(--radius-lg); padding:16px 18px; box-shadow:0 1px 0 rgba(198,145,71,0.15) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(198,145,71,0.15);">
       <table class="weapon-table" style="width:100%; border-color:var(--panel-line);">
         <thead>
-          <tr><th id="ia-combat-header" colspan="2" style="background:rgba(198,145,71,0.14); color:var(--gold-bright);">📖 Step 1 — Avventura Integrale</th></tr>
+          <tr><th colspan="2" style="background:rgba(198,145,71,0.14); color:var(--gold-bright); position:relative; padding-right:36px;"><span id="ia-combat-header">📖 Step 1 — Avventura Integrale</span><button type="button" onclick="deleteIntegralAdventureCombatBox()" title="Elimina" style="position:absolute; top:50%; right:8px; transform:translateY(-50%); background:transparent; border:none; color:var(--gold-bright); font-size:16px; line-height:1; cursor:pointer; padding:4px 6px;">✕</button></th></tr>
         </thead>
         <tbody>
           <tr><td style="width:160px; font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Tono / Ambientazione</td><td id="ia-combat-tone-setting" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
@@ -6878,6 +6878,38 @@ const rarityColors = {
   "Artefatto": "#d8402f"
 };
 
+// Brevi aperture in stile Dungeon Master, lette come farebbe un narratore dal vivo prima di
+// introdurre la premessa dell'avventura: danno il "la" alla scena, in seconda persona plurale.
+const integralPremiseIntros = {
+  Eroico: [
+    `Il Narratore posa i dadi sul tavolo e comincia:`,
+    `Prendete posto, l'avventura sta per cominciare:`
+  ],
+  Oscuro: [
+    `Le candele tremano mentre il Narratore abbassa la voce:`,
+    `Il Narratore vi guarda negli occhi, serio:`
+  ],
+  Misterioso: [
+    `Il Narratore sorride appena, come chi conosce già la risposta:`,
+    `Il Narratore fa una pausa, per lasciarvi il tempo di intuire:`
+  ],
+  Comico: [
+    `Il Narratore trattiene a stento un sorriso:`,
+    `Con un ghigno poco rassicurante, il Narratore comincia:`
+  ],
+  Tragico: [
+    `Il Narratore fa un lungo respiro prima di iniziare:`,
+    `Con voce pacata, il Narratore vi introduce nella storia:`
+  ]
+};
+const integralPremiseIntroFallback = [`Il Narratore comincia:`];
+
+// Compone la premessa con una breve apertura in stile DM davanti al testo dell'aggancio narrativo.
+function formatIntegralPremiseText(premise){
+  const intro = pickIntegralLine(integralPremiseIntros, premise.tone, integralPremiseIntroFallback);
+  return `${intro} ${premise.text}`;
+}
+
 const adventureHooks = [
   { tone:'Eroico', setting:'Città', text:'Un nobile locale offre una ricompensa a chi scoprirà chi sta sabotando le mura della città prima dell\'imminente assedio.' },
   { tone:'Eroico', setting:'Bosco', text:'Un villaggio di boscaioli chiede aiuto contro un branco di licantropi che rapisce i bambini durante le notti di luna piena.' },
@@ -7018,7 +7050,20 @@ const adventureHooks = [
   { tone:'Tragico', setting:'Mare', text:'Il faro più antico della costa fu costruito da un padre per guidare a casa il figlio marinaio, che non tornò mai: ora il fantasma del padre continua ad accendere la fiamma ogni notte, aspettando.' },
   { tone:'Tragico', setting:'Montagna', text:'Un villaggio di montagna venera ancora l\'eroe che sacrificò la vita per fermare una valanga secoli fa, senza sapere che il vero motivo del disastro fu un errore che lui stesso commise da giovane.' },
   { tone:'Tragico', setting:'Dungeon', text:'Un principe esiliato costruì un dungeon per proteggere il fratello minore da un\'usurpazione, ma il fratello morì comunque, solo, tra le trappole pensate per tenerlo al sicuro.' },
-  { tone:'Tragico', setting:'Rovine', text:'Le rovine di un\'accademia di musica custodiscono lo spartito incompiuto dell\'ultima composizione di un maestro morto prima di poterla terminare, e chi lo trova sente il bisogno irresistibile di finirlo.' }
+  { tone:'Tragico', setting:'Bosco', text:'Ritornate nel bosco della vostra infanzia dopo anni, chiamati da una lettera disperata: il villaggio che vi ha cresciuti sta morendo lentamente, e nessuno sa dirvi il perché.' },
+  { tone:'Tragico', setting:'Bosco', text:'Un amico che credevate perduto per sempre vi manda un messaggio dal cuore del bosco: chiede aiuto, ma qualcosa nel tono delle sue parole vi fa temere che sia già troppo tardi.' },
+  { tone:'Comico', setting:'Palude', text:'Vi svegliate in una palude, senza ricordare come ci siete arrivati, mentre uno gnomo eccentrico insiste di avervi "salvati" da un destino che si rifiuta categoricamente di spiegarvi.' },
+  { tone:'Comico', setting:'Rovine', text:'Un mercante ambulante vi vende una mappa che, giura, conduce a un tesoro leggendario tra le rovine vicine: peccato che almeno altre dieci persone vi abbiano già venduto la stessa identica mappa.' },
+  { tone:'Misterioso', setting:'Montagna', text:'Vi vengono affidate delle lettere da consegnare a un eremita sulla montagna, ma ogni volta che provate a leggerne il contenuto, le parole sulla pagina sembrano riorganizzarsi da sole.' },
+  { tone:'Oscuro', setting:'Dungeon', text:'Un mercenario ferito, l\'unico sopravvissuto della sua compagnia, vi supplica di non entrare in un dungeon poco distante: poi, con gli occhi vitrei, aggiunge che è già troppo tardi per lui.' },
+  { tone:'Eroico', setting:'Mare', text:'Siete stati scelti dal consiglio dei porti per guidare una flotta di soccorso verso un\'isola assediata da mostri marini, mentre il tempo stringe e le prime navi cominciano già a non fare più ritorno.' },
+  { tone:'Misterioso', setting:'Città', text:'Ricevete tutti, nella stessa notte, lo stesso identico sogno: una porta chiusa in un quartiere della città che nessuno di voi ha mai visitato prima. Al risveglio, scoprite che quella porta esiste davvero.' },
+  { tone:'Comico', setting:'Dungeon', text:'Un lich particolarmente pignolo governa un dungeon come fosse un\'attività commerciale, e rifiuta di combattere chiunque non abbia prima compilato correttamente il modulo di "richiesta incursione".' },
+  { tone:'Tragico', setting:'Rovine', text:'Tornate sulle rovine dove, anni prima, avete perso un compagno d\'armi: i suoi resti non sono mai stati recuperati, e ora qualcuno — o qualcosa — ha iniziato a usare il suo nome per attirare viaggiatori.' },
+  { tone:'Oscuro', setting:'Palude', text:'Un cacciatore di taglie vi offre denaro per scortarlo nella palude, dove dice di dover regolare un conto in sospeso: solo più tardi scoprirete che il suo bersaglio è già morto da tempo.' },
+  { tone:'Eroico', setting:'Dungeon', text:'Un ordine di paladini decimato vi chiede di completare la missione che li ha quasi annientati: recuperare una reliquia sacra dal cuore di un dungeon prima che finisca in mani sbagliate.' },
+  { tone:'Misterioso', setting:'Palude', text:'Ogni mappa della palude che consultate mostra un sentiero diverso, mai lo stesso due volte, eppure ogni versione sembra ugualmente convinta di essere quella corretta.' },
+  { tone:'Comico', setting:'Montagna', text:'Un gruppo di nani minatori vi assume per scortare un carico "assolutamente non pericoloso" di esplosivi alchemici attraverso un passo di montagna, giurando che "esplodono solo qualche volta".' }
 ];
 
 function openAdventureGenModal(){
@@ -7039,53 +7084,61 @@ function closeAdventureGenModalOnBg(event){
 }
 const integralAdventureOptions = [
   // Universali: adatte a qualsiasi tono/ambientazione, usate anche come riempimento
-  { text:"⚔️ Affrontare la minaccia a viso aperto", tones:[], settings:[], combat:true, keywords:['minaccia','pericolo','mostro','bestia','creatura'] },
-  { text:"🕵️ Indagare con discrezione prima di agire", tones:[], settings:[], combat:false, keywords:['scompar','misterios','segreto','nascond','indizio','strano'] },
-  { text:"🤝 Cercare un alleato o un informatore locale", tones:[], settings:[], combat:false, keywords:['villaggio','abitanti','testimon','locale','contadini','pescatori'] },
-  { text:"🌒 Muoversi di notte, restando nell'ombra", tones:[], settings:[], combat:false, keywords:['notte','ombra','buio','luna','oscurità'] },
-  { text:"🗣️ Tentare la via della diplomazia", tones:[], settings:[], combat:false, keywords:['culto','setta','magistrato','sacerdote','capo','governa','anziani','consiglio'] },
-  { text:"💰 Offrire denaro o favori per ottenere aiuto", tones:[], settings:[], combat:false, keywords:['mercante','oro','ricompensa','tesoro','patrimonio','moneta','gilda dei mercanti'] },
-  { text:"🏃 Agire in fretta, prima che sia troppo tardi", tones:[], settings:[], combat:false, keywords:['giorni','entro','scompar','tempo','presto','imminente'] },
-  { text:"🔥 Tendere una trappola al nemico", tones:[], settings:[], combat:true, keywords:['predoni','banda','razzia','minaccia','accampamento'] },
-  { text:"📜 Cercare risposte in antichi documenti o leggende locali", tones:[], settings:[], combat:false, keywords:['antico','antica','leggenda','iscrizione','profezia','patto','biblioteca'] },
-  { text:"🚪 Introdursi di nascosto nel luogo del pericolo", tones:[], settings:[], combat:false, keywords:['prigione','laboratorio','fortezza','tempio','santuario','covo'] },
+  { text:"⚔️ Sguainare le armi e affrontare la minaccia a viso aperto", tones:[], settings:[], combat:true, keywords:['minaccia','pericolo','mostro','bestia','creatura'] },
+  { text:"🕵️ Muoversi con discrezione e indagare prima di agire", tones:[], settings:[], combat:false, keywords:['scompar','misterios','segreto','nascond','indizio','strano'] },
+  { text:"🤝 Cercare un alleato o un informatore tra la gente del posto", tones:[], settings:[], combat:false, keywords:['villaggio','abitanti','testimon','locale','contadini','pescatori'] },
+  { text:"🌒 Approfittare del buio e muoversi restando nell'ombra", tones:[], settings:[], combat:false, keywords:['notte','ombra','buio','luna','oscurità'] },
+  { text:"🗣️ Tentare la via della diplomazia prima che si arrivi allo scontro", tones:[], settings:[], combat:false, keywords:['culto','setta','magistrato','sacerdote','capo','governa','anziani','consiglio'] },
+  { text:"💰 Offrire oro o favori pur di ottenere aiuto", tones:[], settings:[], combat:false, keywords:['mercante','oro','ricompensa','tesoro','patrimonio','moneta','gilda dei mercanti'] },
+  { text:"🏃 Muoversi in fretta, prima che sia troppo tardi", tones:[], settings:[], combat:false, keywords:['giorni','entro','scompar','tempo','presto','imminente'] },
+  { text:"🔥 Tendere un'imboscata al nemico, giocando d'anticipo", tones:[], settings:[], combat:true, keywords:['predoni','banda','razzia','minaccia','accampamento'] },
+  { text:"📜 Cercare risposte tra antichi documenti o leggende locali", tones:[], settings:[], combat:false, keywords:['antico','antica','leggenda','iscrizione','profezia','patto','biblioteca'] },
+  { text:"🚪 Introdursi di nascosto nel cuore del pericolo", tones:[], settings:[], combat:false, keywords:['prigione','laboratorio','fortezza','tempio','santuario','covo'] },
   { text:"🛡️ Radunare rinforzi prima di intervenire", tones:[], settings:[], combat:false, keywords:['esercito','orda','invasione','drago','armata'] },
-  { text:"🎭 Fingersi qualcun altro per ottenere informazioni", tones:[], settings:[], combat:false, keywords:['nobili','corte','gilda','magistrato','festival','palazzo'] },
-  { text:"🗺️ Esplorare i dintorni in cerca di indizi", tones:[], settings:[], combat:false, keywords:['scompar','tracce','indizio','misterios'] },
-  { text:"⏳ Osservare e aspettare il momento migliore per agire", tones:[], settings:[], combat:false, keywords:['ogni notte','ogni luna','ogni anno','periodicamente','ritual'] },
+  { text:"🎭 Fingersi qualcun altro per estorcere informazioni", tones:[], settings:[], combat:false, keywords:['nobili','corte','gilda','magistrato','festival','palazzo'] },
+  { text:"🗺️ Battere i dintorni in cerca di indizi", tones:[], settings:[], combat:false, keywords:['scompar','tracce','indizio','misterios'] },
+  { text:"⏳ Restare in attesa, osservando il momento migliore per agire", tones:[], settings:[], combat:false, keywords:['ogni notte','ogni luna','ogni anno','periodicamente','ritual'] },
   { text:"🧪 Affidarsi alla magia per trovare una soluzione", tones:[], settings:[], combat:false, keywords:['maledizione','incantesim','magia','rituale','stregone','mago','sortilegio'] },
+  { text:"👂 Origliare conversazioni sospette prima di farsi vedere", tones:[], settings:[], combat:false, keywords:['taverna','locanda','mercato','pettegolezz','voci'] },
+  { text:"🩹 Fermarsi a curare le ferite prima di proseguire", tones:[], settings:[], combat:false, keywords:['ferit','sangue','stanchezza','riposo'] },
+  { text:"🎯 Studiare il terreno per scegliere il punto d'attacco migliore", tones:[], settings:[], combat:true, keywords:['imboscata','agguato','trappola','nemici','pattuglia'] },
 
   // Specifiche per tono
-  { text:"🔪 Colpire per primi, senza esitazione", tones:['Oscuro'], settings:[], combat:true },
+  { text:"🔪 Colpire per primi, senza dare tregua", tones:['Oscuro'], settings:[], combat:true },
   { text:"🩸 Rispondere alla crudeltà con la stessa spietatezza", tones:['Oscuro'], settings:[], combat:true },
-  { text:"🙏 Cercare protezione in un rito o una preghiera disperata", tones:['Oscuro','Tragico'], settings:[], combat:false },
-  { text:"🔍 Studiare ogni indizio prima di muoversi", tones:['Misterioso'], settings:[], combat:false },
+  { text:"🙏 Cercare protezione in un rito o in una preghiera disperata", tones:['Oscuro','Tragico'], settings:[], combat:false },
+  { text:"🕸️ Seguire il sussurro nell'oscurità, qualunque cosa costi", tones:['Oscuro'], settings:[], combat:false },
+  { text:"🔍 Studiare ogni indizio con pazienza, prima di muoversi", tones:['Misterioso'], settings:[], combat:false },
   { text:"❓ Interrogare i testimoni più insoliti", tones:['Misterioso'], settings:[], combat:false },
-  { text:"🌀 Seguire il fenomeno inspiegabile da vicino", tones:['Misterioso'], settings:[], combat:false },
+  { text:"🌀 Seguire da vicino il fenomeno inspiegabile", tones:['Misterioso'], settings:[], combat:false },
+  { text:"🧩 Mettere insieme i pezzi prima che sia troppo tardi", tones:['Misterioso'], settings:[], combat:false },
   { text:"🍺 Proporre un brindisi per rompere il ghiaccio", tones:['Comico'], settings:[], combat:false },
   { text:"🎪 Improvvisare uno spettacolo per distrarre tutti", tones:['Comico'], settings:[], combat:false },
   { text:"🐔 Lasciare che sia il caso a decidere", tones:['Comico'], settings:[], combat:false },
+  { text:"🎲 Scommettere tutto su un piano decisamente azzardato", tones:['Comico'], settings:[], combat:true },
   { text:"🕯️ Onorare la memoria di chi non c'è più", tones:['Tragico'], settings:[], combat:false },
   { text:"💔 Affrontare il dolore invece di fuggirlo", tones:['Tragico'], settings:[], combat:false },
   { text:"🤲 Offrire perdono anche quando non è meritato", tones:['Tragico'], settings:[], combat:false },
+  { text:"⚰️ Portare a termine ciò che altri non sono riusciti a finire", tones:['Tragico'], settings:[], combat:true },
   { text:"🛡️ Proteggere gli innocenti a ogni costo", tones:['Eroico'], settings:[], combat:true },
-  { text:"⚡ Guidare la carica in prima linea", tones:['Eroico'], settings:[], combat:true },
+  { text:"⚡ Guidare la carica in prima linea, senza esitazione", tones:['Eroico'], settings:[], combat:true },
   { text:"🏆 Accettare la sfida a viso scoperto", tones:['Eroico'], settings:[], combat:true },
+  { text:"📯 Levare un grido di battaglia e dare l'esempio", tones:['Eroico'], settings:[], combat:true },
 
   // Specifiche per ambientazione
-  { text:"🐊 Muoversi con cautela tra le acque basse", tones:[], settings:['Palude'], combat:false },
-  { text:"🌫️ Seguire i fuochi fatui nella nebbia", tones:[], settings:['Palude'], combat:false },
+  { text:"🐊 Avanzare con cautela tra le acque basse della palude", tones:[], settings:['Palude'], combat:false },
+  { text:"🌫️ Seguire i fuochi fatui che danzano nella nebbia", tones:[], settings:['Palude'], combat:false },
   { text:"⛵ Prendere il controllo di un'imbarcazione", tones:[], settings:['Mare'], combat:false },
-  { text:"🌊 Aspettare la marea favorevole prima di agire", tones:[], settings:['Mare'], combat:false },
+  { text:"🌊 Attendere la marea favorevole prima di agire", tones:[], settings:['Mare'], combat:false },
   { text:"⛰️ Scalare per raggiungere un punto d'osservazione", tones:[], settings:['Montagna'], combat:false },
-  { text:"❄️ Cercare riparo prima che arrivi la tempesta", tones:[], settings:['Montagna'], combat:false },
+  { text:"❄️ Cercare riparo prima che si scateni la tempesta", tones:[], settings:['Montagna'], combat:false },
   { text:"🌲 Seguire le tracce tra gli alberi", tones:[], settings:['Bosco'], combat:false },
   { text:"🍃 Muoversi in silenzio tra il fogliame", tones:[], settings:['Bosco'], combat:false },
-  { text:"🕯️ Illuminare ogni angolo prima di avanzare", tones:[], settings:['Dungeon'], combat:false },
+  { text:"🕯️ Illuminare ogni angolo del dungeon prima di avanzare", tones:[], settings:['Dungeon'], combat:false },
   { text:"🔑 Cercare un passaggio o un meccanismo segreto", tones:[], settings:['Dungeon'], combat:false },
-  { text:"🏛️ Decifrare le iscrizioni antiche", tones:[], settings:['Rovine'], combat:false },
+  { text:"🏛️ Decifrare le iscrizioni incise nella pietra antica", tones:[], settings:['Rovine'], combat:false },
   { text:"🪨 Scavare tra le macerie in cerca di indizi", tones:[], settings:['Rovine'], combat:false },
-  { text:"🏘️ Chiedere in giro per le taverne e i mercati", tones:[], settings:['Città'], combat:false },
+  { text:"🏘️ Chiedere in giro per le taverne e i mercati della città", tones:[], settings:['Città'], combat:false },
   { text:"👮 Rivolgersi alle autorità locali", tones:[], settings:['Città'], combat:false },
   { text:"🐍 Reagire con forza all'agguato tra le acque torbide", tones:[], settings:['Palude'], combat:true },
   { text:"🦈 Difendere la nave dall'attacco che emerge dalle onde", tones:[], settings:['Mare'], combat:true },
@@ -7154,59 +7207,83 @@ function lowerFirstLetter(s){
   return s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
 }
 
-// Testi di prosecuzione della storia, personalizzati in base al tono (con ripiego universale)
+// Testi di prosecuzione della storia, personalizzati in base al tono (con ripiego universale).
+// Scritti in seconda persona plurale, come farebbe un Dungeon Master al tavolo.
 const integralContinuations = {
   universal: [
-    (a)=>`Il gruppo decide di ${a}. Le cose si evolvono rapidamente: emergono nuove informazioni, ma anche nuove complicazioni.`,
-    (a)=>`Dopo aver scelto di ${a}, il gruppo scopre un dettaglio che nessuno si aspettava, capace di cambiare il corso degli eventi.`,
-    (a)=>`La scelta di ${a} porta il gruppo un passo più vicino alla verità, ma non senza conseguenze.`
+    (a)=>`Decidete di ${a}. Le cose si muovono in fretta: emergono informazioni che non avevate previsto, insieme a nuove complicazioni.`,
+    (a)=>`Non appena scegliete di ${a}, notate un dettaglio che nessuno di voi si aspettava — un dettaglio capace di cambiare il corso degli eventi.`,
+    (a)=>`La vostra scelta di ${a} vi avvicina di un passo alla verità. Ma ogni passo, in questa storia, ha un prezzo.`,
+    (a)=>`Mentre decidete di ${a}, sentite che qualcosa, nell'aria, è cambiato — impercettibile, ma reale.`
   ],
   Oscuro: [
-    (a)=>`Il gruppo sceglie di ${a}. L'oscurità intorno sembra farsi più densa, come se qualcosa li stesse osservando da vicino.`,
-    (a)=>`Dopo aver deciso di ${a}, un presagio inquietante si manifesta: un segno che il pericolo è più vicino di quanto pensassero.`
+    (a)=>`Scegliete di ${a}. L'oscurità intorno a voi sembra farsi più densa, come se qualcosa vi stesse osservando da vicino.`,
+    (a)=>`Non appena decidete di ${a}, un presagio inquietante si manifesta: un segno che il pericolo è più vicino di quanto pensaste.`,
+    (a)=>`${a[0].toUpperCase()}${a.slice(1)}, dite. Ma il silenzio che segue la vostra decisione è innaturale, carico di attesa.`
   ],
   Misterioso: [
-    (a)=>`Il gruppo decide di ${a}, e ciò che scoprono solleva più domande di quante ne risolva.`,
-    (a)=>`Scegliendo di ${a}, il gruppo si imbatte in un indizio inaspettato che non fa che infittire il mistero.`
+    (a)=>`Decidete di ${a}, e ciò che scoprite solleva più domande di quante ne risolva.`,
+    (a)=>`Scegliendo di ${a}, vi imbattete in un indizio inaspettato che non fa che infittire il mistero.`,
+    (a)=>`Mentre decidete di ${a}, avvertite la sensazione precisa di essere osservati da qualcosa che, finora, si era tenuto in disparte.`
   ],
   Comico: [
-    (a)=>`Il gruppo, con entusiasmo variabile, decide di ${a}. Ovviamente qualcosa va storto in modo esilarante.`,
-    (a)=>`Dopo aver scelto di ${a}, la situazione precipita in una comica serie di equivoci.`
+    (a)=>`Con entusiasmo variabile, decidete di ${a}. Ovviamente, qualcosa va storto in modo esilarante.`,
+    (a)=>`Non appena scegliete di ${a}, la situazione precipita in una comica serie di equivoci.`,
+    (a)=>`Decidete di ${a} — un piano quasi ragionevole, per i vostri standard. Quasi.`
   ],
   Tragico: [
-    (a)=>`Il gruppo sceglie, con il cuore pesante, di ${a}. Il prezzo di questa scelta si farà sentire presto.`,
-    (a)=>`Decidendo di ${a}, il gruppo non può fare a meno di pensare a tutto ciò che questa scelta potrebbe costare.`
+    (a)=>`Scegliete, con il cuore pesante, di ${a}. Il prezzo di questa decisione si farà sentire presto.`,
+    (a)=>`Decidendo di ${a}, non potete fare a meno di pensare a tutto ciò che questa scelta potrebbe costarvi.`,
+    (a)=>`${a[0].toUpperCase()}${a.slice(1)}: la vostra decisione. Ma la storia, fin qui, vi ha insegnato che nulla è mai gratuito.`
   ],
   Eroico: [
-    (a)=>`Senza esitazione, il gruppo decide di ${a}. Il coraggio dimostrato non passa inosservato.`,
-    (a)=>`Il gruppo sceglie con determinazione di ${a}, consapevole che il destino di molti dipende da questa decisione.`
+    (a)=>`Senza esitazione, decidete di ${a}. Il coraggio che dimostrate non passa inosservato.`,
+    (a)=>`Scegliete con determinazione di ${a}, consapevoli che il destino di molti dipende da questa decisione.`,
+    (a)=>`Decidete di ${a}. Chi vi osserva capisce, in quel momento, che siete disposti a pagare qualunque prezzo per fare la cosa giusta.`
   ]
 };
 
 // Testi di prosecuzione dopo la fine di un combattimento
 const integralAfterCombatContinuations = {
   universal: [
-    ()=>`Il combattimento è finito. Il gruppo riprende fiato tra i resti dello scontro, mentre valuta i prossimi passi.`,
-    ()=>`Con i nemici sconfitti, il gruppo si guarda intorno: la minaccia immediata è passata, ma la storia non è finita.`
+    ()=>`Il fragore dello scontro si spegne. Riprendete fiato tra i resti della battaglia, mentre valutate i prossimi passi.`,
+    ()=>`Con i nemici sconfitti, vi guardate intorno: la minaccia immediata è passata, ma la storia è tutt'altro che finita.`,
+    ()=>`Rinfoderate le armi, ancora scossi dall'adrenalina. Il silenzio che segue un combattimento è sempre il più strano.`
   ],
-  Oscuro: [ ()=>`Il combattimento si conclude, ma un senso di inquietudine persiste: la vittoria ha un retrogusto amaro.` ],
-  Misterioso: [ ()=>`Terminato lo scontro, il gruppo nota qualcosa di strano tra i resti della battaglia, un ulteriore enigma da risolvere.` ],
-  Comico: [ ()=>`Lo scontro si conclude tra risate nervose e qualche livido di troppo, ma tutti sono vivi — e questo è già un successo.` ],
-  Tragico: [ ()=>`Il combattimento finisce, ma non senza perdite. Il gruppo si ferma un momento a fare i conti con ciò che è appena accaduto.` ],
-  Eroico: [ ()=>`I nemici giacciono sconfitti. Il gruppo si guadagna un momento di meritato orgoglio prima di rimettersi in marcia.` ]
+  Oscuro: [
+    ()=>`Il combattimento si conclude, ma un senso di inquietudine persiste: la vittoria ha un retrogusto amaro.`,
+    ()=>`I corpi dei nemici giacciono a terra, ma qualcosa in questo silenzio non vi convince: come se la vera minaccia non fosse ancora arrivata.`
+  ],
+  Misterioso: [
+    ()=>`Terminato lo scontro, notate qualcosa di strano tra i resti della battaglia — un ulteriore enigma da risolvere.`,
+    ()=>`Mentre riprendete fiato, uno di voi nota un dettaglio fuori posto tra i nemici caduti, qualcosa che non dovrebbe essere lì.`
+  ],
+  Comico: [
+    ()=>`Lo scontro si conclude tra risate nervose e qualche livido di troppo, ma siete tutti vivi — e questo, di per sé, è già un successo.`,
+    ()=>`Vi rialzate polverosi e ammaccati, discutendo animatamente su chi abbia inferto il colpo di grazia. Nessuno è realmente d'accordo.`
+  ],
+  Tragico: [
+    ()=>`Il combattimento finisce, ma non senza perdite. Vi fermate un momento a fare i conti con ciò che è appena accaduto.`,
+    ()=>`La vittoria, questa volta, sa di cenere. Restate in silenzio, ognuno con i propri pensieri, prima di rimettervi in cammino.`
+  ],
+  Eroico: [
+    ()=>`I nemici giacciono sconfitti. Vi concedete un momento di meritato orgoglio prima di rimettervi in marcia.`,
+    ()=>`Abbassate le armi, ansimanti ma fieri. Chiunque vi abbia visto combattere non dimenticherà presto questo momento.`
+  ]
 };
 
 // Testi di prosecuzione dopo uno step di sola descrizione (pulsante "Avanti")
 const integralAfterDescriptionContinuations = {
   universal: [
-    ()=>`Il gruppo riprende il cammino, pronto ad affrontare ciò che verrà.`,
-    ()=>`Con rinnovata attenzione, il gruppo si rimette in marcia verso il prossimo bivio della storia.`
+    ()=>`Riprendete il cammino, pronti ad affrontare ciò che verrà.`,
+    ()=>`Con rinnovata attenzione, vi rimettete in marcia verso il prossimo bivio della storia.`,
+    ()=>`Vi scambiate un'occhiata d'intesa e proseguite, ognuno pronto a fare la propria parte.`
   ],
-  Oscuro: [ ()=>`Il gruppo avanza con cautela, consapevole che l'oscurità nasconde ancora molto.` ],
-  Misterioso: [ ()=>`Il gruppo prosegue, con più domande che risposte, verso il prossimo indizio.` ],
-  Comico: [ ()=>`Il gruppo si rimette in marcia, certo che il prossimo imprevisto non tarderà ad arrivare.` ],
-  Tragico: [ ()=>`Il gruppo prosegue, portando con sé il peso di quanto già accaduto.` ],
-  Eroico: [ ()=>`Il gruppo riprende il cammino a testa alta, pronto alla prossima prova.` ]
+  Oscuro: [ ()=>`Avanzate con cautela, consapevoli che l'oscurità nasconde ancora molto.` ],
+  Misterioso: [ ()=>`Proseguite con più domande che risposte, verso il prossimo indizio.` ],
+  Comico: [ ()=>`Vi rimettete in marcia, certi che il prossimo imprevisto non tarderà ad arrivare.` ],
+  Tragico: [ ()=>`Proseguite, portando con voi il peso di quanto già accaduto.` ],
+  Eroico: [ ()=>`Riprendete il cammino a testa alta, pronti alla prossima prova.` ]
 };
 
 function generateIntegralContinuationText(tone, setting, chosenText, source){
@@ -7224,44 +7301,109 @@ function generateIntegralContinuationText(tone, setting, chosenText, source){
 
 // Frasi di "riepilogo" della scelta appena fatta, usate come prima riga dello step di sola descrizione
 const integralDescRecap = [
-  (a)=>`Dopo aver scelto di ${a}, il gruppo si trova a fare i conti con le conseguenze dirette di quella decisione.`,
-  (a)=>`La scelta di ${a} ha lasciato il segno, e il gruppo procede ora con questa consapevolezza.`,
-  (a)=>`Avendo deciso di ${a}, il gruppo osserva con attenzione come la situazione si sia evoluta.`
+  (a)=>`Dopo aver scelto di ${a}, vi trovate a fare i conti con le conseguenze dirette di quella decisione.`,
+  (a)=>`La scelta di ${a} ha lasciato il segno, e procedete ora con questa consapevolezza addosso.`,
+  (a)=>`Avendo deciso di ${a}, osservate con attenzione come la situazione si sia evoluta intorno a voi.`,
+  (a)=>`Non c'è modo di tornare indietro, ora che avete scelto di ${a}: non vi resta che affrontarne le conseguenze.`
 ];
 const integralDescRecapFallback = [
-  `Con gli eventi recenti ancora freschi nella memoria, il gruppo riprende il cammino.`,
-  `Dopo quanto accaduto, il gruppo si concede un momento per riorganizzarsi.`
+  `Con gli eventi recenti ancora freschi nella memoria, riprendete il cammino.`,
+  `Dopo quanto accaduto, vi concedete un momento per riorganizzarvi.`,
+  `Vi guardate l'un l'altro in silenzio, prima di rimettervi in marcia.`
 ];
 
-// Seconda riga: atmosfera legata all'ambientazione corrente
+// Seconda riga: atmosfera legata all'ambientazione corrente, in stile "testo di lettura" da DM.
+// Più varianti per ogni ambientazione, così la stessa scena non si ripete sempre identica.
 const integralDescAtmosphere = {
-  'Palude': `La palude intorno continua a ribollire di suoni ovattati e luci fioche che si muovono tra la nebbia.`,
-  'Mare': `Il mare si distende all'orizzonte, indifferente alle sorti di chi lo solca.`,
-  'Montagna': `Il vento gelido tra le rocce porta con sé il rumore lontano di qualcosa che si muove.`,
-  'Bosco': `Gli alberi si stringono intorno al sentiero, come se il bosco stesso trattenesse il respiro.`,
-  'Dungeon': `Le pareti di pietra del dungeon sembrano custodire ancora molti segreti non svelati.`,
-  'Rovine': `Tra le rovine, polvere e macerie raccontano una storia che nessuno ha ancora finito di leggere.`,
-  'Città': `Le strade della città brulicano di voci, sguardi e segreti mai del tutto sussurrati.`
+  'Palude': [
+    `Intorno a voi, la palude continua a ribollire di suoni ovattati e luci fioche che si muovono tra la nebbia.`,
+    `L'acqua stagnante riflette un cielo plumbeo, mentre l'aria si fa pesante di zolfo e vegetazione marcia.`,
+    `Ogni passo affonda nel fango con un risucchio umido, e da qualche parte, tra le canne, qualcosa si muove.`
+  ],
+  'Mare': [
+    `Il mare si distende all'orizzonte, indifferente alle sorti di chi lo solca.`,
+    `Il vento salmastro vi sferza il viso, mentre le onde battono un ritmo costante contro lo scafo o la costa.`,
+    `Gabbiani gridano in lontananza, e l'orizzonte sembra promettere tanto la salvezza quanto il pericolo.`
+  ],
+  'Montagna': [
+    `Il vento gelido tra le rocce porta con sé il rumore lontano di qualcosa che si muove.`,
+    `L'aria rarefatta rende ogni respiro più faticoso, mentre le vette intorno sembrano osservarvi in silenzio.`,
+    `La neve scricchiola sotto i vostri passi, unico suono in un silenzio quasi innaturale.`
+  ],
+  'Bosco': [
+    `Gli alberi si stringono intorno al sentiero, come se il bosco stesso trattenesse il respiro.`,
+    `Foglie e rami filtrano una luce verdastra, mentre suoni indistinti si rincorrono tra i tronchi.`,
+    `Il canto degli uccelli si è fatto stranamente silenzioso, e il bosco sembra trattenere qualcosa.`
+  ],
+  'Dungeon': [
+    `Le pareti di pietra del dungeon sembrano custodire ancora molti segreti non svelati.`,
+    `Le vostre torce proiettano ombre danzanti sulle pareti umide, mentre un gocciolio lontano segna il tempo.`,
+    `L'aria è stantia, carica di polvere antica, e ogni corridoio sembra identico al precedente.`
+  ],
+  'Rovine': [
+    `Tra le rovine, polvere e macerie raccontano una storia che nessuno ha ancora finito di leggere.`,
+    `Colonne spezzate e statue erose vi osservano, testimoni silenziose di una gloria ormai perduta.`,
+    `Il vento fischia tra le crepe delle mura cadute, portando con sé un eco di voci lontane.`
+  ],
+  'Città': [
+    `Le strade della città brulicano di voci, sguardi e segreti mai del tutto sussurrati.`,
+    `Il chiacchiericcio del mercato si mescola all'odore di pane caldo e fumo di camino.`,
+    `Le ombre tra i vicoli sembrano nascondere occhi che vi seguono, anche se nessuno, apparentemente, vi guarda.`
+  ]
 };
-const integralDescAtmosphereFallback = `L'ambiente intorno al gruppo continua a raccontare, a modo suo, la storia in corso.`;
+const integralDescAtmosphereFallback = [
+  `L'ambiente intorno a voi continua a raccontare, a modo suo, la storia in corso.`,
+  `Il mondo intorno a voi prosegue indifferente, mentre la vostra storia continua a scriversi.`
+];
 
-// Terza riga: aggancio verso il prosieguo, legato al tono
+// Terza riga: aggancio verso il prosieguo, legato al tono. Più varianti per tono.
 const integralDescHook = {
-  'Oscuro': `Qualcosa, nell'ombra, sembra osservare ogni passo del gruppo, in attesa del momento giusto.`,
-  'Misterioso': `Un nuovo indizio, ancora incompleto, comincia a delinearsi all'orizzonte.`,
-  'Comico': `E, come sempre, il destino sembra avere in serbo un altro colpo di scena improbabile.`,
-  'Tragico': `Il peso di ciò che è già accaduto continua a gravare su ogni scelta futura.`,
-  'Eroico': `Davanti al gruppo si apre un nuovo capitolo, che richiederà ancora coraggio e determinazione.`
+  'Oscuro': [
+    `Qualcosa, nell'ombra, sembra osservare ogni vostro passo, in attesa del momento giusto.`,
+    `Un brivido freddo vi corre lungo la schiena: non siete soli, ne siete certi.`,
+    `Il presentimento che qualcosa di terribile stia per accadere non vi abbandona.`
+  ],
+  'Misterioso': [
+    `Un nuovo indizio, ancora incompleto, comincia a delinearsi all'orizzonte.`,
+    `Le domande si accumulano più in fretta delle risposte, e sapete che la verità è vicina.`,
+    `Un dettaglio, apparentemente insignificante, continua a tornarvi in mente.`
+  ],
+  'Comico': [
+    `E, come sempre, il destino sembra avere in serbo un altro colpo di scena improbabile.`,
+    `Qualcuno di voi ha già la sensazione che il prossimo passo non andrà esattamente come previsto.`,
+    `Nell'aria aleggia quella strana sensazione di calma prima di un disastro decisamente evitabile.`
+  ],
+  'Tragico': [
+    `Il peso di ciò che è già accaduto continua a gravare su ogni vostra scelta futura.`,
+    `Sapete, in fondo, che il prezzo di questa storia non è stato ancora pagato per intero.`,
+    `Un senso di ineluttabilità vi accompagna, come se il finale fosse già scritto.`
+  ],
+  'Eroico': [
+    `Davanti a voi si apre un nuovo capitolo, che richiederà ancora coraggio e determinazione.`,
+    `Sentite crescere dentro di voi la certezza che le prove più dure sono ancora da affrontare — e siete pronti.`,
+    `Il richiamo del dovere non tace mai a lungo, e già sapete che presto tornerà a farsi sentire.`
+  ]
 };
-const integralDescHookFallback = `Il prossimo passo dell'avventura attende solo di essere compiuto.`;
+const integralDescHookFallback = [
+  `Il prossimo passo dell'avventura attende solo di essere compiuto.`,
+  `Qualcosa, più avanti sul cammino, attende ancora di essere scoperto.`
+];
+
+// Sceglie una riga casuale da un pool associato a una chiave (con ripiego se la chiave non esiste
+// o se il pool è, per compatibilità, una singola stringa anziché un array).
+function pickIntegralLine(pool, key, fallback){
+  const entry = (pool && pool[key]) || fallback;
+  if(Array.isArray(entry)) return entry[Math.floor(Math.random() * entry.length)];
+  return entry;
+}
 
 // Genera 3 righe di descrizione coerenti con tono/ambientazione e con l'ultima scelta fatta
 function generateIntegralDescriptionLines(state, lastActionText){
   const recapLine = lastActionText
     ? integralDescRecap[Math.floor(Math.random() * integralDescRecap.length)](lowerFirstLetter(stripOptionEmoji(lastActionText)))
     : integralDescRecapFallback[Math.floor(Math.random() * integralDescRecapFallback.length)];
-  const atmosphereLine = integralDescAtmosphere[state.setting] || integralDescAtmosphereFallback;
-  const hookLine = integralDescHook[state.tone] || integralDescHookFallback;
+  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
+  const hookLine = pickIntegralLine(integralDescHook, state.tone, integralDescHookFallback);
   return [recapLine, atmosphereLine, hookLine];
 }
 
@@ -7296,7 +7438,7 @@ function generateIntegralAdventureStep(){
       <span class="item-rarity-tag" style="background:var(--blood-bright)22; color:var(--blood-bright); border:1px solid var(--blood-bright)55; margin-left:6px;">${players} giocatori · Lv ${level}</span>
 
       <h4 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin:14px 0 6px; font-size:16px;">Step 1 — L'Inizio</h4>
-      <p style="margin:0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${premise.text}</p>
+      <p style="margin:0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${formatIntegralPremiseText(premise)}</p>
 
       <p style="margin:14px 0 8px; font-weight:700; color:var(--gold-bright); font-size:14px;">Cosa fa il gruppo?</p>
       <div class="integral-adv-options" id="integral-adv-options-list">
@@ -7331,7 +7473,7 @@ function generateIntegralAdventureStep(){
     if(headerCell) headerCell.textContent = `📖 Step 1 — Avventura Integrale`;
     toneSettingCell.textContent = `${premise.tone} · ${premise.setting}`;
     groupCell.textContent = `${players} giocatori · Livello ${level}`;
-    premiseCell.textContent = premise.text;
+    premiseCell.textContent = formatIntegralPremiseText(premise);
     optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
     if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
     combatBox.style.display = 'block';
@@ -7339,6 +7481,13 @@ function generateIntegralAdventureStep(){
 
   closeAdventureGenModal();
   switchView('combat');
+}
+
+// Elimina/nasconde il riquadro dell'avventura integrale nella tab Combattimento e azzera lo stato in corso.
+function deleteIntegralAdventureCombatBox(){
+  const combatBox = document.getElementById('integral-adventure-combat-box');
+  if(combatBox) combatBox.style.display = 'none';
+  integralAdventureState = null;
 }
 
 // Scelta effettuata nel riquadro persistente (tab Combattimento): decide se proseguire la storia
@@ -7362,7 +7511,7 @@ function selectIntegralAdventureOptionCombat(btn, idx){
 
   setTimeout(() => {
     if(chosen.combat){
-      startIntegralCombatEncounter(chosen.text);
+      startIntegralCombatEncounter(chosen.text, chosen.boss || null);
     } else if(wasInitial){
       // Dallo step iniziale (5 opzioni) si passa sempre a uno step con 3 opzioni.
       advanceIntegralAdventureStep(chosen.text, 'choice');
@@ -7373,26 +7522,106 @@ function selectIntegralAdventureOptionCombat(btn, idx){
   }, 350);
 }
 
-// Sceglie automaticamente i nemici dal bestiario in base al numero di giocatori, al loro livello
-// e all'ambientazione corrente, e li aggiunge da solo alla coda di combattimento.
-function startIntegralCombatEncounter(chosenText){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-  state.phase = 'combat';
-  state.combatActive = true;
+// Sceglie 3 opzioni di combattimento (tutte uniche) coerenti con tono/ambientazione: usate allo
+// Step 4, dove ogni scelta deve portare a uno scontro, ciascuna verso un boss diverso.
+function pickIntegralBossOptions(tone, setting){
+  const combatPool = integralAdventureOptions.filter(o => o.combat);
+  const scored = combatPool.map(o => {
+    let score = 0;
+    if(o.tones.includes(tone)) score += 3;
+    if(o.settings.includes(setting)) score += 3;
+    if(o.tones.length === 0 && o.settings.length === 0) score += 1;
+    score += Math.random() * 0.9;
+    return { o, score };
+  });
+  scored.sort((a, b) => b.score - a.score);
 
+  const selected = [];
+  const used = new Set();
+  for(const { o } of scored){
+    if(selected.length >= 3) break;
+    if(used.has(o.text)) continue;
+    used.add(o.text);
+    selected.push({...o});
+  }
+  return selected;
+}
+
+// Sceglie n boss distinti dal bestiario (coerenti con livello del gruppo e ambientazione) da
+// abbinare uno a uno alle opzioni dello Step 4: ogni scelta porterà quindi a un boss diverso.
+function pickDistinctIntegralBosses(state, n){
   const range = getSuggestedCRRange(state.level);
   const areaId = integralSettingToAreaId(state.setting);
 
   let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
     .filter(m => { const v = crToNumber(m.cr); return v >= range.min && v <= range.max; });
   const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
-  if(areaPool.length) pool = areaPool;
-  if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
+  if(areaPool.length >= n) pool = areaPool;
+  else if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
 
-  const monster = pool[Math.floor(Math.random() * pool.length)];
-  const qty = Math.max(1, state.players + (Math.random() < 0.5 ? -1 : 0));
+  let chosen = pickRandomUnique(pool, Math.min(n, pool.length));
+  if(chosen.length < n){
+    const fullPool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
+      .filter(m => !chosen.some(c => c.originalIdx === m.originalIdx));
+    chosen = chosen.concat(pickRandomUnique(fullPool, n - chosen.length));
+  }
+  return chosen;
+}
+
+// Renderizza lo Step 4 del riquadro persistente: solo scelte di combattimento, ognuna abbinata a
+// un boss diverso che verrà affrontato allo Step 5.
+function renderIntegralStep4(state, stepLines){
+  const options = pickIntegralBossOptions(state.tone, state.setting);
+  const bosses = pickDistinctIntegralBosses(state, options.length);
+  options.forEach((opt, i) => { opt.boss = bosses[i] || null; });
+  currentIntegralStepOptions = options;
+
+  const headerCell = document.getElementById('ia-combat-header');
+  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
+  const groupCell = document.getElementById('ia-combat-group');
+  const premiseCell = document.getElementById('ia-combat-premise');
+  const optionsCell = document.getElementById('ia-combat-options');
+  const choiceNote = document.getElementById('ia-combat-choice-note');
+
+  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
+  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
+  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
+  if(premiseCell){
+    const lines = stepLines.concat([`La tensione cresce: lo scontro decisivo sembra ormai imminente.`]);
+    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
+  }
+  if(optionsCell){
+    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
+  }
+  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
+}
+
+// Sceglie automaticamente i nemici dal bestiario in base al numero di giocatori, al loro livello
+// e all'ambientazione corrente, e li aggiunge da solo alla coda di combattimento.
+function startIntegralCombatEncounter(chosenText, forcedBoss){
+  const state = integralAdventureState;
+  if(!state) return;
+  state.step++;
+  state.phase = 'combat';
+  state.combatActive = true;
+
+  let monster, qty;
+  if(forcedBoss){
+    monster = forcedBoss;
+    qty = 1;
+  } else {
+    const range = getSuggestedCRRange(state.level);
+    const areaId = integralSettingToAreaId(state.setting);
+
+    let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
+      .filter(m => { const v = crToNumber(m.cr); return v >= range.min && v <= range.max; });
+    const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
+    if(areaPool.length) pool = areaPool;
+    if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
+
+    monster = pool[Math.floor(Math.random() * pool.length)];
+    qty = Math.max(1, state.players + (Math.random() < 0.5 ? -1 : 0));
+  }
 
   if(monster) addMultipleToCombat(monster.originalIdx, qty);
 
@@ -7408,8 +7637,10 @@ function startIntegralCombatEncounter(chosenText){
   if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
   if(premiseCell){
     premiseCell.textContent = monster
-      ? `Scelta precedente: "${chosenText}". Il gruppo si scontra con ${qty}× ${monster.nome} (CR ${monster.cr})!`
-      : `Scelta precedente: "${chosenText}". Il combattimento è iniziato!`;
+      ? (forcedBoss
+          ? `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Davanti a voi si erge ${monster.nome} (CR ${monster.cr})!`
+          : `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Vi ritrovate a fronteggiare ${qty}× ${monster.nome} (CR ${monster.cr})!`)
+      : `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Il combattimento ha inizio!`;
   }
   if(optionsCell){
     optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="endIntegralCombat()">🏳️ Termina Combattimento</button>`;
@@ -7438,7 +7669,23 @@ function advanceIntegralAdventureStep(chosenText, source){
   state.step++;
   state.phase = 'options';
 
-  const continuationText = generateIntegralContinuationText(state.tone, state.setting, chosenText, source);
+  // Riga 1: cosa è successo in conseguenza della scelta precedente (o della fine del combattimento/step descrittivo)
+  const recapLine = generateIntegralContinuationText(state.tone, state.setting, chosenText, source);
+  // Riga 2: atmosfera legata all'ambientazione corrente
+  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
+  // Riga 3: aggancio verso il prosieguo, legato al tono
+  const hookLine = pickIntegralLine(integralDescHook, state.tone, integralDescHookFallback);
+  const stepLines = [recapLine, atmosphereLine, hookLine];
+
+  if(state.step === 4){
+    renderIntegralStep4(state, stepLines);
+    return;
+  }
+  if(state.step === 6){
+    renderIntegralStep6(state);
+    return;
+  }
+
   const options = pickIntegralOptions(state.tone, state.setting, 3, state.history.join(' '));
   currentIntegralStepOptions = options;
 
@@ -7452,7 +7699,9 @@ function advanceIntegralAdventureStep(chosenText, source){
   if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
   if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
   if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell) premiseCell.textContent = continuationText;
+  if(premiseCell){
+    premiseCell.innerHTML = stepLines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
+  }
   if(optionsCell){
     optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
   }
@@ -7464,9 +7713,20 @@ function goToIntegralDescriptionStep(lastActionText){
   const state = integralAdventureState;
   if(!state) return;
   state.step++;
-  state.phase = 'description';
 
   const lines = generateIntegralDescriptionLines(state, lastActionText);
+
+  if(state.step === 4){
+    state.phase = 'options';
+    renderIntegralStep4(state, lines);
+    return;
+  }
+  if(state.step === 6){
+    renderIntegralStep6(state);
+    return;
+  }
+
+  state.phase = 'description';
   currentIntegralStepOptions = [];
 
   const headerCell = document.getElementById('ia-combat-header');
@@ -7491,6 +7751,166 @@ function goToIntegralDescriptionStep(lastActionText){
 // Pulsante "Avanti" dello step di sola descrizione: riprende con 3 nuove opzioni.
 function continueIntegralAdventureAfterDescription(){
   advanceIntegralAdventureStep(null, 'description');
+}
+
+// Aperture in stile narratore, in base al tono, usate come prima riga dello Step 6.
+const integralStep6Openers = {
+  Oscuro: [
+    `Il buio sembra addensarsi intorno a voi, mentre i ricordi di ciò che avete affrontato riaffiorano, nitidi e pesanti.`,
+    `Un silenzio innaturale scende sul gruppo. Anche l'aria, intorno a voi, sembra trattenere il fiato.`
+  ],
+  Misterioso: [
+    `Ogni indizio, ogni scelta, ogni scontro trovano ora un posto in un disegno più ampio, che comincia finalmente a farsi chiaro.`,
+    `I tasselli sparsi lungo il cammino cominciano, uno dopo l'altro, a comporre un'immagine che non avreste osato immaginare.`
+  ],
+  Comico: [
+    `Vi concedete un respiro — raro momento di calma — per ripensare, tra un sorriso e l'altro, a tutto ciò che è successo finora.`,
+    `Per una volta tanto, nessuno sta correndo, urlando o cadendo da qualche parte. Ne approfittate per tirare il fiato.`
+  ],
+  Tragico: [
+    `Vi fermate un istante. Il peso di ogni scelta, di ogni perdita, si fa sentire più che mai.`,
+    `Nessuno parla per un lungo momento. Alcune ferite, lo sapete bene, non si vedono a occhio nudo.`
+  ],
+  Eroico: [
+    `Ogni prova superata vi ha temprati. Ora, fianco a fianco, vi preparate a ciò che vi attende.`,
+    `Vi guardate negli occhi, l'un l'altro: in quello sguardo c'è tutta la strada percorsa insieme, e tutta quella che resta da fare.`
+  ]
+};
+const integralStep6OpenerFallback = [
+  `Vi fermate un istante, ripercorrendo con la mente il cammino compiuto fin qui.`,
+  `Prendete fiato, consapevoli che la strada percorsa finora è stata solo un preludio.`
+];
+
+// Preannunci variabili dello scontro finale, usati come ultima riga dello Step 6.
+const integralStep6Foreshadows = [
+  `Ora, però, qualcosa cambia. Nell'aria si avverte un presagio inconfondibile: la prova più grande, quella che deciderà il vostro destino, è ormai alle porte. Non ci sarà preavviso, non ci sarà una nuova scelta da compiere: solo il coraggio necessario per affrontare ciò che sta per arrivare.`,
+  `Un silenzio carico di attesa avvolge il gruppo. Sapete, senza che nessuno lo dica ad alta voce, che il momento decisivo è ormai vicino — e che questa volta non ci sarà spazio per esitare.`,
+  `Il vento cambia, o forse è solo la vostra percezione: qualcosa di grande, di terribile, sta per manifestarsi. Non resta che stringere le armi e prepararsi.`
+];
+
+// Costruisce, in stile narratore da tavolo (D&D 2024), un paragrafo di ampio respiro che ripercorre
+// la storia dell'avventura appena vissuta e ne preannuncia lo scontro conclusivo. Non rivela alcuna
+// informazione di sistema (nessun accenno a "step", scelte alternative o meccaniche di generazione).
+function buildIntegralStep6Narration(state){
+  const opener = pickIntegralLine(integralStep6Openers, state.tone, integralStep6OpenerFallback);
+
+  const recapChoices = (state.history || [])
+    .map(h => lowerFirstLetter(stripOptionEmoji(h)))
+    .filter(Boolean);
+
+  let recapPara;
+  if(recapChoices.length){
+    const lastChoices = recapChoices.slice(-3);
+    const joined = lastChoices.length > 1
+      ? lastChoices.slice(0, -1).join(', ') + ' e infine di ' + lastChoices[lastChoices.length - 1]
+      : lastChoices[0];
+    recapPara = `Il vostro cammino è stato segnato da decisioni difficili: dopo aver scelto di ${joined}, ogni passo ha lasciato un segno, portandovi fin qui, tra le trame di un'avventura ${state.tone.toLowerCase()} ambientata tra ${state.setting.toLowerCase()}.`;
+  } else {
+    recapPara = `Avete attraversato prove di ogni genere, in un'avventura ${state.tone.toLowerCase()} ambientata tra ${state.setting.toLowerCase()}, fino a giungere a questo momento.`;
+  }
+
+  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
+
+  const foreshadow = integralStep6Foreshadows[Math.floor(Math.random() * integralStep6Foreshadows.length)];
+
+  return [opener, recapPara, atmosphereLine, foreshadow];
+}
+
+// Step 6: descrizione approfondita in stile narratore, senza opzioni, solo il pulsante "Avanti"
+// che introduce lo scontro finale.
+function renderIntegralStep6(state){
+  state.phase = 'description';
+  currentIntegralStepOptions = [];
+
+  const lines = buildIntegralStep6Narration(state);
+
+  const headerCell = document.getElementById('ia-combat-header');
+  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
+  const groupCell = document.getElementById('ia-combat-group');
+  const premiseCell = document.getElementById('ia-combat-premise');
+  const optionsCell = document.getElementById('ia-combat-options');
+  const choiceNote = document.getElementById('ia-combat-choice-note');
+
+  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
+  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
+  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
+  if(premiseCell){
+    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
+  }
+  if(optionsCell){
+    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="proceedToIntegralFinalBoss()">➡️ Avanti</button>`;
+  }
+  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
+}
+
+// Sceglie il boss dello scontro finale (Step 7): un singolo nemico molto più difficile del normale,
+// calibrato sul livello dei personaggi e sul numero di giocatori impostati a inizio avventura.
+function pickIntegralFinalBoss(state){
+  const areaId = integralSettingToAreaId(state.setting);
+  // Un solo mostro vale, a parità di CR, meno di più mostri con lo stesso budget: per uno scontro
+  // finale duro contro l'intero gruppo si punta quindi a un Grado di Sfida più alto della norma,
+  // che cresce sia con il livello dei personaggi sia con il numero di giocatori al tavolo.
+  const targetCR = state.level + Math.max(2, Math.ceil(state.players / 2) + 1);
+
+  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
+  const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
+  if(areaPool.length) pool = areaPool;
+  if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
+
+  pool.sort((a, b) => {
+    const av = crToNumber(a.cr), bv = crToNumber(b.cr);
+    // Penalizza pesantemente i mostri sotto il CR bersaglio: un boss finale deve essere una vera minaccia.
+    const aScore = av >= targetCR ? (av - targetCR) : (targetCR - av) + 1000;
+    const bScore = bv >= targetCR ? (bv - targetCR) : (targetCR - bv) + 1000;
+    return aScore - bScore;
+  });
+
+  return pool[0] || null;
+}
+
+// Pulsante "Avanti" dello Step 6: avvia lo scontro finale (Step 7) contro il boss selezionato.
+function proceedToIntegralFinalBoss(){
+  const state = integralAdventureState;
+  if(!state) return;
+  state.step++;
+  state.phase = 'combat';
+  state.combatActive = true;
+
+  const boss = pickIntegralFinalBoss(state);
+  if(boss) addMultipleToCombat(boss.originalIdx, 1);
+
+  const headerCell = document.getElementById('ia-combat-header');
+  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
+  const groupCell = document.getElementById('ia-combat-group');
+  const premiseCell = document.getElementById('ia-combat-premise');
+  const optionsCell = document.getElementById('ia-combat-options');
+  const choiceNote = document.getElementById('ia-combat-choice-note');
+
+  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Lo Scontro Finale`;
+  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
+  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
+  if(premiseCell){
+    premiseCell.textContent = boss
+      ? `Il momento è arrivato. Davanti a voi si erge, in tutta la sua minaccia, ${boss.nome} (CR ${boss.cr})! Questo è lo scontro per cui ogni prova finora vi ha preparati.`
+      : `Il momento è arrivato: lo scontro finale ha inizio!`;
+  }
+  if(optionsCell){
+    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="endIntegralFinalBoss()">🏳️ Termina Combattimento</button>`;
+  }
+  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
+
+  currentIntegralStepOptions = [];
+  switchView('combat');
+  renderCombat();
+}
+
+// Chiamata dal pulsante "Termina Combattimento" dello scontro finale (Step 7): chiude e nasconde
+// la tabella dell'avventura integrale, senza generare ulteriori step.
+function endIntegralFinalBoss(){
+  const state = integralAdventureState;
+  if(!state) return;
+  state.combatActive = false;
+  deleteIntegralAdventureCombatBox();
 }
 
 function selectIntegralAdventureOption(btn, idx){
