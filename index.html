@@ -366,6 +366,47 @@ label{font-family:inherit; font-size:12.5px; font-weight:600; letter-spacing:0; 
 }
 .cm-terreni-grid input[type=checkbox]{width:auto; accent-color:var(--gold-bright); cursor:pointer;}
 
+.collapsible-panel{
+  background:var(--panel);
+  border:1px solid var(--panel-line);
+  border-radius:var(--radius-lg);
+  margin-bottom:18px;
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:0 8px 30px rgba(0,0,0,0.35);
+  overflow:hidden;
+}
+.collapsible-panel-head{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:16px 20px;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  font-family:inherit;
+  font-weight:700;
+  font-size:14.5px;
+  color:var(--gold-bright);
+  text-align:left;
+}
+.collapsible-panel-head:hover{background:rgba(255,255,255,0.03);}
+.collapsible-chevron{width:18px; height:18px; flex:none; transition:transform .2s var(--ease); color:var(--gold-bright);}
+.collapsible-panel.collapsed .collapsible-chevron{transform:rotate(-90deg);}
+.collapsible-panel-body{padding:0 20px 20px;}
+.collapsible-panel.collapsed .collapsible-panel-body{display:none;}
+
+.integral-adv-options{display:flex; flex-direction:column; gap:8px;}
+.integral-adv-option-btn{width:100%; text-align:left; justify-content:flex-start;}
+.integral-adv-option-btn.selected{
+  background:var(--gold);
+  border-color:var(--gold-bright);
+  color:var(--ink);
+  box-shadow:0 0 0 2px rgba(122,90,30,0.35);
+}
+
 .weapon-table {
   width: 100%;
   border-collapse: separate;
@@ -1537,54 +1578,64 @@ footer.site{
     </div>
     <div id="bestiary-search-results" class="bestiary-search-results" style="display:none;"></div>
 
-    <div class="gen-controls" style="margin-bottom:14px;">
-      <div class="field" style="max-width:180px;">
-        <label for="party-size">Numero Personaggi</label>
-        <input type="number" id="party-size" value="1" min="1" max="12" oninput="onPartyChange()">
-      </div>
-      <div class="field" style="max-width:180px;">
-        <label for="party-level">Livello del Gruppo</label>
-        <input type="number" id="party-level" value="1" min="1" max="20" oninput="onPartyChange()">
-      </div>
-      <div class="field" style="flex:2; min-width:220px;">
-        <label>Grado Suggerito</label>
-        <div id="party-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--gold-bright);">—</div>
-      </div>
-      <div class="gen-actions">
-        <button class="btn secondary" onclick="applyAutoCR()">🎯 Usa Grado Suggerito</button>
-      </div>
-    </div>
+    <div class="collapsible-panel collapsed" id="bestiary-generator-panel">
+      <button type="button" class="collapsible-panel-head" onclick="toggleBestiaryGeneratorPanel()">
+        <span>⚙️ Generatore Incontri (gruppo, area, grado di sfida...)</span>
+        <svg class="collapsible-chevron" id="bestiary-generator-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
+      <div class="collapsible-panel-body" id="bestiary-generator-body">
 
-    <div class="gen-controls">
-      <div class="field" style="flex:2; min-width:220px;">
-        <label for="bestiary-area-filter">Ambientazione / Terreno</label>
-        <select id="bestiary-area-filter" onchange="onAreaChange()">
-        </select>
-      </div>
-      <div class="field" style="flex:2; min-width:220px;">
-        <label>Nemici Tipici dell'Area</label>
-        <div id="area-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--arcane);">—</div>
-      </div>
-    </div>
+        <div class="gen-controls" style="margin-bottom:14px;">
+          <div class="field" style="max-width:180px;">
+            <label for="party-size">Numero Personaggi</label>
+            <input type="number" id="party-size" value="1" min="1" max="12" oninput="onPartyChange()">
+          </div>
+          <div class="field" style="max-width:180px;">
+            <label for="party-level">Livello del Gruppo</label>
+            <input type="number" id="party-level" value="1" min="1" max="20" oninput="onPartyChange()">
+          </div>
+          <div class="field" style="flex:2; min-width:220px;">
+            <label>Grado Suggerito</label>
+            <div id="party-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--gold-bright);">—</div>
+          </div>
+          <div class="gen-actions">
+            <button class="btn secondary" onclick="applyAutoCR()">🎯 Usa Grado Suggerito</button>
+          </div>
+        </div>
 
-    <div class="gen-controls">
-      <div class="field" style="max-width:150px;">
-        <label for="bestiary-qty">N° Creature da Generare</label>
-        <input type="number" id="bestiary-qty" value="1" min="1" max="30">
-      </div>
-      <div class="field">
-        <label for="bestiary-cr-filter">Grado di Difficoltà (CR)</label>
-        <select id="bestiary-cr-filter" onchange="updateMonsterDropdown()">
-        </select>
-      </div>
-      <div class="field" style="flex:2;">
-        <label for="bestiary-monster-select">Scegli Avversario</label>
-        <select id="bestiary-monster-select">
-        </select>
-      </div>
-      <div class="gen-actions">
-        <button class="btn blood" onclick="generateBestiaryEncounter()">⚔️ Genera Incontro</button>
-        <button class="btn secondary" onclick="generateFullyRandomEncounter()">🎲 Tutto Casuale</button>
+        <div class="gen-controls">
+          <div class="field" style="flex:2; min-width:220px;">
+            <label for="bestiary-area-filter">Ambientazione / Terreno</label>
+            <select id="bestiary-area-filter" onchange="onAreaChange()">
+            </select>
+          </div>
+          <div class="field" style="flex:2; min-width:220px;">
+            <label>Nemici Tipici dell'Area</label>
+            <div id="area-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--arcane);">—</div>
+          </div>
+        </div>
+
+        <div class="gen-controls">
+          <div class="field" style="max-width:150px;">
+            <label for="bestiary-qty">N° Creature da Generare</label>
+            <input type="number" id="bestiary-qty" value="1" min="1" max="30">
+          </div>
+          <div class="field">
+            <label for="bestiary-cr-filter">Grado di Difficoltà (CR)</label>
+            <select id="bestiary-cr-filter" onchange="updateMonsterDropdown()">
+            </select>
+          </div>
+          <div class="field" style="flex:2;">
+            <label for="bestiary-monster-select">Scegli Avversario</label>
+            <select id="bestiary-monster-select">
+            </select>
+          </div>
+          <div class="gen-actions">
+            <button class="btn blood" onclick="generateBestiaryEncounter()">⚔️ Genera Incontro</button>
+            <button class="btn secondary" onclick="generateFullyRandomEncounter()">🎲 Tutto Casuale</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1595,6 +1646,25 @@ footer.site{
   </section>
 
   <section class="view" id="view-combat">
+
+    <div id="integral-adventure-combat-box" style="display:none; margin-bottom:20px; background:linear-gradient(155deg, rgba(198,145,71,0.03), rgba(198,145,71,0) 40%), var(--parchment); border-radius:var(--radius-lg); padding:16px 18px; box-shadow:0 1px 0 rgba(198,145,71,0.15) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(198,145,71,0.15);">
+      <table class="weapon-table" style="width:100%; border-color:var(--panel-line);">
+        <thead>
+          <tr><th id="ia-combat-header" colspan="2" style="background:rgba(198,145,71,0.14); color:var(--gold-bright);">📖 Step 1 — Avventura Integrale</th></tr>
+        </thead>
+        <tbody>
+          <tr><td style="width:160px; font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Tono / Ambientazione</td><td id="ia-combat-tone-setting" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
+          <tr><td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Gruppo</td><td id="ia-combat-group" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
+          <tr><td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Premessa</td><td id="ia-combat-premise" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
+          <tr>
+            <td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Cosa fa il gruppo?</td>
+            <td style="border-color:var(--panel-line);"><div class="integral-adv-options" id="ia-combat-options"></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <p id="ia-combat-choice-note" style="display:none; margin-top:10px; font-size:13.5px; color:var(--arcane);"></p>
+    </div>
+
     <div class="combat-split">
       <div class="combat-left">
         <div class="combat-head">
@@ -1882,8 +1952,28 @@ footer.site{
     </div>
     <div class="sheet-actions" style="margin-top:16px;">
       <button class="btn" type="button" onclick="generateRandomAdventure()">⚄ Genera avventura</button>
+      <button class="btn secondary" type="button" onclick="toggleIntegralAdventurePanel()">📖 Avventura Integrale</button>
     </div>
     <div id="adventure-gen-result" style="margin-top:16px;"></div>
+
+    <div id="integral-adventure-panel" style="display:none; margin-top:18px; padding-top:16px; border-top:1px solid var(--panel-line);">
+      <h3 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin:0 0 4px; font-size:17px;">📖 Avventura Integrale (Oneshot)</h3>
+      <p style="font-size:13.5px; color:var(--text-dim); margin:0 0 14px;">Genera una oneshot completa su misura per il tuo gruppo: indica quanti giocatori parteciperanno e a che livello.</p>
+      <div class="row" style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="field" style="max-width:180px;">
+          <label for="integral-adv-players">Numero Giocatori</label>
+          <input type="number" id="integral-adv-players" value="4" min="1" max="12">
+        </div>
+        <div class="field" style="max-width:180px;">
+          <label for="integral-adv-level">Livello dei Personaggi</label>
+          <input type="number" id="integral-adv-level" value="1" min="1" max="20">
+        </div>
+      </div>
+      <div class="sheet-actions" style="margin-top:16px;">
+        <button class="btn blood" type="button" onclick="generateIntegralAdventureStep()">🧭 Genera Avventura Integrale</button>
+      </div>
+      <div id="integral-adventure-result" style="margin-top:16px;"></div>
+    </div>
   </div>
 </div>
 
@@ -3712,6 +3802,7 @@ function confirmClearSavedState(){
   try{ localStorage.removeItem('diceHistoryPanelCollapsed'); }catch(e){}
   try{ localStorage.removeItem('sheetPanelCollapsed'); }catch(e){}
   try{ localStorage.removeItem('diceRollPanelCollapsed'); }catch(e){}
+  try{ localStorage.removeItem('bestiaryGeneratorPanelCollapsed'); }catch(e){}
 
   currentChar = null;
   roster = [];
@@ -3751,6 +3842,7 @@ function confirmClearSavedState(){
   populateCRFilterOptions();
   updateMonsterDropdown();
   onBestiarySearchInput();
+  applyBestiaryGeneratorPanelState();
   closeModal();
   closeEditModal();
   closeClearDataModal();
@@ -5672,6 +5764,24 @@ function renderRosterSelect(){
   renderInventoryCharSelect();
 }
 
+function toggleBestiaryGeneratorPanel(){
+  const panel = document.getElementById('bestiary-generator-panel');
+  if(!panel) return;
+  panel.classList.toggle('collapsed');
+  try{ localStorage.setItem('bestiaryGeneratorPanelCollapsed', panel.classList.contains('collapsed') ? '1' : '0'); }catch(e){}
+}
+
+function applyBestiaryGeneratorPanelState(){
+  const panel = document.getElementById('bestiary-generator-panel');
+  if(!panel) return;
+  let collapsed = true; // minimizzato di default
+  try{
+    const stored = localStorage.getItem('bestiaryGeneratorPanelCollapsed');
+    if(stored !== null) collapsed = stored === '1';
+  }catch(e){}
+  panel.classList.toggle('collapsed', collapsed);
+}
+
 function toggleDiceRollPanel(){
   const panel = document.getElementById('dice-roll-panel');
   if(!panel) return;
@@ -6915,6 +7025,10 @@ function openAdventureGenModal(){
   const modal = document.getElementById('adventure-gen-modal');
   if(!modal) return;
   modal.classList.add('active');
+  const integralPanel = document.getElementById('integral-adventure-panel');
+  if(integralPanel) integralPanel.style.display = 'none';
+  const integralResult = document.getElementById('integral-adventure-result');
+  if(integralResult) integralResult.innerHTML = '';
 }
 function closeAdventureGenModal(){
   const modal = document.getElementById('adventure-gen-modal');
@@ -6923,6 +7037,478 @@ function closeAdventureGenModal(){
 function closeAdventureGenModalOnBg(event){
   if(event.target && event.target.id === 'adventure-gen-modal') closeAdventureGenModal();
 }
+const integralAdventureOptions = [
+  // Universali: adatte a qualsiasi tono/ambientazione, usate anche come riempimento
+  { text:"⚔️ Affrontare la minaccia a viso aperto", tones:[], settings:[], combat:true, keywords:['minaccia','pericolo','mostro','bestia','creatura'] },
+  { text:"🕵️ Indagare con discrezione prima di agire", tones:[], settings:[], combat:false, keywords:['scompar','misterios','segreto','nascond','indizio','strano'] },
+  { text:"🤝 Cercare un alleato o un informatore locale", tones:[], settings:[], combat:false, keywords:['villaggio','abitanti','testimon','locale','contadini','pescatori'] },
+  { text:"🌒 Muoversi di notte, restando nell'ombra", tones:[], settings:[], combat:false, keywords:['notte','ombra','buio','luna','oscurità'] },
+  { text:"🗣️ Tentare la via della diplomazia", tones:[], settings:[], combat:false, keywords:['culto','setta','magistrato','sacerdote','capo','governa','anziani','consiglio'] },
+  { text:"💰 Offrire denaro o favori per ottenere aiuto", tones:[], settings:[], combat:false, keywords:['mercante','oro','ricompensa','tesoro','patrimonio','moneta','gilda dei mercanti'] },
+  { text:"🏃 Agire in fretta, prima che sia troppo tardi", tones:[], settings:[], combat:false, keywords:['giorni','entro','scompar','tempo','presto','imminente'] },
+  { text:"🔥 Tendere una trappola al nemico", tones:[], settings:[], combat:true, keywords:['predoni','banda','razzia','minaccia','accampamento'] },
+  { text:"📜 Cercare risposte in antichi documenti o leggende locali", tones:[], settings:[], combat:false, keywords:['antico','antica','leggenda','iscrizione','profezia','patto','biblioteca'] },
+  { text:"🚪 Introdursi di nascosto nel luogo del pericolo", tones:[], settings:[], combat:false, keywords:['prigione','laboratorio','fortezza','tempio','santuario','covo'] },
+  { text:"🛡️ Radunare rinforzi prima di intervenire", tones:[], settings:[], combat:false, keywords:['esercito','orda','invasione','drago','armata'] },
+  { text:"🎭 Fingersi qualcun altro per ottenere informazioni", tones:[], settings:[], combat:false, keywords:['nobili','corte','gilda','magistrato','festival','palazzo'] },
+  { text:"🗺️ Esplorare i dintorni in cerca di indizi", tones:[], settings:[], combat:false, keywords:['scompar','tracce','indizio','misterios'] },
+  { text:"⏳ Osservare e aspettare il momento migliore per agire", tones:[], settings:[], combat:false, keywords:['ogni notte','ogni luna','ogni anno','periodicamente','ritual'] },
+  { text:"🧪 Affidarsi alla magia per trovare una soluzione", tones:[], settings:[], combat:false, keywords:['maledizione','incantesim','magia','rituale','stregone','mago','sortilegio'] },
+
+  // Specifiche per tono
+  { text:"🔪 Colpire per primi, senza esitazione", tones:['Oscuro'], settings:[], combat:true },
+  { text:"🩸 Rispondere alla crudeltà con la stessa spietatezza", tones:['Oscuro'], settings:[], combat:true },
+  { text:"🙏 Cercare protezione in un rito o una preghiera disperata", tones:['Oscuro','Tragico'], settings:[], combat:false },
+  { text:"🔍 Studiare ogni indizio prima di muoversi", tones:['Misterioso'], settings:[], combat:false },
+  { text:"❓ Interrogare i testimoni più insoliti", tones:['Misterioso'], settings:[], combat:false },
+  { text:"🌀 Seguire il fenomeno inspiegabile da vicino", tones:['Misterioso'], settings:[], combat:false },
+  { text:"🍺 Proporre un brindisi per rompere il ghiaccio", tones:['Comico'], settings:[], combat:false },
+  { text:"🎪 Improvvisare uno spettacolo per distrarre tutti", tones:['Comico'], settings:[], combat:false },
+  { text:"🐔 Lasciare che sia il caso a decidere", tones:['Comico'], settings:[], combat:false },
+  { text:"🕯️ Onorare la memoria di chi non c'è più", tones:['Tragico'], settings:[], combat:false },
+  { text:"💔 Affrontare il dolore invece di fuggirlo", tones:['Tragico'], settings:[], combat:false },
+  { text:"🤲 Offrire perdono anche quando non è meritato", tones:['Tragico'], settings:[], combat:false },
+  { text:"🛡️ Proteggere gli innocenti a ogni costo", tones:['Eroico'], settings:[], combat:true },
+  { text:"⚡ Guidare la carica in prima linea", tones:['Eroico'], settings:[], combat:true },
+  { text:"🏆 Accettare la sfida a viso scoperto", tones:['Eroico'], settings:[], combat:true },
+
+  // Specifiche per ambientazione
+  { text:"🐊 Muoversi con cautela tra le acque basse", tones:[], settings:['Palude'], combat:false },
+  { text:"🌫️ Seguire i fuochi fatui nella nebbia", tones:[], settings:['Palude'], combat:false },
+  { text:"⛵ Prendere il controllo di un'imbarcazione", tones:[], settings:['Mare'], combat:false },
+  { text:"🌊 Aspettare la marea favorevole prima di agire", tones:[], settings:['Mare'], combat:false },
+  { text:"⛰️ Scalare per raggiungere un punto d'osservazione", tones:[], settings:['Montagna'], combat:false },
+  { text:"❄️ Cercare riparo prima che arrivi la tempesta", tones:[], settings:['Montagna'], combat:false },
+  { text:"🌲 Seguire le tracce tra gli alberi", tones:[], settings:['Bosco'], combat:false },
+  { text:"🍃 Muoversi in silenzio tra il fogliame", tones:[], settings:['Bosco'], combat:false },
+  { text:"🕯️ Illuminare ogni angolo prima di avanzare", tones:[], settings:['Dungeon'], combat:false },
+  { text:"🔑 Cercare un passaggio o un meccanismo segreto", tones:[], settings:['Dungeon'], combat:false },
+  { text:"🏛️ Decifrare le iscrizioni antiche", tones:[], settings:['Rovine'], combat:false },
+  { text:"🪨 Scavare tra le macerie in cerca di indizi", tones:[], settings:['Rovine'], combat:false },
+  { text:"🏘️ Chiedere in giro per le taverne e i mercati", tones:[], settings:['Città'], combat:false },
+  { text:"👮 Rivolgersi alle autorità locali", tones:[], settings:['Città'], combat:false },
+  { text:"🐍 Reagire con forza all'agguato tra le acque torbide", tones:[], settings:['Palude'], combat:true },
+  { text:"🦈 Difendere la nave dall'attacco che emerge dalle onde", tones:[], settings:['Mare'], combat:true },
+  { text:"🐺 Respingere ciò che vi ha teso un'imboscata sul sentiero di montagna", tones:[], settings:['Montagna'], combat:true },
+  { text:"🐗 Difendersi da ciò che si muove tra gli alberi", tones:[], settings:['Bosco'], combat:true },
+  { text:"💀 Scontrarsi con i guardiani del dungeon", tones:[], settings:['Dungeon'], combat:true },
+  { text:"🗡️ Combattere contro ciò che si annida tra le rovine", tones:[], settings:['Rovine'], combat:true },
+  { text:"🔪 Affrontare gli aggressori per le strade della città", tones:[], settings:['Città'], combat:true }
+];
+
+function pickRandomUnique(arr, n){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, n);
+}
+
+// Sceglie n opzioni personalizzate in base a tono, ambientazione e (quando disponibile) al testo
+// della premessa: ogni opzione riceve un punteggio (tono + ambientazione + parole chiave trovate
+// nella premessa), con una piccola componente casuale per variare i risultati tra una generazione
+// e l'altra. Restituisce gli oggetti completi {text, tones, settings, combat, keywords}.
+function pickIntegralOptions(tone, setting, n, premiseText){
+  const normText = normalizeSearchStr(premiseText || '');
+
+  const scored = integralAdventureOptions.map(o => {
+    let score = 0;
+    if(o.tones.includes(tone)) score += 3;
+    if(o.settings.includes(setting)) score += 3;
+    if(o.tones.length === 0 && o.settings.length === 0) score += 1; // le opzioni universali restano comunque in gioco
+    if(normText && Array.isArray(o.keywords) && o.keywords.length){
+      const hit = o.keywords.some(k => normText.includes(normalizeSearchStr(k)));
+      if(hit) score += 4;
+    }
+    score += Math.random() * 0.9; // jitter per variare l'ordine tra opzioni a pari punteggio
+    return { o, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+
+  const selected = [];
+  const used = new Set();
+  for(const { o } of scored){
+    if(selected.length >= n) break;
+    if(used.has(o.text)) continue;
+    used.add(o.text);
+    selected.push(o);
+  }
+  return selected;
+}
+
+// Mappa tra ambientazione della premessa e id area/terreno del bestiario
+function integralSettingToAreaId(setting){
+  const map = {
+    'Bosco':'foresta', 'Città':'citta', 'Dungeon':'dungeon',
+    'Mare':'isola', 'Montagna':'montagna', 'Palude':'palude', 'Rovine':'rovine'
+  };
+  return map[setting] || 'all';
+}
+
+function stripOptionEmoji(text){
+  return String(text || '').replace(/^\S+\s*/, '').trim();
+}
+function lowerFirstLetter(s){
+  return s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+}
+
+// Testi di prosecuzione della storia, personalizzati in base al tono (con ripiego universale)
+const integralContinuations = {
+  universal: [
+    (a)=>`Il gruppo decide di ${a}. Le cose si evolvono rapidamente: emergono nuove informazioni, ma anche nuove complicazioni.`,
+    (a)=>`Dopo aver scelto di ${a}, il gruppo scopre un dettaglio che nessuno si aspettava, capace di cambiare il corso degli eventi.`,
+    (a)=>`La scelta di ${a} porta il gruppo un passo più vicino alla verità, ma non senza conseguenze.`
+  ],
+  Oscuro: [
+    (a)=>`Il gruppo sceglie di ${a}. L'oscurità intorno sembra farsi più densa, come se qualcosa li stesse osservando da vicino.`,
+    (a)=>`Dopo aver deciso di ${a}, un presagio inquietante si manifesta: un segno che il pericolo è più vicino di quanto pensassero.`
+  ],
+  Misterioso: [
+    (a)=>`Il gruppo decide di ${a}, e ciò che scoprono solleva più domande di quante ne risolva.`,
+    (a)=>`Scegliendo di ${a}, il gruppo si imbatte in un indizio inaspettato che non fa che infittire il mistero.`
+  ],
+  Comico: [
+    (a)=>`Il gruppo, con entusiasmo variabile, decide di ${a}. Ovviamente qualcosa va storto in modo esilarante.`,
+    (a)=>`Dopo aver scelto di ${a}, la situazione precipita in una comica serie di equivoci.`
+  ],
+  Tragico: [
+    (a)=>`Il gruppo sceglie, con il cuore pesante, di ${a}. Il prezzo di questa scelta si farà sentire presto.`,
+    (a)=>`Decidendo di ${a}, il gruppo non può fare a meno di pensare a tutto ciò che questa scelta potrebbe costare.`
+  ],
+  Eroico: [
+    (a)=>`Senza esitazione, il gruppo decide di ${a}. Il coraggio dimostrato non passa inosservato.`,
+    (a)=>`Il gruppo sceglie con determinazione di ${a}, consapevole che il destino di molti dipende da questa decisione.`
+  ]
+};
+
+// Testi di prosecuzione dopo la fine di un combattimento
+const integralAfterCombatContinuations = {
+  universal: [
+    ()=>`Il combattimento è finito. Il gruppo riprende fiato tra i resti dello scontro, mentre valuta i prossimi passi.`,
+    ()=>`Con i nemici sconfitti, il gruppo si guarda intorno: la minaccia immediata è passata, ma la storia non è finita.`
+  ],
+  Oscuro: [ ()=>`Il combattimento si conclude, ma un senso di inquietudine persiste: la vittoria ha un retrogusto amaro.` ],
+  Misterioso: [ ()=>`Terminato lo scontro, il gruppo nota qualcosa di strano tra i resti della battaglia, un ulteriore enigma da risolvere.` ],
+  Comico: [ ()=>`Lo scontro si conclude tra risate nervose e qualche livido di troppo, ma tutti sono vivi — e questo è già un successo.` ],
+  Tragico: [ ()=>`Il combattimento finisce, ma non senza perdite. Il gruppo si ferma un momento a fare i conti con ciò che è appena accaduto.` ],
+  Eroico: [ ()=>`I nemici giacciono sconfitti. Il gruppo si guadagna un momento di meritato orgoglio prima di rimettersi in marcia.` ]
+};
+
+// Testi di prosecuzione dopo uno step di sola descrizione (pulsante "Avanti")
+const integralAfterDescriptionContinuations = {
+  universal: [
+    ()=>`Il gruppo riprende il cammino, pronto ad affrontare ciò che verrà.`,
+    ()=>`Con rinnovata attenzione, il gruppo si rimette in marcia verso il prossimo bivio della storia.`
+  ],
+  Oscuro: [ ()=>`Il gruppo avanza con cautela, consapevole che l'oscurità nasconde ancora molto.` ],
+  Misterioso: [ ()=>`Il gruppo prosegue, con più domande che risposte, verso il prossimo indizio.` ],
+  Comico: [ ()=>`Il gruppo si rimette in marcia, certo che il prossimo imprevisto non tarderà ad arrivare.` ],
+  Tragico: [ ()=>`Il gruppo prosegue, portando con sé il peso di quanto già accaduto.` ],
+  Eroico: [ ()=>`Il gruppo riprende il cammino a testa alta, pronto alla prossima prova.` ]
+};
+
+function generateIntegralContinuationText(tone, setting, chosenText, source){
+  const pools = source === 'combat' ? integralAfterCombatContinuations
+    : source === 'description' ? integralAfterDescriptionContinuations
+    : integralContinuations;
+  const specific = pools[tone] || [];
+  const universal = pools.universal || [];
+  const combined = specific.length ? specific.concat(universal) : universal;
+  const template = combined[Math.floor(Math.random() * combined.length)];
+  if(source === 'combat' || source === 'description') return template();
+  const action = lowerFirstLetter(stripOptionEmoji(chosenText));
+  return template(action);
+}
+
+// Frasi di "riepilogo" della scelta appena fatta, usate come prima riga dello step di sola descrizione
+const integralDescRecap = [
+  (a)=>`Dopo aver scelto di ${a}, il gruppo si trova a fare i conti con le conseguenze dirette di quella decisione.`,
+  (a)=>`La scelta di ${a} ha lasciato il segno, e il gruppo procede ora con questa consapevolezza.`,
+  (a)=>`Avendo deciso di ${a}, il gruppo osserva con attenzione come la situazione si sia evoluta.`
+];
+const integralDescRecapFallback = [
+  `Con gli eventi recenti ancora freschi nella memoria, il gruppo riprende il cammino.`,
+  `Dopo quanto accaduto, il gruppo si concede un momento per riorganizzarsi.`
+];
+
+// Seconda riga: atmosfera legata all'ambientazione corrente
+const integralDescAtmosphere = {
+  'Palude': `La palude intorno continua a ribollire di suoni ovattati e luci fioche che si muovono tra la nebbia.`,
+  'Mare': `Il mare si distende all'orizzonte, indifferente alle sorti di chi lo solca.`,
+  'Montagna': `Il vento gelido tra le rocce porta con sé il rumore lontano di qualcosa che si muove.`,
+  'Bosco': `Gli alberi si stringono intorno al sentiero, come se il bosco stesso trattenesse il respiro.`,
+  'Dungeon': `Le pareti di pietra del dungeon sembrano custodire ancora molti segreti non svelati.`,
+  'Rovine': `Tra le rovine, polvere e macerie raccontano una storia che nessuno ha ancora finito di leggere.`,
+  'Città': `Le strade della città brulicano di voci, sguardi e segreti mai del tutto sussurrati.`
+};
+const integralDescAtmosphereFallback = `L'ambiente intorno al gruppo continua a raccontare, a modo suo, la storia in corso.`;
+
+// Terza riga: aggancio verso il prosieguo, legato al tono
+const integralDescHook = {
+  'Oscuro': `Qualcosa, nell'ombra, sembra osservare ogni passo del gruppo, in attesa del momento giusto.`,
+  'Misterioso': `Un nuovo indizio, ancora incompleto, comincia a delinearsi all'orizzonte.`,
+  'Comico': `E, come sempre, il destino sembra avere in serbo un altro colpo di scena improbabile.`,
+  'Tragico': `Il peso di ciò che è già accaduto continua a gravare su ogni scelta futura.`,
+  'Eroico': `Davanti al gruppo si apre un nuovo capitolo, che richiederà ancora coraggio e determinazione.`
+};
+const integralDescHookFallback = `Il prossimo passo dell'avventura attende solo di essere compiuto.`;
+
+// Genera 3 righe di descrizione coerenti con tono/ambientazione e con l'ultima scelta fatta
+function generateIntegralDescriptionLines(state, lastActionText){
+  const recapLine = lastActionText
+    ? integralDescRecap[Math.floor(Math.random() * integralDescRecap.length)](lowerFirstLetter(stripOptionEmoji(lastActionText)))
+    : integralDescRecapFallback[Math.floor(Math.random() * integralDescRecapFallback.length)];
+  const atmosphereLine = integralDescAtmosphere[state.setting] || integralDescAtmosphereFallback;
+  const hookLine = integralDescHook[state.tone] || integralDescHookFallback;
+  return [recapLine, atmosphereLine, hookLine];
+}
+
+// Stato dell'avventura integrale attualmente in corso (tono, ambientazione, gruppo, step, fase, storico scelte)
+let integralAdventureState = null;
+let currentIntegralStepOptions = [];
+
+function generateIntegralAdventureStep(){
+  const toneSel = document.getElementById('adv-gen-tone');
+  const settingSel = document.getElementById('adv-gen-setting');
+  const tone = toneSel ? toneSel.value : 'random';
+  const setting = settingSel ? settingSel.value : 'random';
+  const players = parseInt(document.getElementById('integral-adv-players').value) || 4;
+  const level = parseInt(document.getElementById('integral-adv-level').value) || 1;
+
+  const out = document.getElementById('integral-adventure-result');
+  if(!out) return;
+
+  let pool = adventureHooks.filter(a =>
+    (tone === 'random' || a.tone === tone) &&
+    (setting === 'random' || a.setting === setting)
+  );
+  if(!pool.length) pool = adventureHooks;
+  const premise = pool[Math.floor(Math.random() * pool.length)];
+
+  const options = pickIntegralOptions(premise.tone, premise.setting, 5, premise.text);
+
+  out.innerHTML = `
+    <div class="item-result-card">
+      <span class="item-rarity-tag" style="background:var(--arcane)22; color:var(--arcane); border:1px solid var(--arcane)55;">${premise.tone}</span>
+      <span class="item-rarity-tag" style="background:var(--gold-bright)22; color:var(--gold-bright); border:1px solid var(--gold-bright)55; margin-left:6px;">${premise.setting}</span>
+      <span class="item-rarity-tag" style="background:var(--blood-bright)22; color:var(--blood-bright); border:1px solid var(--blood-bright)55; margin-left:6px;">${players} giocatori · Lv ${level}</span>
+
+      <h4 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin:14px 0 6px; font-size:16px;">Step 1 — L'Inizio</h4>
+      <p style="margin:0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${premise.text}</p>
+
+      <p style="margin:14px 0 8px; font-weight:700; color:var(--gold-bright); font-size:14px;">Cosa fa il gruppo?</p>
+      <div class="integral-adv-options" id="integral-adv-options-list">
+        ${options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn" type="button" onclick="selectIntegralAdventureOption(this, ${i})">${opt.text}</button>`).join('')}
+      </div>
+      <p id="integral-adv-choice-note" style="display:none; margin-top:12px; font-size:13.5px; color:var(--arcane);"></p>
+    </div>
+  `;
+
+  // Inizializza lo stato dell'avventura in corso (usato dal riquadro persistente nella tab Combattimento)
+  integralAdventureState = {
+    tone: premise.tone,
+    setting: premise.setting,
+    players: players,
+    level: level,
+    step: 1,
+    phase: 'initial',
+    combatActive: false,
+    history: []
+  };
+  currentIntegralStepOptions = options;
+
+  const combatBox = document.getElementById('integral-adventure-combat-box');
+  const headerCell = document.getElementById('ia-combat-header');
+  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
+  const groupCell = document.getElementById('ia-combat-group');
+  const premiseCell = document.getElementById('ia-combat-premise');
+  const optionsCell = document.getElementById('ia-combat-options');
+  const choiceNote = document.getElementById('ia-combat-choice-note');
+
+  if(combatBox && toneSettingCell && groupCell && premiseCell && optionsCell){
+    if(headerCell) headerCell.textContent = `📖 Step 1 — Avventura Integrale`;
+    toneSettingCell.textContent = `${premise.tone} · ${premise.setting}`;
+    groupCell.textContent = `${players} giocatori · Livello ${level}`;
+    premiseCell.textContent = premise.text;
+    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
+    if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
+    combatBox.style.display = 'block';
+  }
+
+  closeAdventureGenModal();
+  switchView('combat');
+}
+
+// Scelta effettuata nel riquadro persistente (tab Combattimento): decide se proseguire la storia
+// con un nuovo testo + opzioni, oppure innescare automaticamente un combattimento.
+function selectIntegralAdventureOptionCombat(btn, idx){
+  document.querySelectorAll('.integral-adv-option-btn-combat').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  const chosen = currentIntegralStepOptions[idx];
+  const state = integralAdventureState;
+  if(!chosen || !state) return;
+
+  const note = document.getElementById('ia-combat-choice-note');
+  if(note){
+    note.style.display = 'block';
+    note.textContent = `Scelta registrata: "${chosen.text}"`;
+  }
+
+  state.history.push(chosen.text);
+  const wasInitial = state.phase === 'initial';
+
+  setTimeout(() => {
+    if(chosen.combat){
+      startIntegralCombatEncounter(chosen.text);
+    } else if(wasInitial){
+      // Dallo step iniziale (5 opzioni) si passa sempre a uno step con 3 opzioni.
+      advanceIntegralAdventureStep(chosen.text, 'choice');
+    } else {
+      // Da uno step con 3 opzioni si passa a uno step di sola descrizione, senza opzioni.
+      goToIntegralDescriptionStep(chosen.text);
+    }
+  }, 350);
+}
+
+// Sceglie automaticamente i nemici dal bestiario in base al numero di giocatori, al loro livello
+// e all'ambientazione corrente, e li aggiunge da solo alla coda di combattimento.
+function startIntegralCombatEncounter(chosenText){
+  const state = integralAdventureState;
+  if(!state) return;
+  state.step++;
+  state.phase = 'combat';
+  state.combatActive = true;
+
+  const range = getSuggestedCRRange(state.level);
+  const areaId = integralSettingToAreaId(state.setting);
+
+  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
+    .filter(m => { const v = crToNumber(m.cr); return v >= range.min && v <= range.max; });
+  const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
+  if(areaPool.length) pool = areaPool;
+  if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
+
+  const monster = pool[Math.floor(Math.random() * pool.length)];
+  const qty = Math.max(1, state.players + (Math.random() < 0.5 ? -1 : 0));
+
+  if(monster) addMultipleToCombat(monster.originalIdx, qty);
+
+  const headerCell = document.getElementById('ia-combat-header');
+  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
+  const groupCell = document.getElementById('ia-combat-group');
+  const premiseCell = document.getElementById('ia-combat-premise');
+  const optionsCell = document.getElementById('ia-combat-options');
+  const choiceNote = document.getElementById('ia-combat-choice-note');
+
+  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Combattimento`;
+  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
+  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
+  if(premiseCell){
+    premiseCell.textContent = monster
+      ? `Scelta precedente: "${chosenText}". Il gruppo si scontra con ${qty}× ${monster.nome} (CR ${monster.cr})!`
+      : `Scelta precedente: "${chosenText}". Il combattimento è iniziato!`;
+  }
+  if(optionsCell){
+    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="endIntegralCombat()">🏳️ Termina Combattimento</button>`;
+  }
+  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
+
+  currentIntegralStepOptions = [];
+  switchView('combat');
+  renderCombat();
+}
+
+// Chiamata dal pulsante "Termina Combattimento": chiude lo scontro e genera 3 nuove opzioni.
+function endIntegralCombat(){
+  const state = integralAdventureState;
+  if(!state) return;
+  state.combatActive = false;
+  advanceIntegralAdventureStep(null, 'combat');
+}
+
+// Genera un nuovo testo di prosecuzione e 3 nuove opzioni, coerenti con tono/ambientazione/storia fin qui.
+// source: 'choice' (segue una scelta dello step iniziale), 'combat' (segue la fine di un combattimento),
+// oppure 'description' (segue il pulsante "Avanti" di uno step di sola descrizione).
+function advanceIntegralAdventureStep(chosenText, source){
+  const state = integralAdventureState;
+  if(!state) return;
+  state.step++;
+  state.phase = 'options';
+
+  const continuationText = generateIntegralContinuationText(state.tone, state.setting, chosenText, source);
+  const options = pickIntegralOptions(state.tone, state.setting, 3, state.history.join(' '));
+  currentIntegralStepOptions = options;
+
+  const headerCell = document.getElementById('ia-combat-header');
+  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
+  const groupCell = document.getElementById('ia-combat-group');
+  const premiseCell = document.getElementById('ia-combat-premise');
+  const optionsCell = document.getElementById('ia-combat-options');
+  const choiceNote = document.getElementById('ia-combat-choice-note');
+
+  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
+  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
+  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
+  if(premiseCell) premiseCell.textContent = continuationText;
+  if(optionsCell){
+    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
+  }
+  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
+}
+
+// Step di sola descrizione (almeno 3 righe), senza opzioni: solo il pulsante "Avanti".
+function goToIntegralDescriptionStep(lastActionText){
+  const state = integralAdventureState;
+  if(!state) return;
+  state.step++;
+  state.phase = 'description';
+
+  const lines = generateIntegralDescriptionLines(state, lastActionText);
+  currentIntegralStepOptions = [];
+
+  const headerCell = document.getElementById('ia-combat-header');
+  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
+  const groupCell = document.getElementById('ia-combat-group');
+  const premiseCell = document.getElementById('ia-combat-premise');
+  const optionsCell = document.getElementById('ia-combat-options');
+  const choiceNote = document.getElementById('ia-combat-choice-note');
+
+  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
+  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
+  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
+  if(premiseCell){
+    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
+  }
+  if(optionsCell){
+    optionsCell.innerHTML = `<button class="btn secondary small" type="button" onclick="continueIntegralAdventureAfterDescription()">➡️ Avanti</button>`;
+  }
+  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
+}
+
+// Pulsante "Avanti" dello step di sola descrizione: riprende con 3 nuove opzioni.
+function continueIntegralAdventureAfterDescription(){
+  advanceIntegralAdventureStep(null, 'description');
+}
+
+function selectIntegralAdventureOption(btn, idx){
+  document.querySelectorAll('.integral-adv-option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const note = document.getElementById('integral-adv-choice-note');
+  if(note){
+    note.style.display = 'block';
+    note.textContent = `Scelta registrata: "${btn.textContent.trim()}". Continua nella tab Combattimento, dove l'avventura prosegue passo dopo passo.`;
+  }
+}
+
+function toggleIntegralAdventurePanel(){
+  const panel = document.getElementById('integral-adventure-panel');
+  if(!panel) return;
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
 function generateRandomAdventure(){
   const toneSel = document.getElementById('adv-gen-tone');
   const settingSel = document.getElementById('adv-gen-setting');
@@ -7263,6 +7849,7 @@ safeInit(initDice, 'initDice');
 safeInit(renderDiceHistory, 'renderDiceHistory');
 safeInit(renderCampaignNotes, 'renderCampaignNotes');
 safeInit(initModalScrollLock, 'initModalScrollLock');
+safeInit(applyBestiaryGeneratorPanelState, 'applyBestiaryGeneratorPanelState');
 safeInit(initFullscreenToggle, 'initFullscreenToggle');
 </script>
 </body>
