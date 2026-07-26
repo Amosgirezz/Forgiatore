@@ -6878,36 +6878,10 @@ const rarityColors = {
   "Artefatto": "#d8402f"
 };
 
-// Brevi aperture in stile Dungeon Master, lette come farebbe un narratore dal vivo prima di
-// introdurre la premessa dell'avventura: danno il "la" alla scena, in seconda persona plurale.
-const integralPremiseIntros = {
-  Eroico: [
-    `Il Narratore posa i dadi sul tavolo e comincia:`,
-    `Prendete posto, l'avventura sta per cominciare:`
-  ],
-  Oscuro: [
-    `Le candele tremano mentre il Narratore abbassa la voce:`,
-    `Il Narratore vi guarda negli occhi, serio:`
-  ],
-  Misterioso: [
-    `Il Narratore sorride appena, come chi conosce già la risposta:`,
-    `Il Narratore fa una pausa, per lasciarvi il tempo di intuire:`
-  ],
-  Comico: [
-    `Il Narratore trattiene a stento un sorriso:`,
-    `Con un ghigno poco rassicurante, il Narratore comincia:`
-  ],
-  Tragico: [
-    `Il Narratore fa un lungo respiro prima di iniziare:`,
-    `Con voce pacata, il Narratore vi introduce nella storia:`
-  ]
-};
-const integralPremiseIntroFallback = [`Il Narratore comincia:`];
-
-// Compone la premessa con una breve apertura in stile DM davanti al testo dell'aggancio narrativo.
+// La premessa viene narrata direttamente, senza frasi di cornice tipo "Il Narratore vi guarda
+// negli occhi, serio:" — si entra subito nella scena.
 function formatIntegralPremiseText(premise){
-  const intro = pickIntegralLine(integralPremiseIntros, premise.tone, integralPremiseIntroFallback);
-  return `${intro} ${premise.text}`;
+  return premise.text;
 }
 
 const adventureHooks = [
