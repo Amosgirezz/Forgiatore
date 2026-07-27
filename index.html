@@ -310,103 +310,6 @@ select:focus, input:focus, textarea:focus{outline:none; border-color:var(--gold-
 select option{ background:#1c130c; color:var(--text-main); }
 label{font-family:inherit; font-size:12.5px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--text-dim); display:block; margin-bottom:7px;}
 
-.combat-free-note{
-  width:50%;
-  min-width:220px;
-  min-height:220px;
-  resize:none;
-  overflow:hidden;
-  line-height:1.5;
-  display:block;
-}
-@media (max-width:640px){
-  .combat-free-note{ width:100%; }
-}
-
-.bestiary-search-results{
-  background:var(--panel);
-  border:1px solid var(--panel-line);
-  border-radius:var(--radius-lg);
-  padding:16px 18px;
-  margin-bottom:18px;
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  box-shadow:0 8px 30px rgba(0,0,0,0.35);
-}
-.bestiary-search-results h4{
-  margin:0 0 10px;
-  font-family:inherit;
-  font-weight:700;
-  font-size:13px;
-  color:var(--gold-bright);
-}
-.bestiary-search-list{display:flex; flex-wrap:wrap; gap:8px;}
-.bestiary-search-empty{font-size:14px; color:var(--text-dim); margin:0 0 12px;}
-
-.cm-terreni-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
-  gap:8px 14px;
-  max-height:180px;
-  overflow-y:auto;
-  padding:12px;
-  border:1px solid var(--panel-line);
-  border-radius:var(--radius-sm);
-  background:#1c130c;
-}
-.cm-terreni-grid label{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  font-size:13px;
-  font-weight:500;
-  color:var(--text-main);
-  margin-bottom:0;
-  cursor:pointer;
-}
-.cm-terreni-grid input[type=checkbox]{width:auto; accent-color:var(--gold-bright); cursor:pointer;}
-
-.collapsible-panel{
-  background:var(--panel);
-  border:1px solid var(--panel-line);
-  border-radius:var(--radius-lg);
-  margin-bottom:18px;
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  box-shadow:0 8px 30px rgba(0,0,0,0.35);
-  overflow:hidden;
-}
-.collapsible-panel-head{
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:16px 20px;
-  background:transparent;
-  border:none;
-  cursor:pointer;
-  font-family:inherit;
-  font-weight:700;
-  font-size:14.5px;
-  color:var(--gold-bright);
-  text-align:left;
-}
-.collapsible-panel-head:hover{background:rgba(255,255,255,0.03);}
-.collapsible-chevron{width:18px; height:18px; flex:none; transition:transform .2s var(--ease); color:var(--gold-bright);}
-.collapsible-panel.collapsed .collapsible-chevron{transform:rotate(-90deg);}
-.collapsible-panel-body{padding:0 20px 20px;}
-.collapsible-panel.collapsed .collapsible-panel-body{display:none;}
-
-.integral-adv-options{display:flex; flex-direction:column; gap:8px;}
-.integral-adv-option-btn{width:100%; text-align:left; justify-content:flex-start;}
-.integral-adv-option-btn.selected{
-  background:var(--gold);
-  border-color:var(--gold-bright);
-  color:var(--ink);
-  box-shadow:0 0 0 2px rgba(122,90,30,0.35);
-}
-
 .weapon-table {
   width: 100%;
   border-collapse: separate;
@@ -1013,31 +916,6 @@ label{font-family:inherit; font-size:12.5px; font-weight:600; letter-spacing:0; 
 .add-combatant .field{min-width:120px;}
 .add-combatant .field.grow{flex:2; min-width:180px;}
 
-.notes-card{
-  background:var(--panel);
-  border:1px solid var(--panel-line);
-  border-radius:var(--radius-lg);
-  padding:20px;
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  box-shadow:0 8px 30px rgba(0,0,0,0.35);
-}
-.notes-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px;}
-.note-item{
-  background:var(--panel);
-  border:1px solid var(--panel-line);
-  border-radius:var(--radius);
-  padding:16px 18px;
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  box-shadow:0 6px 22px rgba(0,0,0,0.3);
-}
-.note-item-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:6px;}
-.note-item-title{font-weight:800; color:var(--gold-bright); font-size:16px; margin:0;}
-.note-item-date{font-size:11.5px; color:var(--text-dim); white-space:nowrap; margin-top:2px;}
-.note-item-text{font-size:14px; line-height:1.55; color:var(--text-main); white-space:pre-wrap; margin:0;}
-.note-item-actions{display:flex; gap:8px; margin-top:10px;}
-
 .initiative-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
 .combatant{
   display:grid;
@@ -1276,6 +1154,43 @@ footer.site{
   border-bottom:1px solid var(--panel-line);
   padding-bottom:10px;
 }
+.dice-panel.dice-fullscreen{
+  position:fixed !important;
+  inset:0 !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  max-width:none !important;
+  z-index:9999;
+  border-radius:0;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  padding:22px 22px calc(22px + env(safe-area-inset-bottom,0px));
+}
+.dice-panel.dice-fullscreen .dice-panel-head{
+  flex:0 0 auto;
+}
+.dice-panel.dice-fullscreen .inventory-body{
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+}
+.dice-panel.dice-fullscreen #diceArea{
+  grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)) !important;
+  gap:18px;
+  max-width:900px;
+  margin:0 auto;
+  width:100%;
+}
+.dice-panel.dice-fullscreen .dice-icon{width:88px;height:88px;}
+.dice-panel.dice-fullscreen .dice-icon svg{width:88px;height:88px;}
+body.dice-fullscreen-active{ overflow:hidden; }
+#dice-roll-fullscreen-btn svg{ width:16px; height:16px; }
 #diceArea, #modalDiceArea{
  display:grid !important;
  grid-template-columns:repeat(4, minmax(76px, 1fr));
@@ -1502,7 +1417,6 @@ footer.site{
   <button class="tab-btn active" onclick="switchView('gen')" id="tabbtn-gen">Generatore</button>
   <button class="tab-btn" onclick="switchView('bestiary')" id="tabbtn-bestiary">Avversari</button>
   <button class="tab-btn" onclick="switchView('combat')" id="tabbtn-combat">Combattimento & Dadi</button>
-  <button class="tab-btn" onclick="switchView('notes')" id="tabbtn-notes">Note di Campagna</button>
 </nav>
 
 <main>
@@ -1571,71 +1485,53 @@ footer.site{
   <section class="view" id="view-bestiary">
 
     <div class="gen-controls" style="margin-bottom:14px;">
-      <div class="field" style="flex:2; min-width:260px;">
-        <label for="bestiary-search-input">🔍 Cerca nemico per nome (tra tutti quelli inseriti)</label>
-        <input type="text" id="bestiary-search-input" placeholder="Es. Goblin, Drago, Troll..." oninput="onBestiarySearchInput()" autocomplete="off">
+      <div class="field" style="max-width:180px;">
+        <label for="party-size">Numero Personaggi</label>
+        <input type="number" id="party-size" value="1" min="1" max="12" oninput="onPartyChange()">
+      </div>
+      <div class="field" style="max-width:180px;">
+        <label for="party-level">Livello del Gruppo</label>
+        <input type="number" id="party-level" value="1" min="1" max="20" oninput="onPartyChange()">
+      </div>
+      <div class="field" style="flex:2; min-width:220px;">
+        <label>Grado Suggerito</label>
+        <div id="party-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--gold-bright);">—</div>
+      </div>
+      <div class="gen-actions">
+        <button class="btn secondary" onclick="applyAutoCR()">🎯 Usa Grado Suggerito</button>
       </div>
     </div>
-    <div id="bestiary-search-results" class="bestiary-search-results" style="display:none;"></div>
 
-    <div class="collapsible-panel collapsed" id="bestiary-generator-panel">
-      <button type="button" class="collapsible-panel-head" onclick="toggleBestiaryGeneratorPanel()">
-        <span>⚙️ Generatore Incontri (gruppo, area, grado di sfida...)</span>
-        <svg class="collapsible-chevron" id="bestiary-generator-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </button>
-      <div class="collapsible-panel-body" id="bestiary-generator-body">
+    <div class="gen-controls">
+      <div class="field" style="flex:2; min-width:220px;">
+        <label for="bestiary-area-filter">Ambientazione / Terreno</label>
+        <select id="bestiary-area-filter" onchange="onAreaChange()">
+        </select>
+      </div>
+      <div class="field" style="flex:2; min-width:220px;">
+        <label>Nemici Tipici dell'Area</label>
+        <div id="area-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--arcane);">—</div>
+      </div>
+    </div>
 
-        <div class="gen-controls" style="margin-bottom:14px;">
-          <div class="field" style="max-width:180px;">
-            <label for="party-size">Numero Personaggi</label>
-            <input type="number" id="party-size" value="1" min="1" max="12" oninput="onPartyChange()">
-          </div>
-          <div class="field" style="max-width:180px;">
-            <label for="party-level">Livello del Gruppo</label>
-            <input type="number" id="party-level" value="1" min="1" max="20" oninput="onPartyChange()">
-          </div>
-          <div class="field" style="flex:2; min-width:220px;">
-            <label>Grado Suggerito</label>
-            <div id="party-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--gold-bright);">—</div>
-          </div>
-          <div class="gen-actions">
-            <button class="btn secondary" onclick="applyAutoCR()">🎯 Usa Grado Suggerito</button>
-          </div>
-        </div>
-
-        <div class="gen-controls">
-          <div class="field" style="flex:2; min-width:220px;">
-            <label for="bestiary-area-filter">Ambientazione / Terreno</label>
-            <select id="bestiary-area-filter" onchange="onAreaChange()">
-            </select>
-          </div>
-          <div class="field" style="flex:2; min-width:220px;">
-            <label>Nemici Tipici dell'Area</label>
-            <div id="area-suggestion" style="padding:10px 12px; border:1px solid var(--panel-line); background:var(--bg-alt); border-radius:var(--radius); font-size:14.5px; color:var(--arcane);">—</div>
-          </div>
-        </div>
-
-        <div class="gen-controls">
-          <div class="field" style="max-width:150px;">
-            <label for="bestiary-qty">N° Creature da Generare</label>
-            <input type="number" id="bestiary-qty" value="1" min="1" max="30">
-          </div>
-          <div class="field">
-            <label for="bestiary-cr-filter">Grado di Difficoltà (CR)</label>
-            <select id="bestiary-cr-filter" onchange="updateMonsterDropdown()">
-            </select>
-          </div>
-          <div class="field" style="flex:2;">
-            <label for="bestiary-monster-select">Scegli Avversario</label>
-            <select id="bestiary-monster-select">
-            </select>
-          </div>
-          <div class="gen-actions">
-            <button class="btn blood" onclick="generateBestiaryEncounter()">⚔️ Genera Incontro</button>
-            <button class="btn secondary" onclick="generateFullyRandomEncounter()">🎲 Tutto Casuale</button>
-          </div>
-        </div>
-
+    <div class="gen-controls">
+      <div class="field" style="max-width:150px;">
+        <label for="bestiary-qty">N° Creature da Generare</label>
+        <input type="number" id="bestiary-qty" value="1" min="1" max="30">
+      </div>
+      <div class="field">
+        <label for="bestiary-cr-filter">Grado di Difficoltà (CR)</label>
+        <select id="bestiary-cr-filter" onchange="updateMonsterDropdown()">
+        </select>
+      </div>
+      <div class="field" style="flex:2;">
+        <label for="bestiary-monster-select">Scegli Avversario</label>
+        <select id="bestiary-monster-select">
+        </select>
+      </div>
+      <div class="gen-actions">
+        <button class="btn blood" onclick="generateBestiaryEncounter()">⚔️ Genera Incontro</button>
+        <button class="btn secondary" onclick="generateFullyRandomEncounter()">🎲 Tutto Casuale</button>
       </div>
     </div>
 
@@ -1646,25 +1542,6 @@ footer.site{
   </section>
 
   <section class="view" id="view-combat">
-
-    <div id="integral-adventure-combat-box" style="display:none; margin-bottom:20px; background:linear-gradient(155deg, rgba(198,145,71,0.03), rgba(198,145,71,0) 40%), var(--parchment); border-radius:var(--radius-lg); padding:16px 18px; box-shadow:0 1px 0 rgba(198,145,71,0.15) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(198,145,71,0.15);">
-      <table class="weapon-table" style="width:100%; border-color:var(--panel-line);">
-        <thead>
-          <tr><th colspan="2" style="background:rgba(198,145,71,0.14); color:var(--gold-bright); position:relative; padding-right:36px;"><span id="ia-combat-header">📖 Step 1 — Avventura Integrale</span><button type="button" onclick="deleteIntegralAdventureCombatBox()" title="Elimina" style="position:absolute; top:50%; right:8px; transform:translateY(-50%); background:transparent; border:none; color:var(--gold-bright); font-size:16px; line-height:1; cursor:pointer; padding:4px 6px;">✕</button></th></tr>
-        </thead>
-        <tbody>
-          <tr><td style="width:160px; font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Tono / Ambientazione</td><td id="ia-combat-tone-setting" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
-          <tr><td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Gruppo</td><td id="ia-combat-group" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
-          <tr><td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Premessa</td><td id="ia-combat-premise" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
-          <tr>
-            <td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Cosa fa il gruppo?</td>
-            <td style="border-color:var(--panel-line);"><div class="integral-adv-options" id="ia-combat-options"></div></td>
-          </tr>
-        </tbody>
-      </table>
-      <p id="ia-combat-choice-note" style="display:none; margin-top:10px; font-size:13.5px; color:var(--arcane);"></p>
-    </div>
-
     <div class="combat-split">
       <div class="combat-left">
         <div class="combat-head">
@@ -1718,9 +1595,14 @@ footer.site{
         <div class="dice-panel inventory-panel" id="dice-roll-panel">
           <div class="dice-panel-head">
             <h3>🎲 Lancio Dadi</h3>
-            <button type="button" class="inventory-toggle" id="dice-roll-toggle-btn" onclick="toggleDiceRollPanel()" title="Minimizza/espandi lancio dadi" aria-label="Minimizza/espandi lancio dadi">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button type="button" class="inventory-toggle" id="dice-roll-fullscreen-btn" onclick="toggleDiceRollFullscreen()" title="Schermo intero" aria-label="Schermo intero">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+              </button>
+              <button type="button" class="inventory-toggle" id="dice-roll-toggle-btn" onclick="toggleDiceRollPanel()" title="Minimizza/espandi lancio dadi" aria-label="Minimizza/espandi lancio dadi">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+            </div>
           </div>
           <div class="inventory-body" id="dice-roll-body">
             <div id="diceArea"></div>
@@ -1761,27 +1643,6 @@ footer.site{
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="view" id="view-notes">
-    <div class="notes-card" style="margin-bottom:20px;">
-      <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:20px;">📖 Note di Campagna</h2>
-      <p style="font-size:13px; color:var(--text-dim); margin:0 0 14px;">Annota qui ciò che succede durante le sessioni: eventi, PNG incontrati, decisioni prese, indizi, tesori trovati... tutto ciò che vuoi ricordare per la prossima partita.</p>
-      <div class="field">
-        <label for="new-note-title">Titolo (es. "Sessione 4 — La caduta di Val Nera")</label>
-        <input type="text" id="new-note-title" placeholder="Titolo della nota">
-      </div>
-      <div class="field" style="margin-top:10px;">
-        <label for="new-note-text">Cosa è successo</label>
-        <textarea id="new-note-text" rows="4" placeholder="Scrivi qui gli eventi della sessione..."></textarea>
-      </div>
-      <div class="sheet-actions" style="margin-top:14px;">
-        <button class="btn small" type="button" onclick="addCampaignNote()">➕ Aggiungi nota</button>
-      </div>
-    </div>
-
-    <ul class="notes-list" id="campaign-notes-list"></ul>
-    <div class="empty-state" id="campaign-notes-empty">Nessuna nota di campagna ancora. Scrivi cosa è successo nella tua ultima sessione!</div>
   </section>
 
 </main>
@@ -1952,93 +1813,8 @@ footer.site{
     </div>
     <div class="sheet-actions" style="margin-top:16px;">
       <button class="btn" type="button" onclick="generateRandomAdventure()">⚄ Genera avventura</button>
-      <button class="btn secondary" type="button" onclick="toggleIntegralAdventurePanel()">📖 Avventura Integrale</button>
     </div>
     <div id="adventure-gen-result" style="margin-top:16px;"></div>
-
-    <div id="integral-adventure-panel" style="display:none; margin-top:18px; padding-top:16px; border-top:1px solid var(--panel-line);">
-      <h3 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin:0 0 4px; font-size:17px;">📖 Avventura Integrale (Oneshot)</h3>
-      <p style="font-size:13.5px; color:var(--text-dim); margin:0 0 14px;">Genera una oneshot completa su misura per il tuo gruppo: indica quanti giocatori parteciperanno e a che livello.</p>
-      <div class="row" style="display:flex; gap:12px; flex-wrap:wrap;">
-        <div class="field" style="max-width:180px;">
-          <label for="integral-adv-players">Numero Giocatori</label>
-          <input type="number" id="integral-adv-players" value="4" min="1" max="12">
-        </div>
-        <div class="field" style="max-width:180px;">
-          <label for="integral-adv-level">Livello dei Personaggi</label>
-          <input type="number" id="integral-adv-level" value="1" min="1" max="20">
-        </div>
-      </div>
-      <div class="sheet-actions" style="margin-top:16px;">
-        <button class="btn blood" type="button" onclick="generateIntegralAdventureStep()">🧭 Genera Avventura Integrale</button>
-      </div>
-      <div id="integral-adventure-result" style="margin-top:16px;"></div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="create-monster-modal" onclick="closeCreateMonsterModalOnBg(event)">
-  <div class="modal-card" style="max-width:640px;">
-    <button class="modal-close" onclick="closeCreateMonsterModal()">✕</button>
-    <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:24px;">➕ Crea Nuovo Nemico</h2>
-    <p style="font-size:13.5px; color:var(--text-dim); margin-top:-6px;">Aggiungi un avversario personalizzato al tuo bestiario: resterà salvato e potrai cercarlo e usarlo anche in futuro.</p>
-
-    <div class="row" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;">
-      <div class="field grow" style="flex:2; min-width:220px;">
-        <label for="cm-nome">Nome</label>
-        <input type="text" id="cm-nome" placeholder="Es. Troll delle Nebbie">
-      </div>
-      <div class="field" style="max-width:150px;">
-        <label for="cm-cr">Grado di Sfida (CR)</label>
-        <input type="text" id="cm-cr" placeholder="Es. 1/4, 1, 5">
-      </div>
-    </div>
-
-    <div class="field" style="margin-top:12px;">
-      <label for="cm-tipo">Tipo</label>
-      <input type="text" id="cm-tipo" placeholder="Es. Gigante Grande (Troll)">
-    </div>
-
-    <div class="row" style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
-      <div class="field" style="max-width:110px;">
-        <label for="cm-ca">CA</label>
-        <input type="number" id="cm-ca" value="12" min="0">
-      </div>
-      <div class="field" style="max-width:110px;">
-        <label for="cm-hp">PF</label>
-        <input type="number" id="cm-hp" value="10" min="1">
-      </div>
-      <div class="field" style="max-width:130px;">
-        <label for="cm-vel">Velocità</label>
-        <input type="text" id="cm-vel" value="9m">
-      </div>
-      <div class="field" style="max-width:110px;">
-        <label for="cm-init">Iniziativa (+)</label>
-        <input type="number" id="cm-init" value="0">
-      </div>
-    </div>
-
-    <div class="field" style="margin-top:12px;">
-      <label>Terreni / Ambientazioni tipiche</label>
-      <div id="cm-terreni-checks" class="cm-terreni-grid"></div>
-    </div>
-
-    <div class="field" style="margin-top:12px;">
-      <label for="cm-attacchi">Attacchi e Danni</label>
-      <textarea id="cm-attacchi" rows="3" placeholder="Es. Morso: +4 al tiro, 1d6+2 (5) perforanti."></textarea>
-    </div>
-
-    <div class="field" style="margin-top:12px;">
-      <label for="cm-tratti">Caratteristiche / Tratti</label>
-      <textarea id="cm-tratti" rows="3" placeholder="Es. Rigenerazione: recupera 10 PF all'inizio del turno, a meno che non abbia subito danni da fuoco o acido."></textarea>
-    </div>
-
-    <p id="cm-error" style="display:none; color:var(--blood-bright); font-size:13px; margin-top:10px;"></p>
-
-    <div class="sheet-actions" style="margin-top:16px;">
-      <button class="btn secondary small" type="button" onclick="closeCreateMonsterModal()">Annulla</button>
-      <button class="btn small" type="button" onclick="submitCreateMonster()">✅ Crea e aggiungi al bestiario</button>
-    </div>
   </div>
 </div>
 
@@ -3726,8 +3502,6 @@ let combatants = [];
 let round = 1;
 let turnIndex = 0;
 let combatStarted = false;
-let campaignNotes = [];
-let customMonsters = [];
 
 const SAVE_KEY = "forgiatore_save_v1";
 
@@ -3739,9 +3513,7 @@ function saveState(){
       combatants,
       round,
       turnIndex,
-      combatStarted,
-      campaignNotes,
-      customMonsters
+      combatStarted
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   }catch(e){
@@ -3760,8 +3532,6 @@ function loadState(){
     if(typeof data.round === "number") round = data.round;
     if(typeof data.turnIndex === "number") turnIndex = data.turnIndex;
     if(typeof data.combatStarted === "boolean") combatStarted = data.combatStarted;
-    if(Array.isArray(data.campaignNotes)) campaignNotes = data.campaignNotes;
-    if(Array.isArray(data.customMonsters)) customMonsters = data.customMonsters;
   }catch(e){
     console.warn("Impossibile caricare il salvataggio locale:", e);
   }
@@ -3802,7 +3572,6 @@ function confirmClearSavedState(){
   try{ localStorage.removeItem('diceHistoryPanelCollapsed'); }catch(e){}
   try{ localStorage.removeItem('sheetPanelCollapsed'); }catch(e){}
   try{ localStorage.removeItem('diceRollPanelCollapsed'); }catch(e){}
-  try{ localStorage.removeItem('bestiaryGeneratorPanelCollapsed'); }catch(e){}
 
   currentChar = null;
   roster = [];
@@ -3810,8 +3579,6 @@ function confirmClearSavedState(){
   round = 1;
   turnIndex = 0;
   combatStarted = false;
-  campaignNotes = [];
-  customMonsters = [];
   lastInlineDamage = null;
   lastInlineDamageLabel = '';
   lastInlineDamageBaseHtml = '';
@@ -3838,74 +3605,11 @@ function confirmClearSavedState(){
   renderRosterSelect();
   renderCombat();
   renderDiceHistory();
-  renderCampaignNotes();
-  populateCRFilterOptions();
-  updateMonsterDropdown();
-  onBestiarySearchInput();
-  applyBestiaryGeneratorPanelState();
   closeModal();
   closeEditModal();
   closeClearDataModal();
 
   alert("Tutti i dati salvati sono stati cancellati.");
-}
-
-function formatNoteDate(ts){
-  try{
-    const d = new Date(ts);
-    return d.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'}) + ' · ' + d.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
-  }catch(e){ return ''; }
-}
-
-function addCampaignNote(){
-  const titleEl = document.getElementById('new-note-title');
-  const textEl = document.getElementById('new-note-text');
-  const title = titleEl ? titleEl.value.trim() : '';
-  const text = textEl ? textEl.value.trim() : '';
-  if(!title && !text){
-    if(titleEl) titleEl.focus();
-    return;
-  }
-  campaignNotes.unshift({
-    id: 'note_' + Date.now() + '_' + Math.floor(Math.random()*10000),
-    title: title || 'Senza titolo',
-    text: text,
-    createdAt: Date.now()
-  });
-  if(titleEl) titleEl.value = '';
-  if(textEl) textEl.value = '';
-  saveState();
-  renderCampaignNotes();
-}
-
-function deleteCampaignNote(id){
-  campaignNotes = campaignNotes.filter(n => n.id !== id);
-  saveState();
-  renderCampaignNotes();
-}
-
-function renderCampaignNotes(){
-  const list = document.getElementById('campaign-notes-list');
-  const empty = document.getElementById('campaign-notes-empty');
-  if(!list) return;
-  if(!campaignNotes.length){
-    list.innerHTML = '';
-    if(empty) empty.style.display = 'block';
-    return;
-  }
-  if(empty) empty.style.display = 'none';
-  list.innerHTML = campaignNotes.map(n => `
-    <li class="note-item">
-      <div class="note-item-head">
-        <h3 class="note-item-title">${escHtml(n.title)}</h3>
-        <span class="note-item-date">${escHtml(formatNoteDate(n.createdAt))}</span>
-      </div>
-      ${n.text ? `<p class="note-item-text">${escHtml(n.text)}</p>` : ''}
-      <div class="note-item-actions">
-        <button class="btn secondary small" type="button" onclick="deleteCampaignNote('${n.id}')">🗑 Elimina</button>
-      </div>
-    </li>
-  `).join('');
 }
 
 function exportAppData(){
@@ -3920,9 +3624,7 @@ function exportAppData(){
       round,
       turnIndex,
       combatStarted,
-      diceHistory,
-      campaignNotes,
-      customMonsters
+      diceHistory
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
     const url = URL.createObjectURL(blob);
@@ -3981,8 +3683,6 @@ function applyImportedAppData(data){
   turnIndex = typeof data.turnIndex === "number" ? data.turnIndex : 0;
   combatStarted = typeof data.combatStarted === "boolean" ? data.combatStarted : false;
   diceHistory = Array.isArray(data.diceHistory) ? data.diceHistory : [];
-  campaignNotes = Array.isArray(data.campaignNotes) ? data.campaignNotes : [];
-  customMonsters = Array.isArray(data.customMonsters) ? data.customMonsters : [];
 
   // Azzero ogni stato transitorio della UI: i riferimenti (id combattenti,
   // personaggio in modifica, bersagli selezionati...) appartengono ai dati
@@ -4031,8 +3731,6 @@ function applyImportedAppData(data){
   renderRosterSelect();
   renderCombat();
   renderDiceHistory();
-  renderCampaignNotes();
-  populateCRFilterOptions();
 
   // Il roster importato può cambiare livello/dimensione del gruppo suggerito
   // e la lista mostri disponibili in combattimento: aggiorno anche quelli.
@@ -4341,7 +4039,8 @@ function applyInlineDamageToTarget(){
 }
 
 function goToNextTurn(){
-  if(currentDetailId != null){
+  const noInitiativeRolled = combatants.every(c => c.init === null);
+  if(noInitiativeRolled && currentDetailId != null){
     const attackerIndex = combatants.findIndex(c => c.id === currentDetailId);
     if(attackerIndex !== -1) turnIndex = attackerIndex;
   }
@@ -5363,7 +5062,7 @@ function renderRoster(){
 }
 
 function switchView(view){
-  const views = ['gen', 'bestiary', 'combat', 'notes'];
+  const views = ['gen', 'bestiary', 'combat'];
   views.forEach(v => {
     const vEl = document.getElementById('view-' + v);
     const bEl = document.getElementById('tabbtn-' + v);
@@ -5371,7 +5070,6 @@ function switchView(view){
     if(bEl) bEl.classList.toggle('active', v === view);
   });
   if(view==='combat') renderRosterSelect();
-  if(view==='notes') renderCampaignNotes();
 }
 
 
@@ -5408,167 +5106,9 @@ function monsterMatchesArea(m, areaValue){
   return Array.isArray(m.terreni) && m.terreni.includes(areaValue);
 }
 
-function getAllMonsters(){
-  return BESTIARIO.concat(customMonsters);
-}
-
-function normalizeSearchStr(s){
-  return String(s || '')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-function onBestiarySearchInput(){
-  const input = document.getElementById('bestiary-search-input');
-  const box = document.getElementById('bestiary-search-results');
-  if(!input || !box) return;
-  const query = input.value.trim();
-
-  if(!query){
-    box.style.display = 'none';
-    box.innerHTML = '';
-    return;
-  }
-
-  const nq = normalizeSearchStr(query);
-  const matches = getAllMonsters()
-    .map((m, idx) => ({...m, idx}))
-    .filter(m => normalizeSearchStr(m.nome).includes(nq));
-
-  box.style.display = 'block';
-
-  if(matches.length === 0){
-    box.innerHTML = `
-      <p class="bestiary-search-empty">Nessun nemico chiamato "<b>${escHtml(query)}</b>" trovato nel bestiario.</p>
-      <button class="btn small" type="button" onclick="openCreateMonsterModal('${escAttr(query)}')">➕ Crea "${escHtml(query)}" come nuovo nemico</button>
-    `;
-    return;
-  }
-
-  box.innerHTML = `
-    <h4>Risultati per "${escHtml(query)}" (${matches.length})</h4>
-    <div class="bestiary-search-list">
-      ${matches.map(m => `<button class="btn secondary small" type="button" onclick="selectSearchedMonster(${m.idx})">${escHtml(m.nome)} (CR ${escHtml(String(m.cr))})</button>`).join('')}
-    </div>
-  `;
-}
-
-function selectSearchedMonster(idx){
-  const m = getAllMonsters()[idx];
-  if(!m) return;
-
-  const crSel = document.getElementById('bestiary-cr-filter');
-  if(crSel) crSel.value = 'all';
-  const areaSel = document.getElementById('bestiary-area-filter');
-  if(areaSel) areaSel.value = 'all';
-  onAreaChange();
-
-  const monsterSel = document.getElementById('bestiary-monster-select');
-  if(monsterSel) monsterSel.value = String(idx);
-
-  generateBestiaryEncounter();
-
-  const gridDiv = document.getElementById('bestiary-grid');
-  if(gridDiv) gridDiv.scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-function renderCreateMonsterTerreniChecks(){
-  const box = document.getElementById('cm-terreni-checks');
-  if(!box) return;
-  box.innerHTML = AREE.map(a => `
-    <label><input type="checkbox" class="cm-terreno-check" value="${escAttr(a.id)}"> ${escHtml(a.nome)}</label>
-  `).join('');
-}
-
-function openCreateMonsterModal(prefillName){
-  const modal = document.getElementById('create-monster-modal');
-  if(!modal) return;
-
-  document.getElementById('cm-nome').value = prefillName || '';
-  document.getElementById('cm-cr').value = '';
-  document.getElementById('cm-tipo').value = '';
-  document.getElementById('cm-ca').value = '12';
-  document.getElementById('cm-hp').value = '10';
-  document.getElementById('cm-vel').value = '9m';
-  document.getElementById('cm-init').value = '0';
-  document.getElementById('cm-attacchi').value = '';
-  document.getElementById('cm-tratti').value = '';
-  const err = document.getElementById('cm-error');
-  if(err) err.style.display = 'none';
-
-  renderCreateMonsterTerreniChecks();
-
-  modal.classList.add('active');
-  syncModalScrollLock();
-  setTimeout(()=>document.getElementById('cm-nome').focus(), 50);
-}
-
-function closeCreateMonsterModal(){
-  const modal = document.getElementById('create-monster-modal');
-  if(modal) modal.classList.remove('active');
-  syncModalScrollLock();
-}
-
-function closeCreateMonsterModalOnBg(event){
-  if(event.target && event.target.id === 'create-monster-modal') closeCreateMonsterModal();
-}
-
-function submitCreateMonster(){
-  const nome = document.getElementById('cm-nome').value.trim();
-  const cr = document.getElementById('cm-cr').value.trim();
-  const tipo = document.getElementById('cm-tipo').value.trim();
-  const ca = parseInt(document.getElementById('cm-ca').value) || 10;
-  const hp = parseInt(document.getElementById('cm-hp').value) || 1;
-  const vel = document.getElementById('cm-vel').value.trim() || '9m';
-  const init = parseInt(document.getElementById('cm-init').value) || 0;
-  const attacchi = document.getElementById('cm-attacchi').value.trim();
-  const tratti = document.getElementById('cm-tratti').value.trim();
-  const terreni = Array.from(document.querySelectorAll('.cm-terreno-check:checked')).map(el => el.value);
-
-  const err = document.getElementById('cm-error');
-  if(!nome || !cr){
-    if(err){ err.textContent = 'Nome e Grado di Sfida (CR) sono obbligatori.'; err.style.display = 'block'; }
-    return;
-  }
-
-  const newMonster = {
-    nome,
-    cr,
-    tipo: tipo || 'Personalizzato',
-    terreni,
-    ca, hp, vel, init,
-    attacchi: attacchi || '—',
-    tratti: tratti || '—'
-  };
-
-  customMonsters.push(newMonster);
-  saveState();
-  closeCreateMonsterModal();
-
-  populateCRFilterOptions();
-  const areaSel = document.getElementById('bestiary-area-filter');
-  if(areaSel) areaSel.value = 'all';
-  const crSel = document.getElementById('bestiary-cr-filter');
-  if(crSel) crSel.value = 'all';
-  onAreaChange();
-
-  const newIdx = getAllMonsters().length - 1;
-  const monsterSel = document.getElementById('bestiary-monster-select');
-  if(monsterSel) monsterSel.value = String(newIdx);
-
-  const searchInput = document.getElementById('bestiary-search-input');
-  if(searchInput) searchInput.value = '';
-  const searchBox = document.getElementById('bestiary-search-results');
-  if(searchBox){ searchBox.style.display = 'none'; searchBox.innerHTML = ''; }
-
-  generateBestiaryEncounter();
-  const gridDiv = document.getElementById('bestiary-grid');
-  if(gridDiv) gridDiv.scrollIntoView({behavior:'smooth', block:'start'});
-}
-
 function populateCRFilterOptions(){
   const sel = document.getElementById('bestiary-cr-filter');
-  const uniqueCRs = [...new Set(getAllMonsters().map(m => m.cr))]
+  const uniqueCRs = [...new Set(BESTIARIO.map(m => m.cr))]
     .sort((a,b) => crToNumber(a) - crToNumber(b));
 
   sel.innerHTML = `
@@ -5639,7 +5179,7 @@ function updateMonsterDropdown(){
   const sel = document.getElementById('bestiary-monster-select');
   sel.innerHTML = '<option value="random">🎲 Casuale (tra quelli del filtro scelto)</option>';
 
-  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
+  let pool = BESTIARIO.map((m, originalIdx) => ({...m, originalIdx}))
     .filter(m => monsterMatchesFilter(m, cr) && monsterMatchesArea(m, area));
 
   pool.forEach(m => {
@@ -5669,7 +5209,7 @@ function generateBestiaryEncounter(){
   let idxToSpawn = -1;
 
   if(selectedVal === 'random'){
-    let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
+    let pool = BESTIARIO.map((m, originalIdx) => ({...m, originalIdx}))
       .filter(m => monsterMatchesFilter(m, cr) && monsterMatchesArea(m, area));
     if(pool.length === 0){ alert("Nessun mostro disponibile per questo filtro (Area/CR)."); return; }
     
@@ -5677,7 +5217,7 @@ function generateBestiaryEncounter(){
     idxToSpawn = selectedMonster.originalIdx;
   } else {
     idxToSpawn = parseInt(selectedVal);
-    selectedMonster = getAllMonsters()[idxToSpawn];
+    selectedMonster = BESTIARIO[idxToSpawn];
   }
 
   const areaInfo = AREE.find(a => a.id === area);
@@ -5730,7 +5270,7 @@ function generateBestiaryEncounter(){
 }
 
 function addMultipleToCombat(idx, qty){
-  const m = getAllMonsters()[idx];
+  const m = BESTIARIO[idx];
   if(!m) return;
   for(let i=0; i<qty; i++){
     const suffix = qty > 1 ? ` #${i+1}` : '';
@@ -5764,29 +5304,43 @@ function renderRosterSelect(){
   renderInventoryCharSelect();
 }
 
-function toggleBestiaryGeneratorPanel(){
-  const panel = document.getElementById('bestiary-generator-panel');
-  if(!panel) return;
-  panel.classList.toggle('collapsed');
-  try{ localStorage.setItem('bestiaryGeneratorPanelCollapsed', panel.classList.contains('collapsed') ? '1' : '0'); }catch(e){}
-}
-
-function applyBestiaryGeneratorPanelState(){
-  const panel = document.getElementById('bestiary-generator-panel');
-  if(!panel) return;
-  let collapsed = true; // minimizzato di default
-  try{
-    const stored = localStorage.getItem('bestiaryGeneratorPanelCollapsed');
-    if(stored !== null) collapsed = stored === '1';
-  }catch(e){}
-  panel.classList.toggle('collapsed', collapsed);
-}
-
 function toggleDiceRollPanel(){
   const panel = document.getElementById('dice-roll-panel');
   if(!panel) return;
   panel.classList.toggle('collapsed');
   try{ localStorage.setItem('diceRollPanelCollapsed', panel.classList.contains('collapsed') ? '1' : '0'); }catch(e){}
+}
+
+function toggleDiceRollFullscreen(){
+  const panel = document.getElementById('dice-roll-panel');
+  if(!panel) return;
+  const btn = document.getElementById('dice-roll-fullscreen-btn');
+  const isFs = panel.classList.toggle('dice-fullscreen');
+  if(isFs){
+    panel.classList.remove('collapsed');
+    document.body.classList.add('dice-fullscreen-active');
+    if(btn){
+      btn.title = 'Esci da schermo intero';
+      btn.setAttribute('aria-label','Esci da schermo intero');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+    }
+    document.addEventListener('keydown', diceFullscreenEscHandler);
+  } else {
+    document.body.classList.remove('dice-fullscreen-active');
+    if(btn){
+      btn.title = 'Schermo intero';
+      btn.setAttribute('aria-label','Schermo intero');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+    }
+    document.removeEventListener('keydown', diceFullscreenEscHandler);
+  }
+}
+
+function diceFullscreenEscHandler(e){
+  if(e.key === 'Escape'){
+    const panel = document.getElementById('dice-roll-panel');
+    if(panel && panel.classList.contains('dice-fullscreen')) toggleDiceRollFullscreen();
+  }
 }
 
 function toggleAddCombatantPanel(){
@@ -6470,9 +6024,6 @@ function showDetails(id){
 
       <h4 style="font-family:inherit; font-weight:700; color:var(--gold-bright); margin:12px 0 6px; font-size:13px;">Equipaggiamento Generale</h4>
       <ul style="margin:0 0 14px; padding-left:20px; font-size:15px; color:var(--text-main);">${char.equipaggiamentoGenerale.map(e=>`<li>${e}</li>`).join('')}</ul>
-
-      <h4 style="font-family:inherit; font-weight:700; color:var(--gold-bright); margin:12px 0 6px; font-size:13px;">Note</h4>
-      <textarea id="combat-free-note" class="combat-free-note" rows="10" placeholder="Scrivi qui liberamente qualsiasi appunto su questo personaggio durante il combattimento..." oninput="onCombatFreeNoteInput(this)">${escHtml(char.noteCombattimento || '')}</textarea>
     `;
     detailIsWide = !!tablesHtml;
   } else if(c.refType === 'monster' && c.details){
@@ -6584,24 +6135,6 @@ function showDetails(id){
   document.getElementById('details-modal').classList.add('active');
   document.querySelector('#details-modal .modal-card').classList.toggle('wide', detailIsWide);
   initModalDice();
-  const freeNoteEl = document.getElementById('combat-free-note');
-  if(freeNoteEl) autoGrowInvNotes(freeNoteEl);
-}
-
-function onCombatFreeNoteInput(el){
-  autoGrowInvNotes(el);
-  const c = combatants.find(x => x.id === currentDetailId);
-  if(c && c.details){
-    c.details.noteCombattimento = el.value;
-    if(c.charRefId != null){
-      const rc = roster.find(r => String(r.id) === String(c.charRefId));
-      if(rc) rc.noteCombattimento = el.value;
-      if(currentChar && String(currentChar.id) === String(c.charRefId)){
-        currentChar.noteCombattimento = el.value;
-      }
-    }
-    saveState();
-  }
 }
 
 function initDice(){
@@ -6878,12 +6411,6 @@ const rarityColors = {
   "Artefatto": "#d8402f"
 };
 
-// La premessa viene narrata direttamente, senza frasi di cornice tipo "Il Narratore vi guarda
-// negli occhi, serio:" — si entra subito nella scena.
-function formatIntegralPremiseText(premise){
-  return premise.text;
-}
-
 const adventureHooks = [
   { tone:'Eroico', setting:'Città', text:'Un nobile locale offre una ricompensa a chi scoprirà chi sta sabotando le mura della città prima dell\'imminente assedio.' },
   { tone:'Eroico', setting:'Bosco', text:'Un villaggio di boscaioli chiede aiuto contro un branco di licantropi che rapisce i bambini durante le notti di luna piena.' },
@@ -7024,30 +6551,13 @@ const adventureHooks = [
   { tone:'Tragico', setting:'Mare', text:'Il faro più antico della costa fu costruito da un padre per guidare a casa il figlio marinaio, che non tornò mai: ora il fantasma del padre continua ad accendere la fiamma ogni notte, aspettando.' },
   { tone:'Tragico', setting:'Montagna', text:'Un villaggio di montagna venera ancora l\'eroe che sacrificò la vita per fermare una valanga secoli fa, senza sapere che il vero motivo del disastro fu un errore che lui stesso commise da giovane.' },
   { tone:'Tragico', setting:'Dungeon', text:'Un principe esiliato costruì un dungeon per proteggere il fratello minore da un\'usurpazione, ma il fratello morì comunque, solo, tra le trappole pensate per tenerlo al sicuro.' },
-  { tone:'Tragico', setting:'Bosco', text:'Ritornate nel bosco della vostra infanzia dopo anni, chiamati da una lettera disperata: il villaggio che vi ha cresciuti sta morendo lentamente, e nessuno sa dirvi il perché.' },
-  { tone:'Tragico', setting:'Bosco', text:'Un amico che credevate perduto per sempre vi manda un messaggio dal cuore del bosco: chiede aiuto, ma qualcosa nel tono delle sue parole vi fa temere che sia già troppo tardi.' },
-  { tone:'Comico', setting:'Palude', text:'Vi svegliate in una palude, senza ricordare come ci siete arrivati, mentre uno gnomo eccentrico insiste di avervi "salvati" da un destino che si rifiuta categoricamente di spiegarvi.' },
-  { tone:'Comico', setting:'Rovine', text:'Un mercante ambulante vi vende una mappa che, giura, conduce a un tesoro leggendario tra le rovine vicine: peccato che almeno altre dieci persone vi abbiano già venduto la stessa identica mappa.' },
-  { tone:'Misterioso', setting:'Montagna', text:'Vi vengono affidate delle lettere da consegnare a un eremita sulla montagna, ma ogni volta che provate a leggerne il contenuto, le parole sulla pagina sembrano riorganizzarsi da sole.' },
-  { tone:'Oscuro', setting:'Dungeon', text:'Un mercenario ferito, l\'unico sopravvissuto della sua compagnia, vi supplica di non entrare in un dungeon poco distante: poi, con gli occhi vitrei, aggiunge che è già troppo tardi per lui.' },
-  { tone:'Eroico', setting:'Mare', text:'Siete stati scelti dal consiglio dei porti per guidare una flotta di soccorso verso un\'isola assediata da mostri marini, mentre il tempo stringe e le prime navi cominciano già a non fare più ritorno.' },
-  { tone:'Misterioso', setting:'Città', text:'Ricevete tutti, nella stessa notte, lo stesso identico sogno: una porta chiusa in un quartiere della città che nessuno di voi ha mai visitato prima. Al risveglio, scoprite che quella porta esiste davvero.' },
-  { tone:'Comico', setting:'Dungeon', text:'Un lich particolarmente pignolo governa un dungeon come fosse un\'attività commerciale, e rifiuta di combattere chiunque non abbia prima compilato correttamente il modulo di "richiesta incursione".' },
-  { tone:'Tragico', setting:'Rovine', text:'Tornate sulle rovine dove, anni prima, avete perso un compagno d\'armi: i suoi resti non sono mai stati recuperati, e ora qualcuno — o qualcosa — ha iniziato a usare il suo nome per attirare viaggiatori.' },
-  { tone:'Oscuro', setting:'Palude', text:'Un cacciatore di taglie vi offre denaro per scortarlo nella palude, dove dice di dover regolare un conto in sospeso: solo più tardi scoprirete che il suo bersaglio è già morto da tempo.' },
-  { tone:'Eroico', setting:'Dungeon', text:'Un ordine di paladini decimato vi chiede di completare la missione che li ha quasi annientati: recuperare una reliquia sacra dal cuore di un dungeon prima che finisca in mani sbagliate.' },
-  { tone:'Misterioso', setting:'Palude', text:'Ogni mappa della palude che consultate mostra un sentiero diverso, mai lo stesso due volte, eppure ogni versione sembra ugualmente convinta di essere quella corretta.' },
-  { tone:'Comico', setting:'Montagna', text:'Un gruppo di nani minatori vi assume per scortare un carico "assolutamente non pericoloso" di esplosivi alchemici attraverso un passo di montagna, giurando che "esplodono solo qualche volta".' }
+  { tone:'Tragico', setting:'Rovine', text:'Le rovine di un\'accademia di musica custodiscono lo spartito incompiuto dell\'ultima composizione di un maestro morto prima di poterla terminare, e chi lo trova sente il bisogno irresistibile di finirlo.' }
 ];
 
 function openAdventureGenModal(){
   const modal = document.getElementById('adventure-gen-modal');
   if(!modal) return;
   modal.classList.add('active');
-  const integralPanel = document.getElementById('integral-adventure-panel');
-  if(integralPanel) integralPanel.style.display = 'none';
-  const integralResult = document.getElementById('integral-adventure-result');
-  if(integralResult) integralResult.innerHTML = '';
 }
 function closeAdventureGenModal(){
   const modal = document.getElementById('adventure-gen-modal');
@@ -7056,853 +6566,6 @@ function closeAdventureGenModal(){
 function closeAdventureGenModalOnBg(event){
   if(event.target && event.target.id === 'adventure-gen-modal') closeAdventureGenModal();
 }
-const integralAdventureOptions = [
-  // Universali: adatte a qualsiasi tono/ambientazione, usate anche come riempimento
-  { text:"⚔️ Sguainare le armi e affrontare la minaccia a viso aperto", tones:[], settings:[], combat:true, keywords:['minaccia','pericolo','mostro','bestia','creatura'] },
-  { text:"🕵️ Muoversi con discrezione e indagare prima di agire", tones:[], settings:[], combat:false, keywords:['scompar','misterios','segreto','nascond','indizio','strano'] },
-  { text:"🤝 Cercare un alleato o un informatore tra la gente del posto", tones:[], settings:[], combat:false, keywords:['villaggio','abitanti','testimon','locale','contadini','pescatori'] },
-  { text:"🌒 Approfittare del buio e muoversi restando nell'ombra", tones:[], settings:[], combat:false, keywords:['notte','ombra','buio','luna','oscurità'] },
-  { text:"🗣️ Tentare la via della diplomazia prima che si arrivi allo scontro", tones:[], settings:[], combat:false, keywords:['culto','setta','magistrato','sacerdote','capo','governa','anziani','consiglio'] },
-  { text:"💰 Offrire oro o favori pur di ottenere aiuto", tones:[], settings:[], combat:false, keywords:['mercante','oro','ricompensa','tesoro','patrimonio','moneta','gilda dei mercanti'] },
-  { text:"🏃 Muoversi in fretta, prima che sia troppo tardi", tones:[], settings:[], combat:false, keywords:['giorni','entro','scompar','tempo','presto','imminente'] },
-  { text:"🔥 Tendere un'imboscata al nemico, giocando d'anticipo", tones:[], settings:[], combat:true, keywords:['predoni','banda','razzia','minaccia','accampamento'] },
-  { text:"📜 Cercare risposte tra antichi documenti o leggende locali", tones:[], settings:[], combat:false, keywords:['antico','antica','leggenda','iscrizione','profezia','patto','biblioteca'] },
-  { text:"🚪 Introdursi di nascosto nel cuore del pericolo", tones:[], settings:[], combat:false, keywords:['prigione','laboratorio','fortezza','tempio','santuario','covo'] },
-  { text:"🛡️ Radunare rinforzi prima di intervenire", tones:[], settings:[], combat:false, keywords:['esercito','orda','invasione','drago','armata'] },
-  { text:"🎭 Fingersi qualcun altro per estorcere informazioni", tones:[], settings:[], combat:false, keywords:['nobili','corte','gilda','magistrato','festival','palazzo'] },
-  { text:"🗺️ Battere i dintorni in cerca di indizi", tones:[], settings:[], combat:false, keywords:['scompar','tracce','indizio','misterios'] },
-  { text:"⏳ Restare in attesa, osservando il momento migliore per agire", tones:[], settings:[], combat:false, keywords:['ogni notte','ogni luna','ogni anno','periodicamente','ritual'] },
-  { text:"🧪 Affidarsi alla magia per trovare una soluzione", tones:[], settings:[], combat:false, keywords:['maledizione','incantesim','magia','rituale','stregone','mago','sortilegio'] },
-  { text:"👂 Origliare conversazioni sospette prima di farsi vedere", tones:[], settings:[], combat:false, keywords:['taverna','locanda','mercato','pettegolezz','voci'] },
-  { text:"🩹 Fermarsi a curare le ferite prima di proseguire", tones:[], settings:[], combat:false, keywords:['ferit','sangue','stanchezza','riposo'] },
-  { text:"🎯 Studiare il terreno per scegliere il punto d'attacco migliore", tones:[], settings:[], combat:true, keywords:['imboscata','agguato','trappola','nemici','pattuglia'] },
-
-  // Specifiche per tono
-  { text:"🔪 Colpire per primi, senza dare tregua", tones:['Oscuro'], settings:[], combat:true },
-  { text:"🩸 Rispondere alla crudeltà con la stessa spietatezza", tones:['Oscuro'], settings:[], combat:true },
-  { text:"🙏 Cercare protezione in un rito o in una preghiera disperata", tones:['Oscuro','Tragico'], settings:[], combat:false },
-  { text:"🕸️ Seguire il sussurro nell'oscurità, qualunque cosa costi", tones:['Oscuro'], settings:[], combat:false },
-  { text:"🔍 Studiare ogni indizio con pazienza, prima di muoversi", tones:['Misterioso'], settings:[], combat:false },
-  { text:"❓ Interrogare i testimoni più insoliti", tones:['Misterioso'], settings:[], combat:false },
-  { text:"🌀 Seguire da vicino il fenomeno inspiegabile", tones:['Misterioso'], settings:[], combat:false },
-  { text:"🧩 Mettere insieme i pezzi prima che sia troppo tardi", tones:['Misterioso'], settings:[], combat:false },
-  { text:"🍺 Proporre un brindisi per rompere il ghiaccio", tones:['Comico'], settings:[], combat:false },
-  { text:"🎪 Improvvisare uno spettacolo per distrarre tutti", tones:['Comico'], settings:[], combat:false },
-  { text:"🐔 Lasciare che sia il caso a decidere", tones:['Comico'], settings:[], combat:false },
-  { text:"🎲 Scommettere tutto su un piano decisamente azzardato", tones:['Comico'], settings:[], combat:true },
-  { text:"🕯️ Onorare la memoria di chi non c'è più", tones:['Tragico'], settings:[], combat:false },
-  { text:"💔 Affrontare il dolore invece di fuggirlo", tones:['Tragico'], settings:[], combat:false },
-  { text:"🤲 Offrire perdono anche quando non è meritato", tones:['Tragico'], settings:[], combat:false },
-  { text:"⚰️ Portare a termine ciò che altri non sono riusciti a finire", tones:['Tragico'], settings:[], combat:true },
-  { text:"🛡️ Proteggere gli innocenti a ogni costo", tones:['Eroico'], settings:[], combat:true },
-  { text:"⚡ Guidare la carica in prima linea, senza esitazione", tones:['Eroico'], settings:[], combat:true },
-  { text:"🏆 Accettare la sfida a viso scoperto", tones:['Eroico'], settings:[], combat:true },
-  { text:"📯 Levare un grido di battaglia e dare l'esempio", tones:['Eroico'], settings:[], combat:true },
-
-  // Specifiche per ambientazione
-  { text:"🐊 Avanzare con cautela tra le acque basse della palude", tones:[], settings:['Palude'], combat:false },
-  { text:"🌫️ Seguire i fuochi fatui che danzano nella nebbia", tones:[], settings:['Palude'], combat:false },
-  { text:"⛵ Prendere il controllo di un'imbarcazione", tones:[], settings:['Mare'], combat:false },
-  { text:"🌊 Attendere la marea favorevole prima di agire", tones:[], settings:['Mare'], combat:false },
-  { text:"⛰️ Scalare per raggiungere un punto d'osservazione", tones:[], settings:['Montagna'], combat:false },
-  { text:"❄️ Cercare riparo prima che si scateni la tempesta", tones:[], settings:['Montagna'], combat:false },
-  { text:"🌲 Seguire le tracce tra gli alberi", tones:[], settings:['Bosco'], combat:false },
-  { text:"🍃 Muoversi in silenzio tra il fogliame", tones:[], settings:['Bosco'], combat:false },
-  { text:"🕯️ Illuminare ogni angolo del dungeon prima di avanzare", tones:[], settings:['Dungeon'], combat:false },
-  { text:"🔑 Cercare un passaggio o un meccanismo segreto", tones:[], settings:['Dungeon'], combat:false },
-  { text:"🏛️ Decifrare le iscrizioni incise nella pietra antica", tones:[], settings:['Rovine'], combat:false },
-  { text:"🪨 Scavare tra le macerie in cerca di indizi", tones:[], settings:['Rovine'], combat:false },
-  { text:"🏘️ Chiedere in giro per le taverne e i mercati della città", tones:[], settings:['Città'], combat:false },
-  { text:"👮 Rivolgersi alle autorità locali", tones:[], settings:['Città'], combat:false },
-  { text:"🐍 Reagire con forza all'agguato tra le acque torbide", tones:[], settings:['Palude'], combat:true },
-  { text:"🦈 Difendere la nave dall'attacco che emerge dalle onde", tones:[], settings:['Mare'], combat:true },
-  { text:"🐺 Respingere ciò che vi ha teso un'imboscata sul sentiero di montagna", tones:[], settings:['Montagna'], combat:true },
-  { text:"🐗 Difendersi da ciò che si muove tra gli alberi", tones:[], settings:['Bosco'], combat:true },
-  { text:"💀 Scontrarsi con i guardiani del dungeon", tones:[], settings:['Dungeon'], combat:true },
-  { text:"🗡️ Combattere contro ciò che si annida tra le rovine", tones:[], settings:['Rovine'], combat:true },
-  { text:"🔪 Affrontare gli aggressori per le strade della città", tones:[], settings:['Città'], combat:true }
-];
-
-function pickRandomUnique(arr, n){
-  const copy = [...arr];
-  for(let i = copy.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy.slice(0, n);
-}
-
-// Sceglie n opzioni personalizzate in base a tono, ambientazione e (quando disponibile) al testo
-// della premessa: ogni opzione riceve un punteggio (tono + ambientazione + parole chiave trovate
-// nella premessa), con una piccola componente casuale per variare i risultati tra una generazione
-// e l'altra. Restituisce gli oggetti completi {text, tones, settings, combat, keywords}.
-function pickIntegralOptions(tone, setting, n, premiseText){
-  const normText = normalizeSearchStr(premiseText || '');
-
-  const scored = integralAdventureOptions.map(o => {
-    let score = 0;
-    if(o.tones.includes(tone)) score += 3;
-    if(o.settings.includes(setting)) score += 3;
-    if(o.tones.length === 0 && o.settings.length === 0) score += 1; // le opzioni universali restano comunque in gioco
-    if(normText && Array.isArray(o.keywords) && o.keywords.length){
-      const hit = o.keywords.some(k => normText.includes(normalizeSearchStr(k)));
-      if(hit) score += 4;
-    }
-    score += Math.random() * 0.9; // jitter per variare l'ordine tra opzioni a pari punteggio
-    return { o, score };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
-
-  const selected = [];
-  const used = new Set();
-  for(const { o } of scored){
-    if(selected.length >= n) break;
-    if(used.has(o.text)) continue;
-    used.add(o.text);
-    selected.push(o);
-  }
-  return selected;
-}
-
-// Mappa tra ambientazione della premessa e id area/terreno del bestiario
-function integralSettingToAreaId(setting){
-  const map = {
-    'Bosco':'foresta', 'Città':'citta', 'Dungeon':'dungeon',
-    'Mare':'isola', 'Montagna':'montagna', 'Palude':'palude', 'Rovine':'rovine'
-  };
-  return map[setting] || 'all';
-}
-
-function stripOptionEmoji(text){
-  return String(text || '').replace(/^\S+\s*/, '').trim();
-}
-function lowerFirstLetter(s){
-  return s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
-}
-
-// Testi di prosecuzione della storia, personalizzati in base al tono (con ripiego universale).
-// Scritti in seconda persona plurale, come farebbe un Dungeon Master al tavolo.
-const integralContinuations = {
-  universal: [
-    (a)=>`Decidete di ${a}. Le cose si muovono in fretta: emergono informazioni che non avevate previsto, insieme a nuove complicazioni.`,
-    (a)=>`Non appena scegliete di ${a}, notate un dettaglio che nessuno di voi si aspettava — un dettaglio capace di cambiare il corso degli eventi.`,
-    (a)=>`La vostra scelta di ${a} vi avvicina di un passo alla verità. Ma ogni passo, in questa storia, ha un prezzo.`,
-    (a)=>`Mentre decidete di ${a}, sentite che qualcosa, nell'aria, è cambiato — impercettibile, ma reale.`
-  ],
-  Oscuro: [
-    (a)=>`Scegliete di ${a}. L'oscurità intorno a voi sembra farsi più densa, come se qualcosa vi stesse osservando da vicino.`,
-    (a)=>`Non appena decidete di ${a}, un presagio inquietante si manifesta: un segno che il pericolo è più vicino di quanto pensaste.`,
-    (a)=>`${a[0].toUpperCase()}${a.slice(1)}, dite. Ma il silenzio che segue la vostra decisione è innaturale, carico di attesa.`
-  ],
-  Misterioso: [
-    (a)=>`Decidete di ${a}, e ciò che scoprite solleva più domande di quante ne risolva.`,
-    (a)=>`Scegliendo di ${a}, vi imbattete in un indizio inaspettato che non fa che infittire il mistero.`,
-    (a)=>`Mentre decidete di ${a}, avvertite la sensazione precisa di essere osservati da qualcosa che, finora, si era tenuto in disparte.`
-  ],
-  Comico: [
-    (a)=>`Con entusiasmo variabile, decidete di ${a}. Ovviamente, qualcosa va storto in modo esilarante.`,
-    (a)=>`Non appena scegliete di ${a}, la situazione precipita in una comica serie di equivoci.`,
-    (a)=>`Decidete di ${a} — un piano quasi ragionevole, per i vostri standard. Quasi.`
-  ],
-  Tragico: [
-    (a)=>`Scegliete, con il cuore pesante, di ${a}. Il prezzo di questa decisione si farà sentire presto.`,
-    (a)=>`Decidendo di ${a}, non potete fare a meno di pensare a tutto ciò che questa scelta potrebbe costarvi.`,
-    (a)=>`${a[0].toUpperCase()}${a.slice(1)}: la vostra decisione. Ma la storia, fin qui, vi ha insegnato che nulla è mai gratuito.`
-  ],
-  Eroico: [
-    (a)=>`Senza esitazione, decidete di ${a}. Il coraggio che dimostrate non passa inosservato.`,
-    (a)=>`Scegliete con determinazione di ${a}, consapevoli che il destino di molti dipende da questa decisione.`,
-    (a)=>`Decidete di ${a}. Chi vi osserva capisce, in quel momento, che siete disposti a pagare qualunque prezzo per fare la cosa giusta.`
-  ]
-};
-
-// Testi di prosecuzione dopo la fine di un combattimento
-const integralAfterCombatContinuations = {
-  universal: [
-    ()=>`Il fragore dello scontro si spegne. Riprendete fiato tra i resti della battaglia, mentre valutate i prossimi passi.`,
-    ()=>`Con i nemici sconfitti, vi guardate intorno: la minaccia immediata è passata, ma la storia è tutt'altro che finita.`,
-    ()=>`Rinfoderate le armi, ancora scossi dall'adrenalina. Il silenzio che segue un combattimento è sempre il più strano.`
-  ],
-  Oscuro: [
-    ()=>`Il combattimento si conclude, ma un senso di inquietudine persiste: la vittoria ha un retrogusto amaro.`,
-    ()=>`I corpi dei nemici giacciono a terra, ma qualcosa in questo silenzio non vi convince: come se la vera minaccia non fosse ancora arrivata.`
-  ],
-  Misterioso: [
-    ()=>`Terminato lo scontro, notate qualcosa di strano tra i resti della battaglia — un ulteriore enigma da risolvere.`,
-    ()=>`Mentre riprendete fiato, uno di voi nota un dettaglio fuori posto tra i nemici caduti, qualcosa che non dovrebbe essere lì.`
-  ],
-  Comico: [
-    ()=>`Lo scontro si conclude tra risate nervose e qualche livido di troppo, ma siete tutti vivi — e questo, di per sé, è già un successo.`,
-    ()=>`Vi rialzate polverosi e ammaccati, discutendo animatamente su chi abbia inferto il colpo di grazia. Nessuno è realmente d'accordo.`
-  ],
-  Tragico: [
-    ()=>`Il combattimento finisce, ma non senza perdite. Vi fermate un momento a fare i conti con ciò che è appena accaduto.`,
-    ()=>`La vittoria, questa volta, sa di cenere. Restate in silenzio, ognuno con i propri pensieri, prima di rimettervi in cammino.`
-  ],
-  Eroico: [
-    ()=>`I nemici giacciono sconfitti. Vi concedete un momento di meritato orgoglio prima di rimettervi in marcia.`,
-    ()=>`Abbassate le armi, ansimanti ma fieri. Chiunque vi abbia visto combattere non dimenticherà presto questo momento.`
-  ]
-};
-
-// Testi di prosecuzione dopo uno step di sola descrizione (pulsante "Avanti")
-const integralAfterDescriptionContinuations = {
-  universal: [
-    ()=>`Riprendete il cammino, pronti ad affrontare ciò che verrà.`,
-    ()=>`Con rinnovata attenzione, vi rimettete in marcia verso il prossimo bivio della storia.`,
-    ()=>`Vi scambiate un'occhiata d'intesa e proseguite, ognuno pronto a fare la propria parte.`
-  ],
-  Oscuro: [ ()=>`Avanzate con cautela, consapevoli che l'oscurità nasconde ancora molto.` ],
-  Misterioso: [ ()=>`Proseguite con più domande che risposte, verso il prossimo indizio.` ],
-  Comico: [ ()=>`Vi rimettete in marcia, certi che il prossimo imprevisto non tarderà ad arrivare.` ],
-  Tragico: [ ()=>`Proseguite, portando con voi il peso di quanto già accaduto.` ],
-  Eroico: [ ()=>`Riprendete il cammino a testa alta, pronti alla prossima prova.` ]
-};
-
-function generateIntegralContinuationText(tone, setting, chosenText, source){
-  const pools = source === 'combat' ? integralAfterCombatContinuations
-    : source === 'description' ? integralAfterDescriptionContinuations
-    : integralContinuations;
-  const specific = pools[tone] || [];
-  const universal = pools.universal || [];
-  const combined = specific.length ? specific.concat(universal) : universal;
-  const template = combined[Math.floor(Math.random() * combined.length)];
-  if(source === 'combat' || source === 'description') return template();
-  const action = lowerFirstLetter(stripOptionEmoji(chosenText));
-  return template(action);
-}
-
-// Frasi di "riepilogo" della scelta appena fatta, usate come prima riga dello step di sola descrizione
-const integralDescRecap = [
-  (a)=>`Dopo aver scelto di ${a}, vi trovate a fare i conti con le conseguenze dirette di quella decisione.`,
-  (a)=>`La scelta di ${a} ha lasciato il segno, e procedete ora con questa consapevolezza addosso.`,
-  (a)=>`Avendo deciso di ${a}, osservate con attenzione come la situazione si sia evoluta intorno a voi.`,
-  (a)=>`Non c'è modo di tornare indietro, ora che avete scelto di ${a}: non vi resta che affrontarne le conseguenze.`
-];
-const integralDescRecapFallback = [
-  `Con gli eventi recenti ancora freschi nella memoria, riprendete il cammino.`,
-  `Dopo quanto accaduto, vi concedete un momento per riorganizzarvi.`,
-  `Vi guardate l'un l'altro in silenzio, prima di rimettervi in marcia.`
-];
-
-// Seconda riga: atmosfera legata all'ambientazione corrente, in stile "testo di lettura" da DM.
-// Più varianti per ogni ambientazione, così la stessa scena non si ripete sempre identica.
-const integralDescAtmosphere = {
-  'Palude': [
-    `Intorno a voi, la palude continua a ribollire di suoni ovattati e luci fioche che si muovono tra la nebbia.`,
-    `L'acqua stagnante riflette un cielo plumbeo, mentre l'aria si fa pesante di zolfo e vegetazione marcia.`,
-    `Ogni passo affonda nel fango con un risucchio umido, e da qualche parte, tra le canne, qualcosa si muove.`
-  ],
-  'Mare': [
-    `Il mare si distende all'orizzonte, indifferente alle sorti di chi lo solca.`,
-    `Il vento salmastro vi sferza il viso, mentre le onde battono un ritmo costante contro lo scafo o la costa.`,
-    `Gabbiani gridano in lontananza, e l'orizzonte sembra promettere tanto la salvezza quanto il pericolo.`
-  ],
-  'Montagna': [
-    `Il vento gelido tra le rocce porta con sé il rumore lontano di qualcosa che si muove.`,
-    `L'aria rarefatta rende ogni respiro più faticoso, mentre le vette intorno sembrano osservarvi in silenzio.`,
-    `La neve scricchiola sotto i vostri passi, unico suono in un silenzio quasi innaturale.`
-  ],
-  'Bosco': [
-    `Gli alberi si stringono intorno al sentiero, come se il bosco stesso trattenesse il respiro.`,
-    `Foglie e rami filtrano una luce verdastra, mentre suoni indistinti si rincorrono tra i tronchi.`,
-    `Il canto degli uccelli si è fatto stranamente silenzioso, e il bosco sembra trattenere qualcosa.`
-  ],
-  'Dungeon': [
-    `Le pareti di pietra del dungeon sembrano custodire ancora molti segreti non svelati.`,
-    `Le vostre torce proiettano ombre danzanti sulle pareti umide, mentre un gocciolio lontano segna il tempo.`,
-    `L'aria è stantia, carica di polvere antica, e ogni corridoio sembra identico al precedente.`
-  ],
-  'Rovine': [
-    `Tra le rovine, polvere e macerie raccontano una storia che nessuno ha ancora finito di leggere.`,
-    `Colonne spezzate e statue erose vi osservano, testimoni silenziose di una gloria ormai perduta.`,
-    `Il vento fischia tra le crepe delle mura cadute, portando con sé un eco di voci lontane.`
-  ],
-  'Città': [
-    `Le strade della città brulicano di voci, sguardi e segreti mai del tutto sussurrati.`,
-    `Il chiacchiericcio del mercato si mescola all'odore di pane caldo e fumo di camino.`,
-    `Le ombre tra i vicoli sembrano nascondere occhi che vi seguono, anche se nessuno, apparentemente, vi guarda.`
-  ]
-};
-const integralDescAtmosphereFallback = [
-  `L'ambiente intorno a voi continua a raccontare, a modo suo, la storia in corso.`,
-  `Il mondo intorno a voi prosegue indifferente, mentre la vostra storia continua a scriversi.`
-];
-
-// Terza riga: aggancio verso il prosieguo, legato al tono. Più varianti per tono.
-const integralDescHook = {
-  'Oscuro': [
-    `Qualcosa, nell'ombra, sembra osservare ogni vostro passo, in attesa del momento giusto.`,
-    `Un brivido freddo vi corre lungo la schiena: non siete soli, ne siete certi.`,
-    `Il presentimento che qualcosa di terribile stia per accadere non vi abbandona.`
-  ],
-  'Misterioso': [
-    `Un nuovo indizio, ancora incompleto, comincia a delinearsi all'orizzonte.`,
-    `Le domande si accumulano più in fretta delle risposte, e sapete che la verità è vicina.`,
-    `Un dettaglio, apparentemente insignificante, continua a tornarvi in mente.`
-  ],
-  'Comico': [
-    `E, come sempre, il destino sembra avere in serbo un altro colpo di scena improbabile.`,
-    `Qualcuno di voi ha già la sensazione che il prossimo passo non andrà esattamente come previsto.`,
-    `Nell'aria aleggia quella strana sensazione di calma prima di un disastro decisamente evitabile.`
-  ],
-  'Tragico': [
-    `Il peso di ciò che è già accaduto continua a gravare su ogni vostra scelta futura.`,
-    `Sapete, in fondo, che il prezzo di questa storia non è stato ancora pagato per intero.`,
-    `Un senso di ineluttabilità vi accompagna, come se il finale fosse già scritto.`
-  ],
-  'Eroico': [
-    `Davanti a voi si apre un nuovo capitolo, che richiederà ancora coraggio e determinazione.`,
-    `Sentite crescere dentro di voi la certezza che le prove più dure sono ancora da affrontare — e siete pronti.`,
-    `Il richiamo del dovere non tace mai a lungo, e già sapete che presto tornerà a farsi sentire.`
-  ]
-};
-const integralDescHookFallback = [
-  `Il prossimo passo dell'avventura attende solo di essere compiuto.`,
-  `Qualcosa, più avanti sul cammino, attende ancora di essere scoperto.`
-];
-
-// Sceglie una riga casuale da un pool associato a una chiave (con ripiego se la chiave non esiste
-// o se il pool è, per compatibilità, una singola stringa anziché un array).
-function pickIntegralLine(pool, key, fallback){
-  const entry = (pool && pool[key]) || fallback;
-  if(Array.isArray(entry)) return entry[Math.floor(Math.random() * entry.length)];
-  return entry;
-}
-
-// Genera 3 righe di descrizione coerenti con tono/ambientazione e con l'ultima scelta fatta
-function generateIntegralDescriptionLines(state, lastActionText){
-  const recapLine = lastActionText
-    ? integralDescRecap[Math.floor(Math.random() * integralDescRecap.length)](lowerFirstLetter(stripOptionEmoji(lastActionText)))
-    : integralDescRecapFallback[Math.floor(Math.random() * integralDescRecapFallback.length)];
-  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
-  const hookLine = pickIntegralLine(integralDescHook, state.tone, integralDescHookFallback);
-  return [recapLine, atmosphereLine, hookLine];
-}
-
-// Stato dell'avventura integrale attualmente in corso (tono, ambientazione, gruppo, step, fase, storico scelte)
-let integralAdventureState = null;
-let currentIntegralStepOptions = [];
-
-function generateIntegralAdventureStep(){
-  const toneSel = document.getElementById('adv-gen-tone');
-  const settingSel = document.getElementById('adv-gen-setting');
-  const tone = toneSel ? toneSel.value : 'random';
-  const setting = settingSel ? settingSel.value : 'random';
-  const players = parseInt(document.getElementById('integral-adv-players').value) || 4;
-  const level = parseInt(document.getElementById('integral-adv-level').value) || 1;
-
-  const out = document.getElementById('integral-adventure-result');
-  if(!out) return;
-
-  let pool = adventureHooks.filter(a =>
-    (tone === 'random' || a.tone === tone) &&
-    (setting === 'random' || a.setting === setting)
-  );
-  if(!pool.length) pool = adventureHooks;
-  const premise = pool[Math.floor(Math.random() * pool.length)];
-
-  const options = pickIntegralOptions(premise.tone, premise.setting, 5, premise.text);
-
-  out.innerHTML = `
-    <div class="item-result-card">
-      <span class="item-rarity-tag" style="background:var(--arcane)22; color:var(--arcane); border:1px solid var(--arcane)55;">${premise.tone}</span>
-      <span class="item-rarity-tag" style="background:var(--gold-bright)22; color:var(--gold-bright); border:1px solid var(--gold-bright)55; margin-left:6px;">${premise.setting}</span>
-      <span class="item-rarity-tag" style="background:var(--blood-bright)22; color:var(--blood-bright); border:1px solid var(--blood-bright)55; margin-left:6px;">${players} giocatori · Lv ${level}</span>
-
-      <h4 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin:14px 0 6px; font-size:16px;">Step 1 — L'Inizio</h4>
-      <p style="margin:0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${formatIntegralPremiseText(premise)}</p>
-
-      <p style="margin:14px 0 8px; font-weight:700; color:var(--gold-bright); font-size:14px;">Cosa fa il gruppo?</p>
-      <div class="integral-adv-options" id="integral-adv-options-list">
-        ${options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn" type="button" onclick="selectIntegralAdventureOption(this, ${i})">${opt.text}</button>`).join('')}
-      </div>
-      <p id="integral-adv-choice-note" style="display:none; margin-top:12px; font-size:13.5px; color:var(--arcane);"></p>
-    </div>
-  `;
-
-  // Inizializza lo stato dell'avventura in corso (usato dal riquadro persistente nella tab Combattimento)
-  integralAdventureState = {
-    tone: premise.tone,
-    setting: premise.setting,
-    players: players,
-    level: level,
-    step: 1,
-    phase: 'initial',
-    combatActive: false,
-    history: []
-  };
-  currentIntegralStepOptions = options;
-
-  const combatBox = document.getElementById('integral-adventure-combat-box');
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(combatBox && toneSettingCell && groupCell && premiseCell && optionsCell){
-    if(headerCell) headerCell.textContent = `📖 Step 1 — Avventura Integrale`;
-    toneSettingCell.textContent = `${premise.tone} · ${premise.setting}`;
-    groupCell.textContent = `${players} giocatori · Livello ${level}`;
-    premiseCell.textContent = formatIntegralPremiseText(premise);
-    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
-    if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-    combatBox.style.display = 'block';
-  }
-
-  closeAdventureGenModal();
-  switchView('combat');
-}
-
-// Elimina/nasconde il riquadro dell'avventura integrale nella tab Combattimento e azzera lo stato in corso.
-function deleteIntegralAdventureCombatBox(){
-  const combatBox = document.getElementById('integral-adventure-combat-box');
-  if(combatBox) combatBox.style.display = 'none';
-  integralAdventureState = null;
-}
-
-// Scelta effettuata nel riquadro persistente (tab Combattimento): decide se proseguire la storia
-// con un nuovo testo + opzioni, oppure innescare automaticamente un combattimento.
-function selectIntegralAdventureOptionCombat(btn, idx){
-  document.querySelectorAll('.integral-adv-option-btn-combat').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-
-  const chosen = currentIntegralStepOptions[idx];
-  const state = integralAdventureState;
-  if(!chosen || !state) return;
-
-  const note = document.getElementById('ia-combat-choice-note');
-  if(note){
-    note.style.display = 'block';
-    note.textContent = `Scelta registrata: "${chosen.text}"`;
-  }
-
-  state.history.push(chosen.text);
-  const wasInitial = state.phase === 'initial';
-
-  setTimeout(() => {
-    if(chosen.combat){
-      startIntegralCombatEncounter(chosen.text, chosen.boss || null);
-    } else if(wasInitial){
-      // Dallo step iniziale (5 opzioni) si passa sempre a uno step con 3 opzioni.
-      advanceIntegralAdventureStep(chosen.text, 'choice');
-    } else {
-      // Da uno step con 3 opzioni si passa a uno step di sola descrizione, senza opzioni.
-      goToIntegralDescriptionStep(chosen.text);
-    }
-  }, 350);
-}
-
-// Sceglie 3 opzioni di combattimento (tutte uniche) coerenti con tono/ambientazione: usate allo
-// Step 4, dove ogni scelta deve portare a uno scontro, ciascuna verso un boss diverso.
-function pickIntegralBossOptions(tone, setting){
-  const combatPool = integralAdventureOptions.filter(o => o.combat);
-  const scored = combatPool.map(o => {
-    let score = 0;
-    if(o.tones.includes(tone)) score += 3;
-    if(o.settings.includes(setting)) score += 3;
-    if(o.tones.length === 0 && o.settings.length === 0) score += 1;
-    score += Math.random() * 0.9;
-    return { o, score };
-  });
-  scored.sort((a, b) => b.score - a.score);
-
-  const selected = [];
-  const used = new Set();
-  for(const { o } of scored){
-    if(selected.length >= 3) break;
-    if(used.has(o.text)) continue;
-    used.add(o.text);
-    selected.push({...o});
-  }
-  return selected;
-}
-
-// Sceglie n boss distinti dal bestiario (coerenti con livello del gruppo e ambientazione) da
-// abbinare uno a uno alle opzioni dello Step 4: ogni scelta porterà quindi a un boss diverso.
-function pickDistinctIntegralBosses(state, n){
-  const range = getSuggestedCRRange(state.level);
-  const areaId = integralSettingToAreaId(state.setting);
-
-  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
-    .filter(m => { const v = crToNumber(m.cr); return v >= range.min && v <= range.max; });
-  const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
-  if(areaPool.length >= n) pool = areaPool;
-  else if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-
-  let chosen = pickRandomUnique(pool, Math.min(n, pool.length));
-  if(chosen.length < n){
-    const fullPool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
-      .filter(m => !chosen.some(c => c.originalIdx === m.originalIdx));
-    chosen = chosen.concat(pickRandomUnique(fullPool, n - chosen.length));
-  }
-  return chosen;
-}
-
-// Renderizza lo Step 4 del riquadro persistente: solo scelte di combattimento, ognuna abbinata a
-// un boss diverso che verrà affrontato allo Step 5.
-function renderIntegralStep4(state, stepLines){
-  const options = pickIntegralBossOptions(state.tone, state.setting);
-  const bosses = pickDistinctIntegralBosses(state, options.length);
-  options.forEach((opt, i) => { opt.boss = bosses[i] || null; });
-  currentIntegralStepOptions = options;
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    const lines = stepLines.concat([`La tensione cresce: lo scontro decisivo sembra ormai imminente.`]);
-    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Sceglie automaticamente i nemici dal bestiario in base al numero di giocatori, al loro livello
-// e all'ambientazione corrente, e li aggiunge da solo alla coda di combattimento.
-function startIntegralCombatEncounter(chosenText, forcedBoss){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-  state.phase = 'combat';
-  state.combatActive = true;
-
-  let monster, qty;
-  if(forcedBoss){
-    monster = forcedBoss;
-    qty = 1;
-  } else {
-    const range = getSuggestedCRRange(state.level);
-    const areaId = integralSettingToAreaId(state.setting);
-
-    let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
-      .filter(m => { const v = crToNumber(m.cr); return v >= range.min && v <= range.max; });
-    const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
-    if(areaPool.length) pool = areaPool;
-    if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-
-    monster = pool[Math.floor(Math.random() * pool.length)];
-    qty = Math.max(1, state.players + (Math.random() < 0.5 ? -1 : 0));
-  }
-
-  if(monster) addMultipleToCombat(monster.originalIdx, qty);
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Combattimento`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.textContent = monster
-      ? (forcedBoss
-          ? `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Davanti a voi si erge ${monster.nome} (CR ${monster.cr})!`
-          : `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Vi ritrovate a fronteggiare ${qty}× ${monster.nome} (CR ${monster.cr})!`)
-      : `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Il combattimento ha inizio!`;
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="endIntegralCombat()">🏳️ Termina Combattimento</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-
-  currentIntegralStepOptions = [];
-  switchView('combat');
-  renderCombat();
-}
-
-// Chiamata dal pulsante "Termina Combattimento": chiude lo scontro e genera 3 nuove opzioni.
-function endIntegralCombat(){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.combatActive = false;
-  advanceIntegralAdventureStep(null, 'combat');
-}
-
-// Genera un nuovo testo di prosecuzione e 3 nuove opzioni, coerenti con tono/ambientazione/storia fin qui.
-// source: 'choice' (segue una scelta dello step iniziale), 'combat' (segue la fine di un combattimento),
-// oppure 'description' (segue il pulsante "Avanti" di uno step di sola descrizione).
-function advanceIntegralAdventureStep(chosenText, source){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-  state.phase = 'options';
-
-  // Riga 1: cosa è successo in conseguenza della scelta precedente (o della fine del combattimento/step descrittivo)
-  const recapLine = generateIntegralContinuationText(state.tone, state.setting, chosenText, source);
-  // Riga 2: atmosfera legata all'ambientazione corrente
-  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
-  // Riga 3: aggancio verso il prosieguo, legato al tono
-  const hookLine = pickIntegralLine(integralDescHook, state.tone, integralDescHookFallback);
-  const stepLines = [recapLine, atmosphereLine, hookLine];
-
-  if(state.step === 4){
-    renderIntegralStep4(state, stepLines);
-    return;
-  }
-  if(state.step === 6){
-    renderIntegralStep6(state);
-    return;
-  }
-
-  const options = pickIntegralOptions(state.tone, state.setting, 3, state.history.join(' '));
-  currentIntegralStepOptions = options;
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.innerHTML = stepLines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Step di sola descrizione (almeno 3 righe), senza opzioni: solo il pulsante "Avanti".
-function goToIntegralDescriptionStep(lastActionText){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-
-  const lines = generateIntegralDescriptionLines(state, lastActionText);
-
-  if(state.step === 4){
-    state.phase = 'options';
-    renderIntegralStep4(state, lines);
-    return;
-  }
-  if(state.step === 6){
-    renderIntegralStep6(state);
-    return;
-  }
-
-  state.phase = 'description';
-  currentIntegralStepOptions = [];
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn secondary small" type="button" onclick="continueIntegralAdventureAfterDescription()">➡️ Avanti</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Pulsante "Avanti" dello step di sola descrizione: riprende con 3 nuove opzioni.
-function continueIntegralAdventureAfterDescription(){
-  advanceIntegralAdventureStep(null, 'description');
-}
-
-// Aperture in stile narratore, in base al tono, usate come prima riga dello Step 6.
-const integralStep6Openers = {
-  Oscuro: [
-    `Il buio sembra addensarsi intorno a voi, mentre i ricordi di ciò che avete affrontato riaffiorano, nitidi e pesanti.`,
-    `Un silenzio innaturale scende sul gruppo. Anche l'aria, intorno a voi, sembra trattenere il fiato.`
-  ],
-  Misterioso: [
-    `Ogni indizio, ogni scelta, ogni scontro trovano ora un posto in un disegno più ampio, che comincia finalmente a farsi chiaro.`,
-    `I tasselli sparsi lungo il cammino cominciano, uno dopo l'altro, a comporre un'immagine che non avreste osato immaginare.`
-  ],
-  Comico: [
-    `Vi concedete un respiro — raro momento di calma — per ripensare, tra un sorriso e l'altro, a tutto ciò che è successo finora.`,
-    `Per una volta tanto, nessuno sta correndo, urlando o cadendo da qualche parte. Ne approfittate per tirare il fiato.`
-  ],
-  Tragico: [
-    `Vi fermate un istante. Il peso di ogni scelta, di ogni perdita, si fa sentire più che mai.`,
-    `Nessuno parla per un lungo momento. Alcune ferite, lo sapete bene, non si vedono a occhio nudo.`
-  ],
-  Eroico: [
-    `Ogni prova superata vi ha temprati. Ora, fianco a fianco, vi preparate a ciò che vi attende.`,
-    `Vi guardate negli occhi, l'un l'altro: in quello sguardo c'è tutta la strada percorsa insieme, e tutta quella che resta da fare.`
-  ]
-};
-const integralStep6OpenerFallback = [
-  `Vi fermate un istante, ripercorrendo con la mente il cammino compiuto fin qui.`,
-  `Prendete fiato, consapevoli che la strada percorsa finora è stata solo un preludio.`
-];
-
-// Preannunci variabili dello scontro finale, usati come ultima riga dello Step 6.
-const integralStep6Foreshadows = [
-  `Ora, però, qualcosa cambia. Nell'aria si avverte un presagio inconfondibile: la prova più grande, quella che deciderà il vostro destino, è ormai alle porte. Non ci sarà preavviso, non ci sarà una nuova scelta da compiere: solo il coraggio necessario per affrontare ciò che sta per arrivare.`,
-  `Un silenzio carico di attesa avvolge il gruppo. Sapete, senza che nessuno lo dica ad alta voce, che il momento decisivo è ormai vicino — e che questa volta non ci sarà spazio per esitare.`,
-  `Il vento cambia, o forse è solo la vostra percezione: qualcosa di grande, di terribile, sta per manifestarsi. Non resta che stringere le armi e prepararsi.`
-];
-
-// Costruisce, in stile narratore da tavolo (D&D 2024), un paragrafo di ampio respiro che ripercorre
-// la storia dell'avventura appena vissuta e ne preannuncia lo scontro conclusivo. Non rivela alcuna
-// informazione di sistema (nessun accenno a "step", scelte alternative o meccaniche di generazione).
-function buildIntegralStep6Narration(state){
-  const opener = pickIntegralLine(integralStep6Openers, state.tone, integralStep6OpenerFallback);
-
-  const recapChoices = (state.history || [])
-    .map(h => lowerFirstLetter(stripOptionEmoji(h)))
-    .filter(Boolean);
-
-  let recapPara;
-  if(recapChoices.length){
-    const lastChoices = recapChoices.slice(-3);
-    const joined = lastChoices.length > 1
-      ? lastChoices.slice(0, -1).join(', ') + ' e infine di ' + lastChoices[lastChoices.length - 1]
-      : lastChoices[0];
-    recapPara = `Il vostro cammino è stato segnato da decisioni difficili: dopo aver scelto di ${joined}, ogni passo ha lasciato un segno, portandovi fin qui, tra le trame di un'avventura ${state.tone.toLowerCase()} ambientata tra ${state.setting.toLowerCase()}.`;
-  } else {
-    recapPara = `Avete attraversato prove di ogni genere, in un'avventura ${state.tone.toLowerCase()} ambientata tra ${state.setting.toLowerCase()}, fino a giungere a questo momento.`;
-  }
-
-  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
-
-  const foreshadow = integralStep6Foreshadows[Math.floor(Math.random() * integralStep6Foreshadows.length)];
-
-  return [opener, recapPara, atmosphereLine, foreshadow];
-}
-
-// Step 6: descrizione approfondita in stile narratore, senza opzioni, solo il pulsante "Avanti"
-// che introduce lo scontro finale.
-function renderIntegralStep6(state){
-  state.phase = 'description';
-  currentIntegralStepOptions = [];
-
-  const lines = buildIntegralStep6Narration(state);
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="proceedToIntegralFinalBoss()">➡️ Avanti</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Sceglie il boss dello scontro finale (Step 7): un singolo nemico molto più difficile del normale,
-// calibrato sul livello dei personaggi e sul numero di giocatori impostati a inizio avventura.
-function pickIntegralFinalBoss(state){
-  const areaId = integralSettingToAreaId(state.setting);
-  // Un solo mostro vale, a parità di CR, meno di più mostri con lo stesso budget: per uno scontro
-  // finale duro contro l'intero gruppo si punta quindi a un Grado di Sfida più alto della norma,
-  // che cresce sia con il livello dei personaggi sia con il numero di giocatori al tavolo.
-  const targetCR = state.level + Math.max(2, Math.ceil(state.players / 2) + 1);
-
-  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-  const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
-  if(areaPool.length) pool = areaPool;
-  if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-
-  pool.sort((a, b) => {
-    const av = crToNumber(a.cr), bv = crToNumber(b.cr);
-    // Penalizza pesantemente i mostri sotto il CR bersaglio: un boss finale deve essere una vera minaccia.
-    const aScore = av >= targetCR ? (av - targetCR) : (targetCR - av) + 1000;
-    const bScore = bv >= targetCR ? (bv - targetCR) : (targetCR - bv) + 1000;
-    return aScore - bScore;
-  });
-
-  return pool[0] || null;
-}
-
-// Pulsante "Avanti" dello Step 6: avvia lo scontro finale (Step 7) contro il boss selezionato.
-function proceedToIntegralFinalBoss(){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-  state.phase = 'combat';
-  state.combatActive = true;
-
-  const boss = pickIntegralFinalBoss(state);
-  if(boss) addMultipleToCombat(boss.originalIdx, 1);
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Lo Scontro Finale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.textContent = boss
-      ? `Il momento è arrivato. Davanti a voi si erge, in tutta la sua minaccia, ${boss.nome} (CR ${boss.cr})! Questo è lo scontro per cui ogni prova finora vi ha preparati.`
-      : `Il momento è arrivato: lo scontro finale ha inizio!`;
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="endIntegralFinalBoss()">🏳️ Termina Combattimento</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-
-  currentIntegralStepOptions = [];
-  switchView('combat');
-  renderCombat();
-}
-
-// Chiamata dal pulsante "Termina Combattimento" dello scontro finale (Step 7): chiude e nasconde
-// la tabella dell'avventura integrale, senza generare ulteriori step.
-function endIntegralFinalBoss(){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.combatActive = false;
-  deleteIntegralAdventureCombatBox();
-}
-
-function selectIntegralAdventureOption(btn, idx){
-  document.querySelectorAll('.integral-adv-option-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  const note = document.getElementById('integral-adv-choice-note');
-  if(note){
-    note.style.display = 'block';
-    note.textContent = `Scelta registrata: "${btn.textContent.trim()}". Continua nella tab Combattimento, dove l'avventura prosegue passo dopo passo.`;
-  }
-}
-
-function toggleIntegralAdventurePanel(){
-  const panel = document.getElementById('integral-adventure-panel');
-  if(!panel) return;
-  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-}
-
 function generateRandomAdventure(){
   const toneSel = document.getElementById('adv-gen-tone');
   const settingSel = document.getElementById('adv-gen-setting');
@@ -8241,9 +6904,7 @@ safeInit(function(){ if(currentChar){ renderSheet(); } }, 'renderSheet');
 safeInit(renderCombat, 'renderCombat');
 safeInit(initDice, 'initDice');
 safeInit(renderDiceHistory, 'renderDiceHistory');
-safeInit(renderCampaignNotes, 'renderCampaignNotes');
 safeInit(initModalScrollLock, 'initModalScrollLock');
-safeInit(applyBestiaryGeneratorPanelState, 'applyBestiaryGeneratorPanelState');
 safeInit(initFullscreenToggle, 'initFullscreenToggle');
 </script>
 </body>
