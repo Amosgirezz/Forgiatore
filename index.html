@@ -398,15 +398,6 @@ label{font-family:inherit; font-size:12.5px; font-weight:600; letter-spacing:0; 
 .collapsible-panel-body{padding:0 20px 20px;}
 .collapsible-panel.collapsed .collapsible-panel-body{display:none;}
 
-.integral-adv-options{display:flex; flex-direction:column; gap:8px;}
-.integral-adv-option-btn{width:100%; text-align:left; justify-content:flex-start;}
-.integral-adv-option-btn.selected{
-  background:var(--gold);
-  border-color:var(--gold-bright);
-  color:var(--ink);
-  box-shadow:0 0 0 2px rgba(122,90,30,0.35);
-}
-
 .weapon-table {
   width: 100%;
   border-collapse: separate;
@@ -1477,7 +1468,7 @@ footer.site{
         <path d="M24 24L18 33L27 27L24 24Z" fill="currentColor" opacity="0.55"/>
       </svg>
     </button>
-    <button class="header-icon-btn" onclick="openItemGenModal()" title="Generatore di Oggetti Magici" aria-label="Generatore di Oggetti Magici">
+    <button class="header-icon-btn" onclick="openItemGenChoiceModal()" title="Generatore di Oggetti Magici" aria-label="Generatore di Oggetti Magici">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M10 15L14 11H34L38 15V17H10V15Z" fill="currentColor"/>
         <path d="M8 17H40L38 22H30V26H26V22H22V26H18V22H10L8 17Z" fill="currentColor"/>
@@ -1647,23 +1638,6 @@ footer.site{
 
   <section class="view" id="view-combat">
 
-    <div id="integral-adventure-combat-box" style="display:none; margin-bottom:20px; background:linear-gradient(155deg, rgba(198,145,71,0.03), rgba(198,145,71,0) 40%), var(--parchment); border-radius:var(--radius-lg); padding:16px 18px; box-shadow:0 1px 0 rgba(198,145,71,0.15) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(198,145,71,0.15);">
-      <table class="weapon-table" style="width:100%; border-color:var(--panel-line);">
-        <thead>
-          <tr><th colspan="2" style="background:rgba(198,145,71,0.14); color:var(--gold-bright); position:relative; padding-right:36px;"><span id="ia-combat-header">📖 Step 1 — Avventura Integrale</span><button type="button" onclick="deleteIntegralAdventureCombatBox()" title="Elimina" style="position:absolute; top:50%; right:8px; transform:translateY(-50%); background:transparent; border:none; color:var(--gold-bright); font-size:16px; line-height:1; cursor:pointer; padding:4px 6px;">✕</button></th></tr>
-        </thead>
-        <tbody>
-          <tr><td style="width:160px; font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Tono / Ambientazione</td><td id="ia-combat-tone-setting" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
-          <tr><td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Gruppo</td><td id="ia-combat-group" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
-          <tr><td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Premessa</td><td id="ia-combat-premise" style="color:var(--ink); border-color:var(--panel-line);">—</td></tr>
-          <tr>
-            <td style="font-weight:700; vertical-align:top; color:var(--ink); border-color:var(--panel-line);">Cosa fa il gruppo?</td>
-            <td style="border-color:var(--panel-line);"><div class="integral-adv-options" id="ia-combat-options"></div></td>
-          </tr>
-        </tbody>
-      </table>
-      <p id="ia-combat-choice-note" style="display:none; margin-top:10px; font-size:13.5px; color:var(--arcane);"></p>
-    </div>
 
     <div class="combat-split">
       <div class="combat-left">
@@ -1846,6 +1820,60 @@ footer.site{
   </div>
 </div>
 
+<div class="modal-overlay" id="item-gen-choice-modal" onclick="closeItemGenChoiceModalOnBg(event)">
+  <div class="modal-card" style="max-width:420px;">
+    <button class="modal-close" onclick="closeItemGenChoiceModal()">✕</button>
+    <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:22px;">💎 Generatore di Oggetti</h2>
+    <p style="font-size:13.5px; color:var(--text-dim); margin-top:-6px;">Scegli il tipo di generatore da usare.</p>
+    <div class="sheet-actions" style="margin-top:16px; flex-direction:row; gap:10px;">
+      <button class="btn" type="button" style="flex:1;" onclick="closeItemGenChoiceModal(); openItemGenModal();">💎 Generatore di Oggetti</button>
+      <button class="btn secondary" type="button" style="flex:1;" onclick="closeItemGenChoiceModal(); openShopItemGenModal();">🏪 Generatore di Oggetti Negozio</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shop-item-gen-modal" onclick="closeShopItemGenModalOnBg(event)">
+  <div class="modal-card" style="max-width:560px;">
+    <button class="modal-close" onclick="closeShopItemGenModal()">✕</button>
+    <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:24px;">🏪 Generatore di Oggetti Negozio</h2>
+    <p style="font-size:13.5px; color:var(--text-dim); margin-top:-6px;">Genera una lista di oggetti in vendita, filtrando opzionalmente per zona e tipo di negozio.</p>
+    <div class="field" style="margin-top:14px;">
+      <label for="shop-item-gen-zone">Zona</label>
+      <select id="shop-item-gen-zone">
+        <option value="random">Qualsiasi</option>
+        <option value="Insediamento di frontiera">Insediamento di frontiera</option>
+        <option value="Villaggio">Villaggio</option>
+        <option value="Cittadina">Cittadina</option>
+        <option value="Grande città">Grande città</option>
+        <option value="Metropoli">Metropoli</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <label for="shop-item-gen-type">Tipo di negozio</label>
+      <select id="shop-item-gen-type">
+        <option value="random">Qualsiasi</option>
+        <option value="Emporio">Emporio</option>
+        <option value="Fabbro">Fabbro</option>
+        <option value="Armaiolo">Armaiolo</option>
+        <option value="Erboristeria">Erboristeria</option>
+        <option value="Alchimista">Alchimista</option>
+        <option value="Gioielleria">Gioielleria</option>
+        <option value="Antiquario">Antiquario</option>
+        <option value="Sartoria">Sartoria</option>
+        <option value="Negozio di curiosità">Negozio di curiosità</option>
+        <option value="Libreria">Libreria</option>
+        <option value="Scuderia">Scuderia</option>
+        <option value="Locanda/Taverna">Locanda/Taverna</option>
+        <option value="Tempio">Tempio</option>
+      </select>
+    </div>
+    <div class="sheet-actions" style="margin-top:16px;">
+      <button class="btn" type="button" onclick="generateShopItemList()">⚄ Genera lista oggetti</button>
+    </div>
+    <div id="shop-item-gen-result" style="margin-top:16px;"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="item-gen-modal" onclick="closeItemGenModalOnBg(event)">
   <div class="modal-card" style="max-width:560px;">
     <button class="modal-close" onclick="closeItemGenModal()">✕</button>
@@ -1921,6 +1949,22 @@ footer.site{
   </div>
 </div>
 
+<div class="modal-overlay" id="add-item-char-modal" onclick="closeAddItemToCharModalOnBg(event)">
+  <div class="modal-card" style="max-width:420px;">
+    <button class="modal-close" onclick="closeAddItemToCharModal()">✕</button>
+    <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:20px;">🎒 Aggiungi all'inventario</h2>
+    <p style="font-size:13.5px; color:var(--text-dim); margin-top:-6px;">Oggetto: <b id="add-item-char-name" style="color:var(--text-main);"></b></p>
+    <div class="field" style="margin-top:14px;">
+      <label for="add-item-char-select">Personaggio</label>
+      <select id="add-item-char-select"><option value="">— scegli un personaggio —</option></select>
+    </div>
+    <div class="sheet-actions" style="margin-top:16px;">
+      <button class="btn" type="button" onclick="confirmAddItemToChar()">🎒 Aggiungi</button>
+    </div>
+    <p id="add-item-char-note" style="display:none; margin-top:10px; font-size:13.5px; color:var(--arcane);"></p>
+  </div>
+</div>
+
 <div class="modal-overlay" id="adventure-gen-modal" onclick="closeAdventureGenModalOnBg(event)">
   <div class="modal-card" style="max-width:560px;">
     <button class="modal-close" onclick="closeAdventureGenModal()">✕</button>
@@ -1952,28 +1996,8 @@ footer.site{
     </div>
     <div class="sheet-actions" style="margin-top:16px;">
       <button class="btn" type="button" onclick="generateRandomAdventure()">⚄ Genera avventura</button>
-      <button class="btn secondary" type="button" onclick="toggleIntegralAdventurePanel()">📖 Avventura Integrale</button>
     </div>
     <div id="adventure-gen-result" style="margin-top:16px;"></div>
-
-    <div id="integral-adventure-panel" style="display:none; margin-top:18px; padding-top:16px; border-top:1px solid var(--panel-line);">
-      <h3 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin:0 0 4px; font-size:17px;">📖 Avventura Integrale (Oneshot)</h3>
-      <p style="font-size:13.5px; color:var(--text-dim); margin:0 0 14px;">Genera una oneshot completa su misura per il tuo gruppo: indica quanti giocatori parteciperanno e a che livello.</p>
-      <div class="row" style="display:flex; gap:12px; flex-wrap:wrap;">
-        <div class="field" style="max-width:180px;">
-          <label for="integral-adv-players">Numero Giocatori</label>
-          <input type="number" id="integral-adv-players" value="4" min="1" max="12">
-        </div>
-        <div class="field" style="max-width:180px;">
-          <label for="integral-adv-level">Livello dei Personaggi</label>
-          <input type="number" id="integral-adv-level" value="1" min="1" max="20">
-        </div>
-      </div>
-      <div class="sheet-actions" style="margin-top:16px;">
-        <button class="btn blood" type="button" onclick="generateIntegralAdventureStep()">🧭 Genera Avventura Integrale</button>
-      </div>
-      <div id="integral-adventure-result" style="margin-top:16px;"></div>
-    </div>
   </div>
 </div>
 
@@ -6878,12 +6902,6 @@ const rarityColors = {
   "Artefatto": "#d8402f"
 };
 
-// La premessa viene narrata direttamente, senza frasi di cornice tipo "Il Narratore vi guarda
-// negli occhi, serio:" — si entra subito nella scena.
-function formatIntegralPremiseText(premise){
-  return premise.text;
-}
-
 const adventureHooks = [
   { tone:'Eroico', setting:'Città', text:'Un nobile locale offre una ricompensa a chi scoprirà chi sta sabotando le mura della città prima dell\'imminente assedio.' },
   { tone:'Eroico', setting:'Bosco', text:'Un villaggio di boscaioli chiede aiuto contro un branco di licantropi che rapisce i bambini durante le notti di luna piena.' },
@@ -7044,10 +7062,6 @@ function openAdventureGenModal(){
   const modal = document.getElementById('adventure-gen-modal');
   if(!modal) return;
   modal.classList.add('active');
-  const integralPanel = document.getElementById('integral-adventure-panel');
-  if(integralPanel) integralPanel.style.display = 'none';
-  const integralResult = document.getElementById('integral-adventure-result');
-  if(integralResult) integralResult.innerHTML = '';
 }
 function closeAdventureGenModal(){
   const modal = document.getElementById('adventure-gen-modal');
@@ -7056,853 +7070,6 @@ function closeAdventureGenModal(){
 function closeAdventureGenModalOnBg(event){
   if(event.target && event.target.id === 'adventure-gen-modal') closeAdventureGenModal();
 }
-const integralAdventureOptions = [
-  // Universali: adatte a qualsiasi tono/ambientazione, usate anche come riempimento
-  { text:"⚔️ Sguainare le armi e affrontare la minaccia a viso aperto", tones:[], settings:[], combat:true, keywords:['minaccia','pericolo','mostro','bestia','creatura'] },
-  { text:"🕵️ Muoversi con discrezione e indagare prima di agire", tones:[], settings:[], combat:false, keywords:['scompar','misterios','segreto','nascond','indizio','strano'] },
-  { text:"🤝 Cercare un alleato o un informatore tra la gente del posto", tones:[], settings:[], combat:false, keywords:['villaggio','abitanti','testimon','locale','contadini','pescatori'] },
-  { text:"🌒 Approfittare del buio e muoversi restando nell'ombra", tones:[], settings:[], combat:false, keywords:['notte','ombra','buio','luna','oscurità'] },
-  { text:"🗣️ Tentare la via della diplomazia prima che si arrivi allo scontro", tones:[], settings:[], combat:false, keywords:['culto','setta','magistrato','sacerdote','capo','governa','anziani','consiglio'] },
-  { text:"💰 Offrire oro o favori pur di ottenere aiuto", tones:[], settings:[], combat:false, keywords:['mercante','oro','ricompensa','tesoro','patrimonio','moneta','gilda dei mercanti'] },
-  { text:"🏃 Muoversi in fretta, prima che sia troppo tardi", tones:[], settings:[], combat:false, keywords:['giorni','entro','scompar','tempo','presto','imminente'] },
-  { text:"🔥 Tendere un'imboscata al nemico, giocando d'anticipo", tones:[], settings:[], combat:true, keywords:['predoni','banda','razzia','minaccia','accampamento'] },
-  { text:"📜 Cercare risposte tra antichi documenti o leggende locali", tones:[], settings:[], combat:false, keywords:['antico','antica','leggenda','iscrizione','profezia','patto','biblioteca'] },
-  { text:"🚪 Introdursi di nascosto nel cuore del pericolo", tones:[], settings:[], combat:false, keywords:['prigione','laboratorio','fortezza','tempio','santuario','covo'] },
-  { text:"🛡️ Radunare rinforzi prima di intervenire", tones:[], settings:[], combat:false, keywords:['esercito','orda','invasione','drago','armata'] },
-  { text:"🎭 Fingersi qualcun altro per estorcere informazioni", tones:[], settings:[], combat:false, keywords:['nobili','corte','gilda','magistrato','festival','palazzo'] },
-  { text:"🗺️ Battere i dintorni in cerca di indizi", tones:[], settings:[], combat:false, keywords:['scompar','tracce','indizio','misterios'] },
-  { text:"⏳ Restare in attesa, osservando il momento migliore per agire", tones:[], settings:[], combat:false, keywords:['ogni notte','ogni luna','ogni anno','periodicamente','ritual'] },
-  { text:"🧪 Affidarsi alla magia per trovare una soluzione", tones:[], settings:[], combat:false, keywords:['maledizione','incantesim','magia','rituale','stregone','mago','sortilegio'] },
-  { text:"👂 Origliare conversazioni sospette prima di farsi vedere", tones:[], settings:[], combat:false, keywords:['taverna','locanda','mercato','pettegolezz','voci'] },
-  { text:"🩹 Fermarsi a curare le ferite prima di proseguire", tones:[], settings:[], combat:false, keywords:['ferit','sangue','stanchezza','riposo'] },
-  { text:"🎯 Studiare il terreno per scegliere il punto d'attacco migliore", tones:[], settings:[], combat:true, keywords:['imboscata','agguato','trappola','nemici','pattuglia'] },
-
-  // Specifiche per tono
-  { text:"🔪 Colpire per primi, senza dare tregua", tones:['Oscuro'], settings:[], combat:true },
-  { text:"🩸 Rispondere alla crudeltà con la stessa spietatezza", tones:['Oscuro'], settings:[], combat:true },
-  { text:"🙏 Cercare protezione in un rito o in una preghiera disperata", tones:['Oscuro','Tragico'], settings:[], combat:false },
-  { text:"🕸️ Seguire il sussurro nell'oscurità, qualunque cosa costi", tones:['Oscuro'], settings:[], combat:false },
-  { text:"🔍 Studiare ogni indizio con pazienza, prima di muoversi", tones:['Misterioso'], settings:[], combat:false },
-  { text:"❓ Interrogare i testimoni più insoliti", tones:['Misterioso'], settings:[], combat:false },
-  { text:"🌀 Seguire da vicino il fenomeno inspiegabile", tones:['Misterioso'], settings:[], combat:false },
-  { text:"🧩 Mettere insieme i pezzi prima che sia troppo tardi", tones:['Misterioso'], settings:[], combat:false },
-  { text:"🍺 Proporre un brindisi per rompere il ghiaccio", tones:['Comico'], settings:[], combat:false },
-  { text:"🎪 Improvvisare uno spettacolo per distrarre tutti", tones:['Comico'], settings:[], combat:false },
-  { text:"🐔 Lasciare che sia il caso a decidere", tones:['Comico'], settings:[], combat:false },
-  { text:"🎲 Scommettere tutto su un piano decisamente azzardato", tones:['Comico'], settings:[], combat:true },
-  { text:"🕯️ Onorare la memoria di chi non c'è più", tones:['Tragico'], settings:[], combat:false },
-  { text:"💔 Affrontare il dolore invece di fuggirlo", tones:['Tragico'], settings:[], combat:false },
-  { text:"🤲 Offrire perdono anche quando non è meritato", tones:['Tragico'], settings:[], combat:false },
-  { text:"⚰️ Portare a termine ciò che altri non sono riusciti a finire", tones:['Tragico'], settings:[], combat:true },
-  { text:"🛡️ Proteggere gli innocenti a ogni costo", tones:['Eroico'], settings:[], combat:true },
-  { text:"⚡ Guidare la carica in prima linea, senza esitazione", tones:['Eroico'], settings:[], combat:true },
-  { text:"🏆 Accettare la sfida a viso scoperto", tones:['Eroico'], settings:[], combat:true },
-  { text:"📯 Levare un grido di battaglia e dare l'esempio", tones:['Eroico'], settings:[], combat:true },
-
-  // Specifiche per ambientazione
-  { text:"🐊 Avanzare con cautela tra le acque basse della palude", tones:[], settings:['Palude'], combat:false },
-  { text:"🌫️ Seguire i fuochi fatui che danzano nella nebbia", tones:[], settings:['Palude'], combat:false },
-  { text:"⛵ Prendere il controllo di un'imbarcazione", tones:[], settings:['Mare'], combat:false },
-  { text:"🌊 Attendere la marea favorevole prima di agire", tones:[], settings:['Mare'], combat:false },
-  { text:"⛰️ Scalare per raggiungere un punto d'osservazione", tones:[], settings:['Montagna'], combat:false },
-  { text:"❄️ Cercare riparo prima che si scateni la tempesta", tones:[], settings:['Montagna'], combat:false },
-  { text:"🌲 Seguire le tracce tra gli alberi", tones:[], settings:['Bosco'], combat:false },
-  { text:"🍃 Muoversi in silenzio tra il fogliame", tones:[], settings:['Bosco'], combat:false },
-  { text:"🕯️ Illuminare ogni angolo del dungeon prima di avanzare", tones:[], settings:['Dungeon'], combat:false },
-  { text:"🔑 Cercare un passaggio o un meccanismo segreto", tones:[], settings:['Dungeon'], combat:false },
-  { text:"🏛️ Decifrare le iscrizioni incise nella pietra antica", tones:[], settings:['Rovine'], combat:false },
-  { text:"🪨 Scavare tra le macerie in cerca di indizi", tones:[], settings:['Rovine'], combat:false },
-  { text:"🏘️ Chiedere in giro per le taverne e i mercati della città", tones:[], settings:['Città'], combat:false },
-  { text:"👮 Rivolgersi alle autorità locali", tones:[], settings:['Città'], combat:false },
-  { text:"🐍 Reagire con forza all'agguato tra le acque torbide", tones:[], settings:['Palude'], combat:true },
-  { text:"🦈 Difendere la nave dall'attacco che emerge dalle onde", tones:[], settings:['Mare'], combat:true },
-  { text:"🐺 Respingere ciò che vi ha teso un'imboscata sul sentiero di montagna", tones:[], settings:['Montagna'], combat:true },
-  { text:"🐗 Difendersi da ciò che si muove tra gli alberi", tones:[], settings:['Bosco'], combat:true },
-  { text:"💀 Scontrarsi con i guardiani del dungeon", tones:[], settings:['Dungeon'], combat:true },
-  { text:"🗡️ Combattere contro ciò che si annida tra le rovine", tones:[], settings:['Rovine'], combat:true },
-  { text:"🔪 Affrontare gli aggressori per le strade della città", tones:[], settings:['Città'], combat:true }
-];
-
-function pickRandomUnique(arr, n){
-  const copy = [...arr];
-  for(let i = copy.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy.slice(0, n);
-}
-
-// Sceglie n opzioni personalizzate in base a tono, ambientazione e (quando disponibile) al testo
-// della premessa: ogni opzione riceve un punteggio (tono + ambientazione + parole chiave trovate
-// nella premessa), con una piccola componente casuale per variare i risultati tra una generazione
-// e l'altra. Restituisce gli oggetti completi {text, tones, settings, combat, keywords}.
-function pickIntegralOptions(tone, setting, n, premiseText){
-  const normText = normalizeSearchStr(premiseText || '');
-
-  const scored = integralAdventureOptions.map(o => {
-    let score = 0;
-    if(o.tones.includes(tone)) score += 3;
-    if(o.settings.includes(setting)) score += 3;
-    if(o.tones.length === 0 && o.settings.length === 0) score += 1; // le opzioni universali restano comunque in gioco
-    if(normText && Array.isArray(o.keywords) && o.keywords.length){
-      const hit = o.keywords.some(k => normText.includes(normalizeSearchStr(k)));
-      if(hit) score += 4;
-    }
-    score += Math.random() * 0.9; // jitter per variare l'ordine tra opzioni a pari punteggio
-    return { o, score };
-  });
-
-  scored.sort((a, b) => b.score - a.score);
-
-  const selected = [];
-  const used = new Set();
-  for(const { o } of scored){
-    if(selected.length >= n) break;
-    if(used.has(o.text)) continue;
-    used.add(o.text);
-    selected.push(o);
-  }
-  return selected;
-}
-
-// Mappa tra ambientazione della premessa e id area/terreno del bestiario
-function integralSettingToAreaId(setting){
-  const map = {
-    'Bosco':'foresta', 'Città':'citta', 'Dungeon':'dungeon',
-    'Mare':'isola', 'Montagna':'montagna', 'Palude':'palude', 'Rovine':'rovine'
-  };
-  return map[setting] || 'all';
-}
-
-function stripOptionEmoji(text){
-  return String(text || '').replace(/^\S+\s*/, '').trim();
-}
-function lowerFirstLetter(s){
-  return s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
-}
-
-// Testi di prosecuzione della storia, personalizzati in base al tono (con ripiego universale).
-// Scritti in seconda persona plurale, come farebbe un Dungeon Master al tavolo.
-const integralContinuations = {
-  universal: [
-    (a)=>`Decidete di ${a}. Le cose si muovono in fretta: emergono informazioni che non avevate previsto, insieme a nuove complicazioni.`,
-    (a)=>`Non appena scegliete di ${a}, notate un dettaglio che nessuno di voi si aspettava — un dettaglio capace di cambiare il corso degli eventi.`,
-    (a)=>`La vostra scelta di ${a} vi avvicina di un passo alla verità. Ma ogni passo, in questa storia, ha un prezzo.`,
-    (a)=>`Mentre decidete di ${a}, sentite che qualcosa, nell'aria, è cambiato — impercettibile, ma reale.`
-  ],
-  Oscuro: [
-    (a)=>`Scegliete di ${a}. L'oscurità intorno a voi sembra farsi più densa, come se qualcosa vi stesse osservando da vicino.`,
-    (a)=>`Non appena decidete di ${a}, un presagio inquietante si manifesta: un segno che il pericolo è più vicino di quanto pensaste.`,
-    (a)=>`${a[0].toUpperCase()}${a.slice(1)}, dite. Ma il silenzio che segue la vostra decisione è innaturale, carico di attesa.`
-  ],
-  Misterioso: [
-    (a)=>`Decidete di ${a}, e ciò che scoprite solleva più domande di quante ne risolva.`,
-    (a)=>`Scegliendo di ${a}, vi imbattete in un indizio inaspettato che non fa che infittire il mistero.`,
-    (a)=>`Mentre decidete di ${a}, avvertite la sensazione precisa di essere osservati da qualcosa che, finora, si era tenuto in disparte.`
-  ],
-  Comico: [
-    (a)=>`Con entusiasmo variabile, decidete di ${a}. Ovviamente, qualcosa va storto in modo esilarante.`,
-    (a)=>`Non appena scegliete di ${a}, la situazione precipita in una comica serie di equivoci.`,
-    (a)=>`Decidete di ${a} — un piano quasi ragionevole, per i vostri standard. Quasi.`
-  ],
-  Tragico: [
-    (a)=>`Scegliete, con il cuore pesante, di ${a}. Il prezzo di questa decisione si farà sentire presto.`,
-    (a)=>`Decidendo di ${a}, non potete fare a meno di pensare a tutto ciò che questa scelta potrebbe costarvi.`,
-    (a)=>`${a[0].toUpperCase()}${a.slice(1)}: la vostra decisione. Ma la storia, fin qui, vi ha insegnato che nulla è mai gratuito.`
-  ],
-  Eroico: [
-    (a)=>`Senza esitazione, decidete di ${a}. Il coraggio che dimostrate non passa inosservato.`,
-    (a)=>`Scegliete con determinazione di ${a}, consapevoli che il destino di molti dipende da questa decisione.`,
-    (a)=>`Decidete di ${a}. Chi vi osserva capisce, in quel momento, che siete disposti a pagare qualunque prezzo per fare la cosa giusta.`
-  ]
-};
-
-// Testi di prosecuzione dopo la fine di un combattimento
-const integralAfterCombatContinuations = {
-  universal: [
-    ()=>`Il fragore dello scontro si spegne. Riprendete fiato tra i resti della battaglia, mentre valutate i prossimi passi.`,
-    ()=>`Con i nemici sconfitti, vi guardate intorno: la minaccia immediata è passata, ma la storia è tutt'altro che finita.`,
-    ()=>`Rinfoderate le armi, ancora scossi dall'adrenalina. Il silenzio che segue un combattimento è sempre il più strano.`
-  ],
-  Oscuro: [
-    ()=>`Il combattimento si conclude, ma un senso di inquietudine persiste: la vittoria ha un retrogusto amaro.`,
-    ()=>`I corpi dei nemici giacciono a terra, ma qualcosa in questo silenzio non vi convince: come se la vera minaccia non fosse ancora arrivata.`
-  ],
-  Misterioso: [
-    ()=>`Terminato lo scontro, notate qualcosa di strano tra i resti della battaglia — un ulteriore enigma da risolvere.`,
-    ()=>`Mentre riprendete fiato, uno di voi nota un dettaglio fuori posto tra i nemici caduti, qualcosa che non dovrebbe essere lì.`
-  ],
-  Comico: [
-    ()=>`Lo scontro si conclude tra risate nervose e qualche livido di troppo, ma siete tutti vivi — e questo, di per sé, è già un successo.`,
-    ()=>`Vi rialzate polverosi e ammaccati, discutendo animatamente su chi abbia inferto il colpo di grazia. Nessuno è realmente d'accordo.`
-  ],
-  Tragico: [
-    ()=>`Il combattimento finisce, ma non senza perdite. Vi fermate un momento a fare i conti con ciò che è appena accaduto.`,
-    ()=>`La vittoria, questa volta, sa di cenere. Restate in silenzio, ognuno con i propri pensieri, prima di rimettervi in cammino.`
-  ],
-  Eroico: [
-    ()=>`I nemici giacciono sconfitti. Vi concedete un momento di meritato orgoglio prima di rimettervi in marcia.`,
-    ()=>`Abbassate le armi, ansimanti ma fieri. Chiunque vi abbia visto combattere non dimenticherà presto questo momento.`
-  ]
-};
-
-// Testi di prosecuzione dopo uno step di sola descrizione (pulsante "Avanti")
-const integralAfterDescriptionContinuations = {
-  universal: [
-    ()=>`Riprendete il cammino, pronti ad affrontare ciò che verrà.`,
-    ()=>`Con rinnovata attenzione, vi rimettete in marcia verso il prossimo bivio della storia.`,
-    ()=>`Vi scambiate un'occhiata d'intesa e proseguite, ognuno pronto a fare la propria parte.`
-  ],
-  Oscuro: [ ()=>`Avanzate con cautela, consapevoli che l'oscurità nasconde ancora molto.` ],
-  Misterioso: [ ()=>`Proseguite con più domande che risposte, verso il prossimo indizio.` ],
-  Comico: [ ()=>`Vi rimettete in marcia, certi che il prossimo imprevisto non tarderà ad arrivare.` ],
-  Tragico: [ ()=>`Proseguite, portando con voi il peso di quanto già accaduto.` ],
-  Eroico: [ ()=>`Riprendete il cammino a testa alta, pronti alla prossima prova.` ]
-};
-
-function generateIntegralContinuationText(tone, setting, chosenText, source){
-  const pools = source === 'combat' ? integralAfterCombatContinuations
-    : source === 'description' ? integralAfterDescriptionContinuations
-    : integralContinuations;
-  const specific = pools[tone] || [];
-  const universal = pools.universal || [];
-  const combined = specific.length ? specific.concat(universal) : universal;
-  const template = combined[Math.floor(Math.random() * combined.length)];
-  if(source === 'combat' || source === 'description') return template();
-  const action = lowerFirstLetter(stripOptionEmoji(chosenText));
-  return template(action);
-}
-
-// Frasi di "riepilogo" della scelta appena fatta, usate come prima riga dello step di sola descrizione
-const integralDescRecap = [
-  (a)=>`Dopo aver scelto di ${a}, vi trovate a fare i conti con le conseguenze dirette di quella decisione.`,
-  (a)=>`La scelta di ${a} ha lasciato il segno, e procedete ora con questa consapevolezza addosso.`,
-  (a)=>`Avendo deciso di ${a}, osservate con attenzione come la situazione si sia evoluta intorno a voi.`,
-  (a)=>`Non c'è modo di tornare indietro, ora che avete scelto di ${a}: non vi resta che affrontarne le conseguenze.`
-];
-const integralDescRecapFallback = [
-  `Con gli eventi recenti ancora freschi nella memoria, riprendete il cammino.`,
-  `Dopo quanto accaduto, vi concedete un momento per riorganizzarvi.`,
-  `Vi guardate l'un l'altro in silenzio, prima di rimettervi in marcia.`
-];
-
-// Seconda riga: atmosfera legata all'ambientazione corrente, in stile "testo di lettura" da DM.
-// Più varianti per ogni ambientazione, così la stessa scena non si ripete sempre identica.
-const integralDescAtmosphere = {
-  'Palude': [
-    `Intorno a voi, la palude continua a ribollire di suoni ovattati e luci fioche che si muovono tra la nebbia.`,
-    `L'acqua stagnante riflette un cielo plumbeo, mentre l'aria si fa pesante di zolfo e vegetazione marcia.`,
-    `Ogni passo affonda nel fango con un risucchio umido, e da qualche parte, tra le canne, qualcosa si muove.`
-  ],
-  'Mare': [
-    `Il mare si distende all'orizzonte, indifferente alle sorti di chi lo solca.`,
-    `Il vento salmastro vi sferza il viso, mentre le onde battono un ritmo costante contro lo scafo o la costa.`,
-    `Gabbiani gridano in lontananza, e l'orizzonte sembra promettere tanto la salvezza quanto il pericolo.`
-  ],
-  'Montagna': [
-    `Il vento gelido tra le rocce porta con sé il rumore lontano di qualcosa che si muove.`,
-    `L'aria rarefatta rende ogni respiro più faticoso, mentre le vette intorno sembrano osservarvi in silenzio.`,
-    `La neve scricchiola sotto i vostri passi, unico suono in un silenzio quasi innaturale.`
-  ],
-  'Bosco': [
-    `Gli alberi si stringono intorno al sentiero, come se il bosco stesso trattenesse il respiro.`,
-    `Foglie e rami filtrano una luce verdastra, mentre suoni indistinti si rincorrono tra i tronchi.`,
-    `Il canto degli uccelli si è fatto stranamente silenzioso, e il bosco sembra trattenere qualcosa.`
-  ],
-  'Dungeon': [
-    `Le pareti di pietra del dungeon sembrano custodire ancora molti segreti non svelati.`,
-    `Le vostre torce proiettano ombre danzanti sulle pareti umide, mentre un gocciolio lontano segna il tempo.`,
-    `L'aria è stantia, carica di polvere antica, e ogni corridoio sembra identico al precedente.`
-  ],
-  'Rovine': [
-    `Tra le rovine, polvere e macerie raccontano una storia che nessuno ha ancora finito di leggere.`,
-    `Colonne spezzate e statue erose vi osservano, testimoni silenziose di una gloria ormai perduta.`,
-    `Il vento fischia tra le crepe delle mura cadute, portando con sé un eco di voci lontane.`
-  ],
-  'Città': [
-    `Le strade della città brulicano di voci, sguardi e segreti mai del tutto sussurrati.`,
-    `Il chiacchiericcio del mercato si mescola all'odore di pane caldo e fumo di camino.`,
-    `Le ombre tra i vicoli sembrano nascondere occhi che vi seguono, anche se nessuno, apparentemente, vi guarda.`
-  ]
-};
-const integralDescAtmosphereFallback = [
-  `L'ambiente intorno a voi continua a raccontare, a modo suo, la storia in corso.`,
-  `Il mondo intorno a voi prosegue indifferente, mentre la vostra storia continua a scriversi.`
-];
-
-// Terza riga: aggancio verso il prosieguo, legato al tono. Più varianti per tono.
-const integralDescHook = {
-  'Oscuro': [
-    `Qualcosa, nell'ombra, sembra osservare ogni vostro passo, in attesa del momento giusto.`,
-    `Un brivido freddo vi corre lungo la schiena: non siete soli, ne siete certi.`,
-    `Il presentimento che qualcosa di terribile stia per accadere non vi abbandona.`
-  ],
-  'Misterioso': [
-    `Un nuovo indizio, ancora incompleto, comincia a delinearsi all'orizzonte.`,
-    `Le domande si accumulano più in fretta delle risposte, e sapete che la verità è vicina.`,
-    `Un dettaglio, apparentemente insignificante, continua a tornarvi in mente.`
-  ],
-  'Comico': [
-    `E, come sempre, il destino sembra avere in serbo un altro colpo di scena improbabile.`,
-    `Qualcuno di voi ha già la sensazione che il prossimo passo non andrà esattamente come previsto.`,
-    `Nell'aria aleggia quella strana sensazione di calma prima di un disastro decisamente evitabile.`
-  ],
-  'Tragico': [
-    `Il peso di ciò che è già accaduto continua a gravare su ogni vostra scelta futura.`,
-    `Sapete, in fondo, che il prezzo di questa storia non è stato ancora pagato per intero.`,
-    `Un senso di ineluttabilità vi accompagna, come se il finale fosse già scritto.`
-  ],
-  'Eroico': [
-    `Davanti a voi si apre un nuovo capitolo, che richiederà ancora coraggio e determinazione.`,
-    `Sentite crescere dentro di voi la certezza che le prove più dure sono ancora da affrontare — e siete pronti.`,
-    `Il richiamo del dovere non tace mai a lungo, e già sapete che presto tornerà a farsi sentire.`
-  ]
-};
-const integralDescHookFallback = [
-  `Il prossimo passo dell'avventura attende solo di essere compiuto.`,
-  `Qualcosa, più avanti sul cammino, attende ancora di essere scoperto.`
-];
-
-// Sceglie una riga casuale da un pool associato a una chiave (con ripiego se la chiave non esiste
-// o se il pool è, per compatibilità, una singola stringa anziché un array).
-function pickIntegralLine(pool, key, fallback){
-  const entry = (pool && pool[key]) || fallback;
-  if(Array.isArray(entry)) return entry[Math.floor(Math.random() * entry.length)];
-  return entry;
-}
-
-// Genera 3 righe di descrizione coerenti con tono/ambientazione e con l'ultima scelta fatta
-function generateIntegralDescriptionLines(state, lastActionText){
-  const recapLine = lastActionText
-    ? integralDescRecap[Math.floor(Math.random() * integralDescRecap.length)](lowerFirstLetter(stripOptionEmoji(lastActionText)))
-    : integralDescRecapFallback[Math.floor(Math.random() * integralDescRecapFallback.length)];
-  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
-  const hookLine = pickIntegralLine(integralDescHook, state.tone, integralDescHookFallback);
-  return [recapLine, atmosphereLine, hookLine];
-}
-
-// Stato dell'avventura integrale attualmente in corso (tono, ambientazione, gruppo, step, fase, storico scelte)
-let integralAdventureState = null;
-let currentIntegralStepOptions = [];
-
-function generateIntegralAdventureStep(){
-  const toneSel = document.getElementById('adv-gen-tone');
-  const settingSel = document.getElementById('adv-gen-setting');
-  const tone = toneSel ? toneSel.value : 'random';
-  const setting = settingSel ? settingSel.value : 'random';
-  const players = parseInt(document.getElementById('integral-adv-players').value) || 4;
-  const level = parseInt(document.getElementById('integral-adv-level').value) || 1;
-
-  const out = document.getElementById('integral-adventure-result');
-  if(!out) return;
-
-  let pool = adventureHooks.filter(a =>
-    (tone === 'random' || a.tone === tone) &&
-    (setting === 'random' || a.setting === setting)
-  );
-  if(!pool.length) pool = adventureHooks;
-  const premise = pool[Math.floor(Math.random() * pool.length)];
-
-  const options = pickIntegralOptions(premise.tone, premise.setting, 5, premise.text);
-
-  out.innerHTML = `
-    <div class="item-result-card">
-      <span class="item-rarity-tag" style="background:var(--arcane)22; color:var(--arcane); border:1px solid var(--arcane)55;">${premise.tone}</span>
-      <span class="item-rarity-tag" style="background:var(--gold-bright)22; color:var(--gold-bright); border:1px solid var(--gold-bright)55; margin-left:6px;">${premise.setting}</span>
-      <span class="item-rarity-tag" style="background:var(--blood-bright)22; color:var(--blood-bright); border:1px solid var(--blood-bright)55; margin-left:6px;">${players} giocatori · Lv ${level}</span>
-
-      <h4 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin:14px 0 6px; font-size:16px;">Step 1 — L'Inizio</h4>
-      <p style="margin:0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${formatIntegralPremiseText(premise)}</p>
-
-      <p style="margin:14px 0 8px; font-weight:700; color:var(--gold-bright); font-size:14px;">Cosa fa il gruppo?</p>
-      <div class="integral-adv-options" id="integral-adv-options-list">
-        ${options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn" type="button" onclick="selectIntegralAdventureOption(this, ${i})">${opt.text}</button>`).join('')}
-      </div>
-      <p id="integral-adv-choice-note" style="display:none; margin-top:12px; font-size:13.5px; color:var(--arcane);"></p>
-    </div>
-  `;
-
-  // Inizializza lo stato dell'avventura in corso (usato dal riquadro persistente nella tab Combattimento)
-  integralAdventureState = {
-    tone: premise.tone,
-    setting: premise.setting,
-    players: players,
-    level: level,
-    step: 1,
-    phase: 'initial',
-    combatActive: false,
-    history: []
-  };
-  currentIntegralStepOptions = options;
-
-  const combatBox = document.getElementById('integral-adventure-combat-box');
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(combatBox && toneSettingCell && groupCell && premiseCell && optionsCell){
-    if(headerCell) headerCell.textContent = `📖 Step 1 — Avventura Integrale`;
-    toneSettingCell.textContent = `${premise.tone} · ${premise.setting}`;
-    groupCell.textContent = `${players} giocatori · Livello ${level}`;
-    premiseCell.textContent = formatIntegralPremiseText(premise);
-    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
-    if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-    combatBox.style.display = 'block';
-  }
-
-  closeAdventureGenModal();
-  switchView('combat');
-}
-
-// Elimina/nasconde il riquadro dell'avventura integrale nella tab Combattimento e azzera lo stato in corso.
-function deleteIntegralAdventureCombatBox(){
-  const combatBox = document.getElementById('integral-adventure-combat-box');
-  if(combatBox) combatBox.style.display = 'none';
-  integralAdventureState = null;
-}
-
-// Scelta effettuata nel riquadro persistente (tab Combattimento): decide se proseguire la storia
-// con un nuovo testo + opzioni, oppure innescare automaticamente un combattimento.
-function selectIntegralAdventureOptionCombat(btn, idx){
-  document.querySelectorAll('.integral-adv-option-btn-combat').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-
-  const chosen = currentIntegralStepOptions[idx];
-  const state = integralAdventureState;
-  if(!chosen || !state) return;
-
-  const note = document.getElementById('ia-combat-choice-note');
-  if(note){
-    note.style.display = 'block';
-    note.textContent = `Scelta registrata: "${chosen.text}"`;
-  }
-
-  state.history.push(chosen.text);
-  const wasInitial = state.phase === 'initial';
-
-  setTimeout(() => {
-    if(chosen.combat){
-      startIntegralCombatEncounter(chosen.text, chosen.boss || null);
-    } else if(wasInitial){
-      // Dallo step iniziale (5 opzioni) si passa sempre a uno step con 3 opzioni.
-      advanceIntegralAdventureStep(chosen.text, 'choice');
-    } else {
-      // Da uno step con 3 opzioni si passa a uno step di sola descrizione, senza opzioni.
-      goToIntegralDescriptionStep(chosen.text);
-    }
-  }, 350);
-}
-
-// Sceglie 3 opzioni di combattimento (tutte uniche) coerenti con tono/ambientazione: usate allo
-// Step 4, dove ogni scelta deve portare a uno scontro, ciascuna verso un boss diverso.
-function pickIntegralBossOptions(tone, setting){
-  const combatPool = integralAdventureOptions.filter(o => o.combat);
-  const scored = combatPool.map(o => {
-    let score = 0;
-    if(o.tones.includes(tone)) score += 3;
-    if(o.settings.includes(setting)) score += 3;
-    if(o.tones.length === 0 && o.settings.length === 0) score += 1;
-    score += Math.random() * 0.9;
-    return { o, score };
-  });
-  scored.sort((a, b) => b.score - a.score);
-
-  const selected = [];
-  const used = new Set();
-  for(const { o } of scored){
-    if(selected.length >= 3) break;
-    if(used.has(o.text)) continue;
-    used.add(o.text);
-    selected.push({...o});
-  }
-  return selected;
-}
-
-// Sceglie n boss distinti dal bestiario (coerenti con livello del gruppo e ambientazione) da
-// abbinare uno a uno alle opzioni dello Step 4: ogni scelta porterà quindi a un boss diverso.
-function pickDistinctIntegralBosses(state, n){
-  const range = getSuggestedCRRange(state.level);
-  const areaId = integralSettingToAreaId(state.setting);
-
-  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
-    .filter(m => { const v = crToNumber(m.cr); return v >= range.min && v <= range.max; });
-  const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
-  if(areaPool.length >= n) pool = areaPool;
-  else if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-
-  let chosen = pickRandomUnique(pool, Math.min(n, pool.length));
-  if(chosen.length < n){
-    const fullPool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
-      .filter(m => !chosen.some(c => c.originalIdx === m.originalIdx));
-    chosen = chosen.concat(pickRandomUnique(fullPool, n - chosen.length));
-  }
-  return chosen;
-}
-
-// Renderizza lo Step 4 del riquadro persistente: solo scelte di combattimento, ognuna abbinata a
-// un boss diverso che verrà affrontato allo Step 5.
-function renderIntegralStep4(state, stepLines){
-  const options = pickIntegralBossOptions(state.tone, state.setting);
-  const bosses = pickDistinctIntegralBosses(state, options.length);
-  options.forEach((opt, i) => { opt.boss = bosses[i] || null; });
-  currentIntegralStepOptions = options;
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    const lines = stepLines.concat([`La tensione cresce: lo scontro decisivo sembra ormai imminente.`]);
-    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Sceglie automaticamente i nemici dal bestiario in base al numero di giocatori, al loro livello
-// e all'ambientazione corrente, e li aggiunge da solo alla coda di combattimento.
-function startIntegralCombatEncounter(chosenText, forcedBoss){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-  state.phase = 'combat';
-  state.combatActive = true;
-
-  let monster, qty;
-  if(forcedBoss){
-    monster = forcedBoss;
-    qty = 1;
-  } else {
-    const range = getSuggestedCRRange(state.level);
-    const areaId = integralSettingToAreaId(state.setting);
-
-    let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}))
-      .filter(m => { const v = crToNumber(m.cr); return v >= range.min && v <= range.max; });
-    const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
-    if(areaPool.length) pool = areaPool;
-    if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-
-    monster = pool[Math.floor(Math.random() * pool.length)];
-    qty = Math.max(1, state.players + (Math.random() < 0.5 ? -1 : 0));
-  }
-
-  if(monster) addMultipleToCombat(monster.originalIdx, qty);
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Combattimento`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.textContent = monster
-      ? (forcedBoss
-          ? `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Davanti a voi si erge ${monster.nome} (CR ${monster.cr})!`
-          : `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Vi ritrovate a fronteggiare ${qty}× ${monster.nome} (CR ${monster.cr})!`)
-      : `Avete scelto di ${lowerFirstLetter(stripOptionEmoji(chosenText))}. Il combattimento ha inizio!`;
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="endIntegralCombat()">🏳️ Termina Combattimento</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-
-  currentIntegralStepOptions = [];
-  switchView('combat');
-  renderCombat();
-}
-
-// Chiamata dal pulsante "Termina Combattimento": chiude lo scontro e genera 3 nuove opzioni.
-function endIntegralCombat(){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.combatActive = false;
-  advanceIntegralAdventureStep(null, 'combat');
-}
-
-// Genera un nuovo testo di prosecuzione e 3 nuove opzioni, coerenti con tono/ambientazione/storia fin qui.
-// source: 'choice' (segue una scelta dello step iniziale), 'combat' (segue la fine di un combattimento),
-// oppure 'description' (segue il pulsante "Avanti" di uno step di sola descrizione).
-function advanceIntegralAdventureStep(chosenText, source){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-  state.phase = 'options';
-
-  // Riga 1: cosa è successo in conseguenza della scelta precedente (o della fine del combattimento/step descrittivo)
-  const recapLine = generateIntegralContinuationText(state.tone, state.setting, chosenText, source);
-  // Riga 2: atmosfera legata all'ambientazione corrente
-  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
-  // Riga 3: aggancio verso il prosieguo, legato al tono
-  const hookLine = pickIntegralLine(integralDescHook, state.tone, integralDescHookFallback);
-  const stepLines = [recapLine, atmosphereLine, hookLine];
-
-  if(state.step === 4){
-    renderIntegralStep4(state, stepLines);
-    return;
-  }
-  if(state.step === 6){
-    renderIntegralStep6(state);
-    return;
-  }
-
-  const options = pickIntegralOptions(state.tone, state.setting, 3, state.history.join(' '));
-  currentIntegralStepOptions = options;
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.innerHTML = stepLines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = options.map((opt, i) => `<button class="btn secondary small integral-adv-option-btn-combat" type="button" onclick="selectIntegralAdventureOptionCombat(this, ${i})">${opt.text}</button>`).join('');
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Step di sola descrizione (almeno 3 righe), senza opzioni: solo il pulsante "Avanti".
-function goToIntegralDescriptionStep(lastActionText){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-
-  const lines = generateIntegralDescriptionLines(state, lastActionText);
-
-  if(state.step === 4){
-    state.phase = 'options';
-    renderIntegralStep4(state, lines);
-    return;
-  }
-  if(state.step === 6){
-    renderIntegralStep6(state);
-    return;
-  }
-
-  state.phase = 'description';
-  currentIntegralStepOptions = [];
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn secondary small" type="button" onclick="continueIntegralAdventureAfterDescription()">➡️ Avanti</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Pulsante "Avanti" dello step di sola descrizione: riprende con 3 nuove opzioni.
-function continueIntegralAdventureAfterDescription(){
-  advanceIntegralAdventureStep(null, 'description');
-}
-
-// Aperture in stile narratore, in base al tono, usate come prima riga dello Step 6.
-const integralStep6Openers = {
-  Oscuro: [
-    `Il buio sembra addensarsi intorno a voi, mentre i ricordi di ciò che avete affrontato riaffiorano, nitidi e pesanti.`,
-    `Un silenzio innaturale scende sul gruppo. Anche l'aria, intorno a voi, sembra trattenere il fiato.`
-  ],
-  Misterioso: [
-    `Ogni indizio, ogni scelta, ogni scontro trovano ora un posto in un disegno più ampio, che comincia finalmente a farsi chiaro.`,
-    `I tasselli sparsi lungo il cammino cominciano, uno dopo l'altro, a comporre un'immagine che non avreste osato immaginare.`
-  ],
-  Comico: [
-    `Vi concedete un respiro — raro momento di calma — per ripensare, tra un sorriso e l'altro, a tutto ciò che è successo finora.`,
-    `Per una volta tanto, nessuno sta correndo, urlando o cadendo da qualche parte. Ne approfittate per tirare il fiato.`
-  ],
-  Tragico: [
-    `Vi fermate un istante. Il peso di ogni scelta, di ogni perdita, si fa sentire più che mai.`,
-    `Nessuno parla per un lungo momento. Alcune ferite, lo sapete bene, non si vedono a occhio nudo.`
-  ],
-  Eroico: [
-    `Ogni prova superata vi ha temprati. Ora, fianco a fianco, vi preparate a ciò che vi attende.`,
-    `Vi guardate negli occhi, l'un l'altro: in quello sguardo c'è tutta la strada percorsa insieme, e tutta quella che resta da fare.`
-  ]
-};
-const integralStep6OpenerFallback = [
-  `Vi fermate un istante, ripercorrendo con la mente il cammino compiuto fin qui.`,
-  `Prendete fiato, consapevoli che la strada percorsa finora è stata solo un preludio.`
-];
-
-// Preannunci variabili dello scontro finale, usati come ultima riga dello Step 6.
-const integralStep6Foreshadows = [
-  `Ora, però, qualcosa cambia. Nell'aria si avverte un presagio inconfondibile: la prova più grande, quella che deciderà il vostro destino, è ormai alle porte. Non ci sarà preavviso, non ci sarà una nuova scelta da compiere: solo il coraggio necessario per affrontare ciò che sta per arrivare.`,
-  `Un silenzio carico di attesa avvolge il gruppo. Sapete, senza che nessuno lo dica ad alta voce, che il momento decisivo è ormai vicino — e che questa volta non ci sarà spazio per esitare.`,
-  `Il vento cambia, o forse è solo la vostra percezione: qualcosa di grande, di terribile, sta per manifestarsi. Non resta che stringere le armi e prepararsi.`
-];
-
-// Costruisce, in stile narratore da tavolo (D&D 2024), un paragrafo di ampio respiro che ripercorre
-// la storia dell'avventura appena vissuta e ne preannuncia lo scontro conclusivo. Non rivela alcuna
-// informazione di sistema (nessun accenno a "step", scelte alternative o meccaniche di generazione).
-function buildIntegralStep6Narration(state){
-  const opener = pickIntegralLine(integralStep6Openers, state.tone, integralStep6OpenerFallback);
-
-  const recapChoices = (state.history || [])
-    .map(h => lowerFirstLetter(stripOptionEmoji(h)))
-    .filter(Boolean);
-
-  let recapPara;
-  if(recapChoices.length){
-    const lastChoices = recapChoices.slice(-3);
-    const joined = lastChoices.length > 1
-      ? lastChoices.slice(0, -1).join(', ') + ' e infine di ' + lastChoices[lastChoices.length - 1]
-      : lastChoices[0];
-    recapPara = `Il vostro cammino è stato segnato da decisioni difficili: dopo aver scelto di ${joined}, ogni passo ha lasciato un segno, portandovi fin qui, tra le trame di un'avventura ${state.tone.toLowerCase()} ambientata tra ${state.setting.toLowerCase()}.`;
-  } else {
-    recapPara = `Avete attraversato prove di ogni genere, in un'avventura ${state.tone.toLowerCase()} ambientata tra ${state.setting.toLowerCase()}, fino a giungere a questo momento.`;
-  }
-
-  const atmosphereLine = pickIntegralLine(integralDescAtmosphere, state.setting, integralDescAtmosphereFallback);
-
-  const foreshadow = integralStep6Foreshadows[Math.floor(Math.random() * integralStep6Foreshadows.length)];
-
-  return [opener, recapPara, atmosphereLine, foreshadow];
-}
-
-// Step 6: descrizione approfondita in stile narratore, senza opzioni, solo il pulsante "Avanti"
-// che introduce lo scontro finale.
-function renderIntegralStep6(state){
-  state.phase = 'description';
-  currentIntegralStepOptions = [];
-
-  const lines = buildIntegralStep6Narration(state);
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Avventura Integrale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.innerHTML = lines.map(l => `<p style="margin:0 0 8px;">${l}</p>`).join('');
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="proceedToIntegralFinalBoss()">➡️ Avanti</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-}
-
-// Sceglie il boss dello scontro finale (Step 7): un singolo nemico molto più difficile del normale,
-// calibrato sul livello dei personaggi e sul numero di giocatori impostati a inizio avventura.
-function pickIntegralFinalBoss(state){
-  const areaId = integralSettingToAreaId(state.setting);
-  // Un solo mostro vale, a parità di CR, meno di più mostri con lo stesso budget: per uno scontro
-  // finale duro contro l'intero gruppo si punta quindi a un Grado di Sfida più alto della norma,
-  // che cresce sia con il livello dei personaggi sia con il numero di giocatori al tavolo.
-  const targetCR = state.level + Math.max(2, Math.ceil(state.players / 2) + 1);
-
-  let pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-  const areaPool = pool.filter(m => monsterMatchesArea(m, areaId));
-  if(areaPool.length) pool = areaPool;
-  if(!pool.length) pool = getAllMonsters().map((m, originalIdx) => ({...m, originalIdx}));
-
-  pool.sort((a, b) => {
-    const av = crToNumber(a.cr), bv = crToNumber(b.cr);
-    // Penalizza pesantemente i mostri sotto il CR bersaglio: un boss finale deve essere una vera minaccia.
-    const aScore = av >= targetCR ? (av - targetCR) : (targetCR - av) + 1000;
-    const bScore = bv >= targetCR ? (bv - targetCR) : (targetCR - bv) + 1000;
-    return aScore - bScore;
-  });
-
-  return pool[0] || null;
-}
-
-// Pulsante "Avanti" dello Step 6: avvia lo scontro finale (Step 7) contro il boss selezionato.
-function proceedToIntegralFinalBoss(){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.step++;
-  state.phase = 'combat';
-  state.combatActive = true;
-
-  const boss = pickIntegralFinalBoss(state);
-  if(boss) addMultipleToCombat(boss.originalIdx, 1);
-
-  const headerCell = document.getElementById('ia-combat-header');
-  const toneSettingCell = document.getElementById('ia-combat-tone-setting');
-  const groupCell = document.getElementById('ia-combat-group');
-  const premiseCell = document.getElementById('ia-combat-premise');
-  const optionsCell = document.getElementById('ia-combat-options');
-  const choiceNote = document.getElementById('ia-combat-choice-note');
-
-  if(headerCell) headerCell.textContent = `📖 Step ${state.step} — Lo Scontro Finale`;
-  if(toneSettingCell) toneSettingCell.textContent = `${state.tone} · ${state.setting}`;
-  if(groupCell) groupCell.textContent = `${state.players} giocatori · Livello ${state.level}`;
-  if(premiseCell){
-    premiseCell.textContent = boss
-      ? `Il momento è arrivato. Davanti a voi si erge, in tutta la sua minaccia, ${boss.nome} (CR ${boss.cr})! Questo è lo scontro per cui ogni prova finora vi ha preparati.`
-      : `Il momento è arrivato: lo scontro finale ha inizio!`;
-  }
-  if(optionsCell){
-    optionsCell.innerHTML = `<button class="btn blood small" type="button" onclick="endIntegralFinalBoss()">🏳️ Termina Combattimento</button>`;
-  }
-  if(choiceNote){ choiceNote.style.display = 'none'; choiceNote.textContent = ''; }
-
-  currentIntegralStepOptions = [];
-  switchView('combat');
-  renderCombat();
-}
-
-// Chiamata dal pulsante "Termina Combattimento" dello scontro finale (Step 7): chiude e nasconde
-// la tabella dell'avventura integrale, senza generare ulteriori step.
-function endIntegralFinalBoss(){
-  const state = integralAdventureState;
-  if(!state) return;
-  state.combatActive = false;
-  deleteIntegralAdventureCombatBox();
-}
-
-function selectIntegralAdventureOption(btn, idx){
-  document.querySelectorAll('.integral-adv-option-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  const note = document.getElementById('integral-adv-choice-note');
-  if(note){
-    note.style.display = 'block';
-    note.textContent = `Scelta registrata: "${btn.textContent.trim()}". Continua nella tab Combattimento, dove l'avventura prosegue passo dopo passo.`;
-  }
-}
-
-function toggleIntegralAdventurePanel(){
-  const panel = document.getElementById('integral-adventure-panel');
-  if(!panel) return;
-  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-}
-
 function generateRandomAdventure(){
   const toneSel = document.getElementById('adv-gen-tone');
   const settingSel = document.getElementById('adv-gen-setting');
@@ -7928,6 +7095,739 @@ function generateRandomAdventure(){
       <p style="margin:10px 0 0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${adv.text}</p>
     </div>
   `;
+}
+
+function openItemGenChoiceModal(){
+  const modal = document.getElementById('item-gen-choice-modal');
+  if(!modal) return;
+  modal.classList.add('active');
+}
+function closeItemGenChoiceModal(){
+  const modal = document.getElementById('item-gen-choice-modal');
+  if(modal) modal.classList.remove('active');
+}
+function closeItemGenChoiceModalOnBg(event){
+  if(event.target && event.target.id === 'item-gen-choice-modal') closeItemGenChoiceModal();
+}
+function openShopItemGenModal(){
+  const modal = document.getElementById('shop-item-gen-modal');
+  if(!modal) return;
+  modal.classList.add('active');
+}
+function closeShopItemGenModal(){
+  const modal = document.getElementById('shop-item-gen-modal');
+  if(modal) modal.classList.remove('active');
+}
+function closeShopItemGenModalOnBg(event){
+  if(event.target && event.target.id === 'shop-item-gen-modal') closeShopItemGenModal();
+}
+
+// Livelli di zona: indicano la dimensione minima dell'insediamento in cui un oggetto è reperibile.
+const shopZoneTiers = ['Insediamento di frontiera','Villaggio','Cittadina','Grande città','Metropoli'];
+
+// Oggetti in vendita suddivisi per tipo di negozio, ciascuno con costo, descrizione del funzionamento
+// e "tier" minimo di zona in cui è reperibile (0 = ovunque, 4 = solo nelle metropoli).
+const shopItemsByType = {
+  'Emporio': [
+    { name:'Corda di canapa (15 m)', cost:'1 mo', tier:0, desc:"Robusta corda utile per arrampicarsi, legare o calare pesi; regge fino a 300 kg." },
+    { name:'Torcia', cost:'1 mr', tier:0, desc:'Brucia per 1 ora emettendo luce viva in un raggio di 6 m e luce fioca per altri 6 m.' },
+    { name:'Zaino', cost:'2 mo', tier:0, desc:"Permette di trasportare comodamente rifornimenti ed equipaggiamento da viaggio." },
+    { name:'Razioni da viaggio (1 giorno)', cost:'5 ma', tier:0, desc:'Cibo essiccato e conservabile, sufficiente a sfamare una persona per un giorno.' },
+    { name:'Acciarino', cost:'5 ma', tier:0, desc:"Permette di accendere un fuoco in circa 1 minuto in condizioni normali." },
+    { name:'Otre d\'acqua', cost:'2 ma', tier:0, desc:'Contiene fino a 4 litri di liquido.' },
+    { name:'Lanterna a lato chiuso', cost:'5 mo', tier:1, desc:"Consuma 1 fiasco d'olio ogni 6 ore, illuminando un raggio di 9 m senza rivelare la fonte oltre quel raggio." },
+    { name:'Coperta da viaggio', cost:'5 ma', tier:0, desc:'Protegge dal freddo durante i riposi all\'aperto.' },
+    { name:'Fiaschetta d\'olio', cost:'1 ma', tier:0, desc:"Olio combustibile per lanterne, sufficiente per alcune ore di luce." },
+    { name:'Sacco da viaggio', cost:'2 mo', tier:0, desc:"Ampio sacco robusto per trasportare provviste e oggetti vari." },
+    { name:'Bussola da viaggiatore', cost:'5 mo', tier:0, desc:"Indica sempre il nord, utile per orientarsi in territori sconosciuti." },
+    { name:'Kit da cucito', cost:'1 mo', tier:0, desc:"Ago, filo e ditale per piccole riparazioni sul campo." },
+    { name:'Fiala vuota', cost:'1 ma', tier:0, desc:"Piccolo contenitore di vetro per liquidi e pozioni." },
+    { name:'Chiodi di ferro (10)', cost:'1 mo', tier:0, desc:"Utili per fissare corde, martellare aperture o bloccare porte." },
+    { name:'Martello da campo', cost:'2 mo', tier:0, desc:"Utile per piantare picchetti o chiodi da scalata." },
+    { name:'Rampino', cost:'2 mo', tier:0, desc:"Aggancia superfici sporgenti per facilitare l'arrampicata con una corda." },
+    { name:'Secchio pieghevole', cost:'5 ma', tier:0, desc:"Utile per raccogliere acqua o altri liquidi durante il viaggio." },
+    { name:'Fiaschetta da campo', cost:'2 ma', tier:0, desc:"Contenitore leggero per bevande, comodo da portare in cintura." },
+    { name:'Esca per pesca', cost:'3 ma', tier:0, desc:"Set di piccoli ami e lenze per pescare durante un riposo lungo." },
+    { name:'Coperta impermeabile', cost:'8 ma', tier:0, desc:"Tela cerata utile per proteggere provviste dalla pioggia." },
+    { name:'Tenda da una persona', cost:'2 mo', tier:1, desc:"Riparo leggero e facile da montare per un solo occupante." },
+    { name:'Kit di attrezzi da scalatore', cost:'25 mo', tier:1, desc:"Include piccozze e ramponi per superare terreni impervi." },
+    { name:'Cassetta degli attrezzi', cost:'5 mo', tier:1, desc:"Set base di strumenti per piccole riparazioni quotidiane." },
+    { name:'Fischietto da segnalazione', cost:'1 mo', tier:0, desc:"Emette un suono acuto udibile a distanza, utile per richiamare l'attenzione." },
+    { name:'Specchio d\'acciaio tascabile', cost:'5 mo', tier:0, desc:"Piccolo specchio lucidato, utile per segnalazioni luminose o per radersi." },
+    { name:'Sapone', cost:'2 ma', tier:0, desc:"Blocco di sapone per l'igiene personale durante i viaggi." },
+    { name:'Pettine d\'osso', cost:'1 ma', tier:0, desc:"Semplice pettine intagliato, utile per la cura personale." },
+    { name:'Bende pulite (set)', cost:'2 mo', tier:0, desc:"Fasce di stoffa bollita, utili per medicazioni improvvisate." },
+    { name:'Fiaschetta di rum', cost:'3 mo', tier:1, desc:"Distillato forte, utile per scaldarsi o disinfettare una ferita." },
+    { name:'Kit da pesca completo', cost:'4 mo', tier:0, desc:"Amo, lenza e galleggiante per procurarsi cibo lungo i corsi d'acqua." },
+    { name:'Piccone da minatore', cost:'3 mo', tier:1, desc:"Attrezzo robusto per scavare o abbattere rocce friabili." },
+    { name:'Vanga pieghevole', cost:'4 mo', tier:1, desc:"Attrezzo compatto utile per scavare o seppellire oggetti." },
+    { name:'Fune sottile (30 m)', cost:'3 mo', tier:0, desc:"Corda leggera ma resistente, utile per legature rapide." },
+    { name:'Gancio da traino', cost:'2 mo', tier:0, desc:"Si fissa a una corda per trainare oggetti pesanti." },
+    { name:'Fiaschetta per esca da fuoco', cost:'1 ma', tier:0, desc:"Materiale infiammabile essiccato, utile per accendere fuochi in fretta." },
+    { name:'Zainetto impermeabile', cost:'6 mo', tier:1, desc:"Rivestito in cera, protegge il contenuto dall'umidità." },
+    { name:'Kit riparazione tende', cost:'3 mo', tier:1, desc:"Ago robusto e stoffa di scorta per riparare ripari da campo." },
+    { name:'Lanterna tascabile', cost:'10 mo', tier:1, desc:"Versione più piccola della lanterna standard, comoda da trasportare." },
+    { name:'Custodia per pergamene', cost:'4 mo', tier:0, desc:"Tubo rigido che protegge mappe e documenti arrotolati." },
+    { name:'Fiaschetta con filtro', cost:'6 mo', tier:1, desc:"Permette di filtrare l'acqua raccolta da fiumi o pozzi." },
+    { name:'Set di pesi da bilancia', cost:'5 mo', tier:1, desc:"Utile per pesare polveri, monete o ingredienti alchemici." },
+    { name:'Bastone da passeggio', cost:'1 mo', tier:0, desc:"Aiuta a camminare su terreni accidentati e può fungere da arma improvvisata." },
+  ],
+  'Fabbro': [
+    { name:'Spada corta', cost:'10 mo', tier:0, desc:'Arma da mischia leggera e versatile, infligge 1d6 danni perforanti.' },
+    { name:'Ascia da battaglia', cost:'10 mo', tier:0, desc:'Arma versatile: 1d8 danni taglienti (1d10 se impugnata a due mani).' },
+    { name:'Armatura di cuoio borchiato', cost:'45 mo', tier:1, desc:"CA 12 più il modificatore di Destrezza; non impone svantaggio alla Furtività." },
+    { name:'Scudo', cost:'10 mo', tier:0, desc:'Aumenta la Classe Armatura di 2 finché viene impugnato.' },
+    { name:'Cotta di maglia', cost:'75 mo', tier:2, desc:"CA 16; richiede Forza 13 o la velocità viene ridotta di 3 metri." },
+    { name:'Punta di lancia', cost:'5 mo', tier:0, desc:'Arma da lancio semplice, 1d6 danni perforanti, gittata 9/36 m.' },
+    { name:'Set da fabbro', cost:'20 mo', tier:1, desc:'Attrezzi necessari per forgiare e riparare armi e armature metalliche.' },
+    { name:'Pugnale', cost:'2 mo', tier:0, desc:"Arma leggera e versatile, infligge 1d4 danni perforanti." },
+    { name:'Mazza', cost:'5 mo', tier:0, desc:"Arma semplice da mischia, infligge 1d6 danni contundenti." },
+    { name:'Lancia', cost:'1 mo', tier:0, desc:"Arma versatile e da lancio, infligge 1d6 danni perforanti." },
+    { name:'Martello da guerra', cost:'15 mo', tier:1, desc:"Arma pesante versatile, infligge 1d8 danni contundenti (1d10 a due mani)." },
+    { name:'Alabarda', cost:'20 mo', tier:1, desc:"Arma pesante a due mani con portata estesa, infligge 1d10 danni." },
+    { name:'Spadone', cost:'50 mo', tier:2, desc:"Arma pesante a due mani, infligge 2d6 danni taglienti." },
+    { name:'Balestra leggera', cost:'25 mo', tier:1, desc:"Arma a distanza semplice, infligge 1d8 danni perforanti." },
+    { name:'Balestra pesante', cost:'50 mo', tier:2, desc:"Arma a distanza pesante, infligge 1d10 danni perforanti." },
+    { name:'Arco corto', cost:'25 mo', tier:1, desc:"Arma a distanza semplice e leggera, infligge 1d6 danni perforanti." },
+    { name:'Arco lungo', cost:'50 mo', tier:2, desc:"Arma a distanza dalla portata notevole, infligge 1d8 danni perforanti." },
+    { name:'Ascia da lancio', cost:'5 mo', tier:0, desc:"Piccola ascia bilanciata per essere lanciata, infligge 1d6 danni." },
+    { name:'Scimitarra', cost:'25 mo', tier:1, desc:"Lama curva leggera, infligge 1d6 danni taglienti." },
+    { name:'Rapier', cost:'25 mo', tier:1, desc:"Spada sottile e precisa, infligge 1d8 danni perforanti." },
+    { name:'Frusta', cost:'2 mo', tier:0, desc:"Arma leggera con portata estesa, infligge 1d4 danni taglienti." },
+    { name:'Tridente', cost:'5 mo', tier:0, desc:"Arma versatile da mischia o lancio, infligge 1d6 danni perforanti." },
+    { name:'Armatura imbottita', cost:'5 mo', tier:0, desc:"CA 11 più il modificatore di Destrezza; leggera ma poco protettiva." },
+    { name:'Armatura di cuoio', cost:'10 mo', tier:0, desc:"CA 11 più il modificatore di Destrezza, leggera e comoda." },
+    { name:'Camicia di maglia', cost:'50 mo', tier:1, desc:"CA 13, più il modificatore di Destrezza (massimo 2)." },
+    { name:'Chiodi da armatura (set)', cost:'3 mo', tier:0, desc:"Set di rivetti e chiodi per piccole riparazioni all'equipaggiamento." },
+    { name:'Cote per affilare', cost:'1 mo', tier:0, desc:"Pietra abrasiva utile per mantenere affilate le lame." },
+    { name:'Set da fabbro portatile', cost:'10 mo', tier:0, desc:"Versione ridotta degli attrezzi da fabbro, utile in viaggio." },
+    { name:'Punte per frecce (20)', cost:'1 mo', tier:0, desc:"Set di punte metalliche di ricambio per frecce." },
+    { name:'Fionda', cost:'1 ma', tier:0, desc:"Arma semplice a distanza, infligge 1d4 danni contundenti." },
+    { name:'Bastone ferrato', cost:'2 mo', tier:0, desc:"Arma semplice da mischia, infligge 1d6 danni contundenti." },
+    { name:'Falce da battaglia', cost:'20 mo', tier:1, desc:"Attrezzo agricolo riadattato in arma, infligge 1d6 danni taglienti." },
+    { name:'Manopola chiodata', cost:'1 mo', tier:0, desc:"Arma leggera da mischia ravvicinata, infligge 1d4 danni perforanti." },
+    { name:'Piccozza da guerra', cost:'5 mo', tier:0, desc:"Attrezzo minerario riadattato, infligge 1d6 danni perforanti." },
+    { name:'Coltellaccio da macellaio', cost:'3 mo', tier:0, desc:"Lama pesante e corta, infligge 1d6 danni taglienti." },
+    { name:'Cinturone porta-armi', cost:'3 mo', tier:0, desc:"Permette di trasportare più armi leggere comodamente." },
+    { name:'Fodero rinforzato', cost:'2 mo', tier:0, desc:"Protegge la lama e ne facilita l'estrazione rapida." },
+    { name:'Guanti da fabbro', cost:'2 mo', tier:0, desc:"Proteggono le mani dal calore e dagli attrezzi taglienti." },
+    { name:'Grembiule di cuoio', cost:'3 mo', tier:0, desc:"Protezione da lavoro utilizzata durante la forgiatura." },
+    { name:'Barra di ferro grezzo', cost:'5 mo', tier:0, desc:"Materiale base per riparazioni e piccole forgiature sul campo." },
+    { name:'Cinturino da fodero doppio', cost:'3 mo', tier:0, desc:"Permette di portare due lame corte comodamente sui fianchi." },
+    { name:'Randello', cost:'1 ma', tier:0, desc:"Arma semplice e rustica ricavata da un ramo robusto; infligge 1d4 danni contundenti." },
+    { name:'Randello pesante', cost:'2 mo', tier:0, desc:"Grosso bastone da mischia impugnato a due mani, infligge 1d8 danni contundenti." },
+    { name:'Giavellotto', cost:'5 mo', tier:0, desc:"Arma da lancio semplice con buona gittata, infligge 1d6 danni perforanti." },
+    { name:'Martello leggero', cost:'2 mo', tier:0, desc:"Piccolo martello bilanciato, utilizzabile in mischia o come arma da lancio; infligge 1d4 danni contundenti." },
+    { name:'Falcetto', cost:'1 mo', tier:0, desc:"Lama corta e ricurva, leggera e maneggevole; infligge 1d4 danni taglienti." },
+    { name:'Dardo da lancio', cost:'5 mr', tier:0, desc:"Piccolo proiettile bilanciato pensato per essere scagliato, infligge 1d4 danni perforanti." },
+    { name:'Coreggia', cost:'10 mo', tier:1, desc:"Arma da mischia con testa oscillante collegata a una catena, infligge 1d8 danni contundenti." },
+    { name:'Falcione', cost:'20 mo', tier:1, desc:"Arma pesante a due mani con lama ricurva su una lunga asta e portata estesa, infligge 1d10 danni taglienti." },
+    { name:'Ascia pesante', cost:'30 mo', tier:1, desc:"Grande ascia da guerra a due mani, infligge 1d12 danni taglienti." },
+    { name:'Lancia da cavalleria', cost:'10 mo', tier:1, desc:"Arma da mischia con portata estesa, pensata per essere usata a cavallo; infligge 1d10 danni perforanti." },
+    { name:'Spada lunga', cost:'15 mo', tier:1, desc:"Lama diritta a filo singolo, impugnabile a una o due mani; infligge 1d8 danni taglienti." },
+    { name:'Mazza da guerra pesante', cost:'10 mo', tier:1, desc:"Grande martello impugnato a due mani, infligge 2d6 danni contundenti." },
+    { name:'Stella del mattino', cost:'15 mo', tier:1, desc:"Mazza chiodata dalla testa sferica, infligge 1d8 danni perforanti." },
+    { name:'Picca', cost:'5 mo', tier:1, desc:"Lunga arma d'asta a due mani con grande portata, infligge 1d10 danni perforanti." },
+    { name:'Piccone da guerra', cost:'5 mo', tier:0, desc:"Attrezzo minerario adattato al combattimento, infligge 1d8 danni perforanti." },
+    { name:'Cerbottana', cost:'10 mo', tier:1, desc:"Arma a distanza silenziosa che scaglia piccoli dardi, infligge 1 danno perforante." },
+    { name:'Balestra a mano', cost:'75 mo', tier:2, desc:"Piccola balestra maneggiabile con una sola mano, infligge 1d6 danni perforanti." },
+    { name:'Moschetto', cost:'500 mo', tier:3, desc:"Rara arma da fuoco a canna lunga, infligge 1d12 danni perforanti." },
+    { name:'Pistola', cost:'250 mo', tier:3, desc:"Rara arma da fuoco compatta, infligge 1d10 danni perforanti." },
+  ],
+  'Armaiolo': [
+    { name:'Armatura a piastre', cost:'1500 mo', tier:4, desc:"CA 18; non richiede né consente il modificatore di Destrezza." },
+    { name:'Mezza piastra', cost:'750 mo', tier:3, desc:'CA 15 più il modificatore di Destrezza (massimo 2).' },
+    { name:'Corazza', cost:'400 mo', tier:2, desc:'CA 14 più il modificatore di Destrezza (massimo 2).' },
+    { name:'Scudo rinforzato con borchie', cost:'15 mo', tier:1, desc:'Scudo robusto che offre +2 alla CA, più resistente agli urti rispetto a un modello comune.' },
+    { name:'Elmo chiuso', cost:'25 mo', tier:2, desc:"Protegge il volto dai colpi, riducendo il rischio di ferite gravi al capo." },
+    { name:'Bracciali rinforzati', cost:'20 mo', tier:1, desc:"Proteggono avambracci e polsi durante il combattimento ravvicinato." },
+    { name:'Scudo torre', cost:'20 mo', tier:1, desc:"Grande scudo che offre eccellente protezione ma riduce la mobilità." },
+    { name:'Armatura a scaglie', cost:'50 mo', tier:1, desc:"CA 14 più il modificatore di Destrezza (massimo 2)." },
+    { name:'Elmo aperto', cost:'10 mo', tier:0, desc:"Protegge parzialmente il capo senza limitare la visuale." },
+    { name:'Gambali rinforzati', cost:'15 mo', tier:1, desc:"Proteggono le gambe dai colpi di striscio in combattimento." },
+    { name:'Spallacci in metallo', cost:'12 mo', tier:0, desc:"Piastre che proteggono le spalle da colpi dall'alto." },
+    { name:'Guanti d\'arme', cost:'10 mo', tier:0, desc:"Protezione articolata per le mani durante il combattimento." },
+    { name:'Corsetto di cuoio rinforzato', cost:'20 mo', tier:1, desc:"Rinforzo aggiuntivo indossabile sopra un'armatura leggera." },
+    { name:'Placca pettorale singola', cost:'60 mo', tier:2, desc:"Piastra solida che protegge il torace, spesso abbinata ad altra armatura." },
+    { name:'Scudo piccolo in legno', cost:'5 mo', tier:0, desc:"Scudo leggero, offre +1 alla CA e facilita la mobilità." },
+    { name:'Cimiero decorativo', cost:'15 mo', tier:1, desc:"Ornamento per elmo che indica rango o casato." },
+    { name:'Armatura da torneo', cost:'200 mo', tier:3, desc:"Versione cerimoniale e riccamente decorata di un'armatura pesante." },
+    { name:'Corazza laminata', cost:'300 mo', tier:2, desc:"Armatura formata da strisce di metallo sovrapposte, CA 14." },
+    { name:'Elmo con visiera mobile', cost:'40 mo', tier:2, desc:"Permette di alzare la visiera per una visuale migliore fuori dal combattimento." },
+    { name:'Cotta di maglia rinforzata', cost:'90 mo', tier:2, desc:"Versione più resistente della cotta di maglia standard." },
+    { name:'Bracciale da scudiero', cost:'8 mo', tier:0, desc:"Protezione semplice per l'avambraccio, usata dagli apprendisti." },
+    { name:'Corazza da cavaliere', cost:'600 mo', tier:3, desc:"Armatura pesante decorata con lo stemma di un casato nobiliare." },
+    { name:'Scudo con borchie avvelenate (decorativo)', cost:'30 mo', tier:1, desc:"Scudo decorato con borchie affilate, utile anche in mischia ravvicinata." },
+    { name:'Gorgiera', cost:'18 mo', tier:1, desc:"Protezione articolata per il collo e la gola." },
+    { name:'Armatura da giostra', cost:'150 mo', tier:2, desc:"Pesante armatura pensata per tornei e giostre, ingombrante in combattimento reale." },
+    { name:'Cinta d\'armatura', cost:'5 mo', tier:0, desc:"Fascia che aiuta a distribuire il peso di un'armatura pesante." },
+    { name:'Rinforzi per stivali', cost:'6 mo', tier:0, desc:"Placche metalliche da applicare a stivali da combattimento." },
+    { name:'Scudo araldico', cost:'25 mo', tier:1, desc:"Scudo dipinto con lo stemma di una casata o gilda." },
+    { name:'Armatura leggera da esploratore', cost:'30 mo', tier:1, desc:"Versione alleggerita di un'armatura di cuoio, pensata per la mobilità." },
+    { name:'Placca per ginocchia', cost:'10 mo', tier:0, desc:"Protezione snodata per le articolazioni delle gambe." },
+    { name:'Elmo a muso di lupo', cost:'45 mo', tier:2, desc:"Elmo decorato a forma di muso animale, intimidatorio in battaglia." },
+    { name:'Corazza rinforzata da assedio', cost:'400 mo', tier:3, desc:"Pesante e resistente, pensata per chi difende le mura." },
+    { name:'Set completo di manutenzione armatura', cost:'8 mo', tier:0, desc:"Oli, panni e strumenti per la cura di armature metalliche." },
+    { name:'Placca dorsale', cost:'70 mo', tier:2, desc:"Protegge la schiena, spesso abbinata a un petto corazzato." },
+    { name:'Bracciali da torneo imbottiti', cost:'12 mo', tier:1, desc:"Protezione leggera pensata per i combattimenti sportivi." },
+    { name:'Armatura cerimoniale in argento', cost:'800 mo', tier:3, desc:"Splendida armatura decorativa, poco pratica ma di grande prestigio." },
+    { name:'Scudo rotondo in bronzo', cost:'12 mo', tier:0, desc:"Scudo leggero e maneggevole, comune tra i mercenari." },
+    { name:'Corazza da ufficiale', cost:'250 mo', tier:3, desc:"Armatura di qualità superiore riservata a comandanti e ufficiali." },
+    { name:'Placca da campo per cavallo', cost:'150 mo', tier:2, desc:"Protezione metallica pensata per cavalcature da guerra." },
+    { name:'Set di rivetti decorativi', cost:'5 mo', tier:0, desc:"Ornamenti metallici da applicare per personalizzare un'armatura." },
+    { name:'Rinforzo per gomiti', cost:'8 mo', tier:0, desc:"Protezione articolata leggera per gli avambracci in combattimento." },
+  ],
+  'Erboristeria': [
+    { name:'Kit del guaritore', cost:'5 mo', tier:0, desc:'Contiene 10 usi; stabilizza una creatura morente senza bisogno di un tiro di Medicina.' },
+    { name:'Unguento lenitivo', cost:'10 mo', tier:1, desc:"Applicato su una ferita, allevia il dolore e favorisce la guarigione nelle ore successive." },
+    { name:'Tisana rinvigorente', cost:'3 mo', tier:1, desc:"Bevuta durante un riposo, aiuta a recuperare le energie dopo uno sforzo prolungato." },
+    { name:'Erbe essiccate assortite', cost:'2 mo', tier:0, desc:'Ingredienti base richiesti da molte ricette alchemiche e rimedi casalinghi.' },
+    { name:'Balsamo anti-infiammatorio', cost:'8 mo', tier:1, desc:'Riduce gonfiore e dolore su contusioni e piccole ferite.' },
+    { name:'Sacchetto di semi curativi', cost:'6 mo', tier:1, desc:'Semi rari usati nella preparazione di infusi medicinali.' },
+    { name:'Radice di ginseng essiccata', cost:'4 mo', tier:0, desc:"Si dice rinvigorisca corpo e mente se masticata lentamente." },
+    { name:'Foglie di menta selvatica', cost:'1 mo', tier:0, desc:"Utilizzate per infusi che calmano lo stomaco." },
+    { name:'Corteccia di salice', cost:'3 mo', tier:0, desc:"Masticata, allevia lievemente dolori e febbre." },
+    { name:'Miele grezzo', cost:'2 mo', tier:0, desc:"Usato sia come dolcificante che come rimedio per la gola irritata." },
+    { name:'Impacco di argilla curativa', cost:'4 mo', tier:1, desc:"Applicato su contusioni, riduce gonfiore e dolore." },
+    { name:'Sciroppo per la tosse', cost:'5 mo', tier:1, desc:"Miscela di erbe che allevia la tosse persistente." },
+    { name:'Fiori di camomilla essiccati', cost:'1 mo', tier:0, desc:"Preparati in infuso, favoriscono il rilassamento e il sonno." },
+    { name:'Radice di valeriana', cost:'3 mo', tier:1, desc:"Utilizzata per calmare l'ansia e favorire il riposo." },
+    { name:'Olio essenziale di lavanda', cost:'6 mo', tier:1, desc:"Utilizzato per alleviare tensioni e favorire il rilassamento." },
+    { name:'Sale curativo da bagno', cost:'4 mo', tier:0, desc:"Aggiunto all'acqua calda, allevia dolori muscolari." },
+    { name:'Foglie di aloe fresca', cost:'2 mo', tier:0, desc:"Applicate sulla pelle, lenisce scottature e irritazioni." },
+    { name:'Tè depurativo', cost:'3 mo', tier:0, desc:"Miscela di erbe che si dice purifichi il corpo dalle tossine." },
+    { name:'Erba di San Giovanni', cost:'5 mo', tier:1, desc:"Utilizzata tradizionalmente per sollevare l'umore." },
+    { name:'Balsamo per articolazioni', cost:'8 mo', tier:1, desc:"Riduce il dolore articolare dopo sforzi prolungati." },
+    { name:'Kit erboristico da viaggio', cost:'12 mo', tier:1, desc:"Set compatto di erbe essiccate per rimedi rapidi in viaggio." },
+    { name:'Fungo curativo raro', cost:'15 mo', tier:2, desc:"Ingrediente pregiato usato in pozioni e unguenti più potenti." },
+    { name:'Radice di zenzero', cost:'1 mo', tier:0, desc:"Utile per alleviare nausea e disturbi digestivi." },
+    { name:'Tintura di propoli', cost:'6 mo', tier:1, desc:"Disinfettante naturale usato su piccole ferite." },
+    { name:'Erbe per fumigazione', cost:'3 mo', tier:0, desc:"Bruciate in un ambiente, si dice purifichino l'aria dalle malattie." },
+    { name:'Miscela per infuso rinfrescante', cost:'2 mo', tier:0, desc:"Bevanda erboristica utile nei climi caldi." },
+    { name:'Cataplasma anti-veleno', cost:'10 mo', tier:1, desc:"Applicato rapidamente, rallenta la diffusione di alcuni veleni comuni." },
+    { name:'Radice essiccata di mandragora', cost:'20 mo', tier:2, desc:"Ingrediente potente e raro, usato con cautela in pozioni forti." },
+    { name:'Estratto di echinacea', cost:'5 mo', tier:1, desc:"Si dice rinforzi le difese naturali del corpo." },
+    { name:'Foglie di eucalipto', cost:'2 mo', tier:0, desc:"Usate in infuso per alleviare congestione e mal di gola." },
+    { name:'Balsamo cicatrizzante', cost:'12 mo', tier:1, desc:"Accelera la guarigione superficiale di tagli e abrasioni." },
+    { name:'Tisana energizzante', cost:'4 mo', tier:0, desc:"Bevanda che aiuta a restare svegli durante lunghe veglie." },
+    { name:'Semi di papavero', cost:'3 mo', tier:1, desc:"Utilizzati con cautela per alleviare dolori intensi." },
+    { name:'Estratto di ortica', cost:'2 mo', tier:0, desc:"Si dice rinforzi capelli e unghie se assunto regolarmente." },
+    { name:'Erbario tascabile', cost:'8 mo', tier:0, desc:"Piccolo manuale illustrato per riconoscere piante curative." },
+    { name:'Pomata per punture d\'insetto', cost:'3 mo', tier:0, desc:"Allevia prurito e gonfiore causati da punture." },
+    { name:'Radice di liquirizia', cost:'1 mo', tier:0, desc:"Masticata, allevia mal di gola e tosse leggera." },
+    { name:'Infuso per la memoria', cost:'7 mo', tier:1, desc:"Si dice migliori la concentrazione se bevuto prima di uno studio intenso." },
+    { name:'Sacchetto di erbe da cuscino', cost:'2 mo', tier:0, desc:"Favorisce un sonno tranquillo se posto sotto il cuscino." },
+    { name:'Rimedio per il mal di viaggio', cost:'5 mo', tier:0, desc:"Riduce nausea e disturbi durante lunghi spostamenti." },
+  ],
+  'Alchimista': [
+    { name:'Pozione di cura', cost:'50 mo', tier:1, desc:'Bevuta come azione bonus, ripristina 2d4+2 punti ferita.' },
+    { name:'Fuoco alchemico (fiala)', cost:'50 mo', tier:1, desc:'Lanciata a bersaglio entro 6 m, infligge danni da fuoco che continuano finché le fiamme non vengono spente.' },
+    { name:"Fiala d'acido", cost:'25 mo', tier:1, desc:'Se lanciata e va a segno, infligge danni da acido al bersaglio.' },
+    { name:'Polvere scintillante', cost:'25 mo', tier:2, desc:'Se dispersa in una piccola area, rivela per breve tempo creature e oggetti normalmente invisibili.' },
+    { name:'Antitossina', cost:'50 mo', tier:1, desc:"Bevuta entro un'ora dall'esposizione a un veleno, garantisce vantaggio ai tiri salvezza contro quel veleno per un'ora." },
+    { name:'Fiala di olio infuocante', cost:'15 mo', tier:1, desc:"Se versato e acceso, ricopre un'area ristretta di fiamme per pochi istanti." },
+    { name:'Pozione di cura superiore', cost:'150 mo', tier:2, desc:"Bevuta come azione bonus, ripristina 4d4+4 punti ferita." },
+    { name:'Fiala di veleno base', cost:'100 mo', tier:2, desc:"Se applicato a un'arma, aggiunge danno da veleno al prossimo colpo." },
+    { name:'Pozione di resistenza al fuoco', cost:'150 mo', tier:2, desc:"Concede resistenza ai danni da fuoco per un'ora." },
+    { name:'Fumogeno alchemico', cost:'20 mo', tier:1, desc:"Se attivato, crea una densa nube di fumo che ostacola la vista." },
+    { name:'Fiala di olio ustionante', cost:'20 mo', tier:1, desc:"Se versato e acceso, brucia rapidamente creando una barriera di fiamme." },
+    { name:'Composto adesivo', cost:'15 mo', tier:1, desc:"Sostanza appiccicosa usata per intrappolare piccoli oggetti o creature." },
+    { name:'Bomba fumogena colorata', cost:'25 mo', tier:1, desc:"Utilizzata per segnalazioni visibili a distanza." },
+    { name:'Fiala neutralizzante', cost:'30 mo', tier:1, desc:"Annulla l'effetto di alcune sostanze chimiche comuni al contatto." },
+    { name:'Reagente per analisi', cost:'10 mo', tier:0, desc:"Permette di identificare rapidamente sostanze comuni o veleni noti." },
+    { name:'Fiala di acqua distillata pura', cost:'5 mo', tier:0, desc:"Base essenziale per la preparazione di molte pozioni." },
+    { name:'Composto congelante', cost:'40 mo', tier:2, desc:"Se lanciato, crea una superficie ghiacciata scivolosa in una piccola area." },
+    { name:'Fiala di gas soporifero', cost:'45 mo', tier:2, desc:"Se rilasciato in spazio chiuso, induce sonnolenza in chi lo respira." },
+    { name:'Polvere anti-marciume', cost:'8 mo', tier:0, desc:"Applicata su cibo o provviste, ne rallenta il deterioramento." },
+    { name:'Pozione di visione crepuscolare', cost:'80 mo', tier:1, desc:"Concede scorcio visivo migliore in condizioni di scarsa illuminazione per un'ora." },
+    { name:'Fiala fumogena repellente', cost:'18 mo', tier:1, desc:"Tiene lontani piccoli insetti e parassiti per diverse ore." },
+    { name:'Estratto corrosivo diluito', cost:'15 mo', tier:0, desc:"Versione più debole dell'acido, utile per piccole incisioni." },
+    { name:'Composto luminescente', cost:'20 mo', tier:1, desc:"Se applicato a un oggetto, lo fa brillare debolmente per ore." },
+    { name:'Fiala anti-infiammabile', cost:'25 mo', tier:1, desc:"Se applicata a un tessuto, lo rende temporaneamente resistente al fuoco." },
+    { name:'Distillato purificante', cost:'10 mo', tier:0, desc:"Rende potabile l'acqua stagnante o sospetta." },
+    { name:'Bomba fumogena assordante', cost:'35 mo', tier:2, desc:"Produce un forte scoppio sonoro accompagnato da fumo denso." },
+    { name:'Fiala di sonnifero leggero', cost:'20 mo', tier:1, desc:"Aggiunta a una bevanda, induce un sonno leggero se non rilevata." },
+    { name:'Kit alchemico da campo', cost:'35 mo', tier:1, desc:"Set portatile di reagenti e strumenti per preparazioni rapide." },
+    { name:'Fiala colorante per tessuti', cost:'6 mo', tier:0, desc:"Pigmento concentrato per tingere stoffe e cuoio." },
+    { name:'Composto essiccante', cost:'12 mo', tier:0, desc:"Assorbe rapidamente l'umidità da un piccolo ambiente chiuso." },
+    { name:'Fiala repellente per non morti (rudimentale)', cost:'60 mo', tier:2, desc:"Miscuglio che si dice tenga a bada creature non-morte minori per breve tempo." },
+    { name:'Estratto per conservazione carne', cost:'8 mo', tier:0, desc:"Prolunga la durata delle provviste deperibili." },
+    { name:'Fiala esplosiva minore', cost:'60 mo', tier:2, desc:"Se scagliata con forza, produce una piccola esplosione al contatto." },
+    { name:'Polvere anti-scivolo', cost:'5 mo', tier:0, desc:"Cosparsa su una superficie, ne migliora l'aderenza." },
+    { name:'Fiala di acido concentrato', cost:'45 mo', tier:2, desc:"Versione più potente della fiala d'acido standard." },
+    { name:'Composto anti-prurito', cost:'5 mo', tier:0, desc:"Allevia rapidamente irritazioni cutanee minori." },
+    { name:'Fiala fumogena da segnalazione notturna', cost:'22 mo', tier:1, desc:"Produce una colonna di fumo luminescente visibile al buio." },
+    { name:'Distillato corrosivo per metalli', cost:'50 mo', tier:2, desc:"Utile per intaccare rapidamente serrature o catene metalliche." },
+    { name:'Reagente rivelatore di magia (base)', cost:'70 mo', tier:2, desc:"Se applicato a un oggetto, ne rivela una debole traccia magica se presente." },
+    { name:'Fiala di inchiostro invisibile', cost:'20 mo', tier:1, desc:"Rivela il proprio contenuto solo se esposto a una fonte di calore." },
+  ],
+  'Gioielleria': [
+    { name:"Anello d'argento", cost:'25 mo', tier:1, desc:'Semplice gioiello, apprezzato come dono o pegno di fiducia.' },
+    { name:'Collana di perle', cost:'100 mo', tier:2, desc:'Gioiello elegante, spesso usato come pagamento discreto in affari delicati.' },
+    { name:'Gemma incastonata', cost:'50 mo', tier:1, desc:'Pietra decorativa dal valore stabile, facile da rivendere in qualsiasi città.' },
+    { name:'Diadema lavorato', cost:'300 mo', tier:3, desc:"Ornamento raffinato, simbolo di status nelle corti nobiliari." },
+    { name:'Fermaglio in oro bianco', cost:'150 mo', tier:2, desc:'Fine gioiello da abito, spesso usato per fermare mantelli cerimoniali.' },
+    { name:'Bracciale intarsiato', cost:'80 mo', tier:2, desc:"Lavorazione fine con intarsi in metallo prezioso, adatto a occasioni formali." },
+    { name:'Orecchini d\'argento', cost:'20 mo', tier:1, desc:"Semplici e raffinati, apprezzati come dono elegante." },
+    { name:'Spilla con pietra colorata', cost:'35 mo', tier:1, desc:"Piccolo gioiello decorativo adatto ad abiti formali." },
+    { name:'Anello con sigillo inciso', cost:'60 mo', tier:2, desc:"Spesso usato per sigillare lettere o documenti importanti." },
+    { name:'Ciondolo a forma di goccia', cost:'45 mo', tier:1, desc:"Pendente elegante, popolare tra i nobili di rango minore." },
+    { name:'Cintura in filo d\'argento', cost:'70 mo', tier:2, desc:"Accessorio raffinato indossato in occasioni formali." },
+    { name:'Fermaglio per capelli intarsiato', cost:'25 mo', tier:1, desc:"Ornamento delicato apprezzato dalle dame di corte." },
+    { name:'Anello di fidanzamento semplice', cost:'50 mo', tier:1, desc:"Gioiello modesto ma di significato, spesso scambiato come promessa." },
+    { name:'Corona di fiori in oro battuto', cost:'200 mo', tier:3, desc:"Ornamento cerimoniale usato in matrimoni nobiliari." },
+    { name:'Gemella da polso decorata', cost:'30 mo', tier:1, desc:"Piccolo accessorio elegante per abiti raffinati." },
+    { name:'Medaglione di famiglia', cost:'90 mo', tier:2, desc:"Spesso tramandato di generazione in generazione, custodisce un piccolo ritratto." },
+    { name:'Catena d\'oro sottile', cost:'120 mo', tier:2, desc:"Delicata catena indossabile da sola o con un ciondolo." },
+    { name:'Anello con smeraldo grezzo', cost:'180 mo', tier:2, desc:"Gioiello di pregio, apprezzato dai collezionisti di gemme." },
+    { name:'Diadema semplice in argento', cost:'150 mo', tier:2, desc:"Ornamento elegante indossato in occasioni speciali." },
+    { name:'Bottone decorato in oro', cost:'15 mo', tier:1, desc:"Piccolo dettaglio prezioso da applicare a giacche formali." },
+    { name:'Cavigliera in argento lavorato', cost:'40 mo', tier:1, desc:"Accessorio raffinato, popolare in alcune culture costiere." },
+    { name:'Pendente con rubino sfaccettato', cost:'400 mo', tier:3, desc:"Gioiello di grande pregio, ricercato dai nobili più facoltosi." },
+    { name:'Anello sigillo di famiglia', cost:'250 mo', tier:3, desc:"Reca lo stemma di un casato, usato per autenticare documenti." },
+    { name:'Collana con perline di corallo', cost:'60 mo', tier:1, desc:"Gioiello colorato, popolare nelle regioni costiere." },
+    { name:'Bracciale a catena semplice', cost:'35 mo', tier:1, desc:"Accessorio versatile adatto a diverse occasioni." },
+    { name:'Spilla a forma di stemma araldico', cost:'80 mo', tier:2, desc:"Indica l'appartenenza a una casata o gilda." },
+    { name:'Tiara cerimoniale', cost:'500 mo', tier:3, desc:"Splendido ornamento indossato in cerimonie di grande importanza." },
+    { name:'Anello con zaffiro', cost:'350 mo', tier:3, desc:"Pietra preziosa dal colore intenso, molto richiesta." },
+    { name:'Ciondolo a forma di stella', cost:'55 mo', tier:1, desc:"Piccolo gioiello simbolico, popolare tra viaggiatori e naviganti." },
+    { name:'Fibbia da cintura placcata oro', cost:'45 mo', tier:1, desc:"Accessorio decorativo per cinture di pregio." },
+    { name:'Cammeo scolpito a mano', cost:'120 mo', tier:2, desc:"Piccolo medaglione raffigurante un profilo scolpito nella pietra." },
+    { name:'Collana a più fili di perle', cost:'220 mo', tier:3, desc:"Gioiello elegante riservato a occasioni di grande rilievo." },
+    { name:'Anello con turchese', cost:'70 mo', tier:1, desc:"Gemma dal colore vivo, apprezzata in molte culture." },
+    { name:'Orecchini pendenti in oro bianco', cost:'180 mo', tier:2, desc:"Raffinato accessorio da sera, molto richiesto." },
+    { name:'Bracciale con incastonatura di ambra', cost:'90 mo', tier:2, desc:"Gioiello caldo e luminoso, popolare tra i mercanti del nord." },
+    { name:'Corona votiva in argento', cost:'300 mo', tier:3, desc:"Piccola corona spesso offerta ai templi come dono votivo." },
+    { name:'Spilla a forma di animale', cost:'50 mo', tier:1, desc:"Gioiello decorativo raffigurante creature simboliche." },
+    { name:'Anello con pietra lunare', cost:'160 mo', tier:2, desc:"Si dice porti fortuna a chi viaggia di notte." },
+    { name:'Collana con ciondolo runico', cost:'130 mo', tier:2, desc:"Gioiello inciso con simboli antichi, più decorativo che magico." },
+    { name:'Anello semplice in rame', cost:'5 mo', tier:0, desc:"Gioiello economico ma gradevole, spesso regalato tra amici." },
+  ],
+  'Antiquario': [
+    { name:'Mappa ingiallita di terre sconosciute', cost:'20 mo', tier:1, desc:'Probabilmente imprecisa, ma qualche dettaglio potrebbe rivelarsi utile.' },
+    { name:"Statuetta d'epoca sconosciuta", cost:'40 mo', tier:1, desc:'Raffigura una divinità non più venerata; gli studiosi ne discutono ancora l\'origine.' },
+    { name:'Moneta di un regno caduto', cost:'15 mo', tier:1, desc:'Non più in corso legale, ma ricercata dai collezionisti.' },
+    { name:'Libro con pagine mancanti', cost:'30 mo', tier:2, desc:'Racconta un frammento di storia dimenticata; il resto è andato perduto.' },
+    { name:'Specchio con cornice intarsiata', cost:'60 mo', tier:2, desc:'Ancora perfettamente funzionante, nonostante l\'evidente età.' },
+    { name:'Chiave arrugginita senza serratura', cost:'10 mo', tier:1, desc:'Nessuno sa più a cosa desse accesso, ma qualcuno potrebbe pagare per scoprirlo.' },
+    { name:'Vaso in ceramica screpolata', cost:'25 mo', tier:1, desc:"Reperto di un'epoca passata, ancora integro nonostante l'età." },
+    { name:'Frammento di statua antica', cost:'35 mo', tier:1, desc:"Resto di un monumento andato distrutto secoli fa." },
+    { name:'Orologio a pendolo fermo', cost:'50 mo', tier:2, desc:"Non funziona più, ma la sua fattura resta impressionante." },
+    { name:'Bussola arrugginita di un esploratore scomparso', cost:'40 mo', tier:1, desc:"Si dice appartenesse a un famoso avventuriero mai più tornato." },
+    { name:'Diario di bordo di una nave affondata', cost:'45 mo', tier:2, desc:"Racconta gli ultimi giorni di un equipaggio ormai dimenticato." },
+    { name:'Anello con sigillo di un casato estinto', cost:'80 mo', tier:2, desc:"Nessun erede reclama più questo blasone." },
+    { name:'Mappa stellare obsoleta', cost:'30 mo', tier:1, desc:"Rappresenta le costellazioni secondo un'antica scuola astronomica." },
+    { name:'Bastone da comando cerimoniale', cost:'60 mo', tier:2, desc:"Apparteneva forse a un funzionario di un regno ormai caduto." },
+    { name:'Set di dadi in osso intagliato', cost:'20 mo', tier:1, desc:"Antico gioco d'azzardo, ancora perfettamente utilizzabile." },
+    { name:'Placca commemorativa in bronzo', cost:'35 mo', tier:1, desc:"Ricorda un evento storico di cui si è persa memoria dettagliata." },
+    { name:'Cassa da viaggio con iniziali sconosciute', cost:'50 mo', tier:2, desc:"Robusto baule di legno, chiuso da una serratura ormai arrugginita." },
+    { name:'Ventaglio dipinto a mano', cost:'25 mo', tier:1, desc:"Decorato con scene di corte di un'epoca passata." },
+    { name:'Sigillo di ceralacca antico', cost:'15 mo', tier:0, desc:"Utilizzato per autenticare documenti di un'amministrazione scomparsa." },
+    { name:'Reliquiario vuoto', cost:'70 mo', tier:2, desc:"Un tempo custodiva un oggetto sacro, ora perduto." },
+    { name:'Libro mastro di un mercante fallito', cost:'20 mo', tier:1, desc:"Elenca transazioni di affari conclusi secoli fa." },
+    { name:'Cornice intarsiata senza dipinto', cost:'30 mo', tier:1, desc:"Elegante cornice il cui contenuto originale è andato perduto." },
+    { name:'Piatto da collezione con stemma reale', cost:'45 mo', tier:2, desc:"Pezzo da esposizione di una dinastia ormai dimenticata." },
+    { name:'Bilancia da mercante antica', cost:'25 mo', tier:1, desc:"Strumento preciso usato per pesare monete e gemme." },
+    { name:'Bastone da rabdomante', cost:'20 mo', tier:1, desc:"Si dice fosse usato per individuare acqua sotterranea." },
+    { name:'Amuleto di un culto dimenticato', cost:'40 mo', tier:2, desc:"Simbolo religioso di una fede ormai scomparsa." },
+    { name:'Scacchiera in avorio intagliato', cost:'90 mo', tier:2, desc:"Set completo, mancante solo di un pedone." },
+    { name:'Frammento di vetrata colorata', cost:'35 mo', tier:1, desc:"Proveniente da un edificio religioso andato distrutto." },
+    { name:'Sfera armillare in ottone', cost:'150 mo', tier:3, desc:"Modello astronomico usato per studiare i movimenti celesti." },
+    { name:'Codice legale di un regno caduto', cost:'30 mo', tier:1, desc:"Raccolta di leggi non più in vigore in nessuna terra conosciuta." },
+    { name:'Fibbia da mantello con stemma consunto', cost:'20 mo', tier:1, desc:"Appartenuta a un cavaliere di cui si è persa ogni traccia." },
+    { name:'Orologio da tasca fermo a un\'ora precisa', cost:'60 mo', tier:2, desc:"Nessuno sa cosa sia accaduto al suo proprietario in quel momento." },
+    { name:'Vaso funerario sigillato', cost:'80 mo', tier:2, desc:"Meglio non chiedersi cosa contenga esattamente." },
+    { name:'Registro di equipaggio incompleto', cost:'25 mo', tier:1, desc:"Manca l'ultima pagina, forse strappata di proposito." },
+    { name:'Statuetta votiva di divinità minore', cost:'30 mo', tier:1, desc:"Raffigura una divinità non più venerata in questa regione." },
+    { name:'Medaglia al valore di un esercito disciolto', cost:'35 mo', tier:1, desc:"Conferita per meriti in una guerra ormai dimenticata." },
+    { name:'Chiave cerimoniale di una città scomparsa', cost:'50 mo', tier:2, desc:"Si dice aprisse le porte di una città sepolta dal tempo." },
+    { name:'Pergamena con sigillo reale rotto', cost:'40 mo', tier:2, desc:"Documento ufficiale il cui contenuto resta un mistero." },
+    { name:'Busto in marmo di un nobile senza nome', cost:'120 mo', tier:3, desc:"Nessuno ricorda più chi rappresentasse." },
+    { name:'Frammento di pergamena illeggibile', cost:'10 mo', tier:0, desc:"Il testo è talmente sbiadito da risultare quasi indecifrabile." },
+  ],
+  'Sartoria': [
+    { name:'Abito da viaggio', cost:'2 mo', tier:0, desc:'Vestiario robusto adatto a lunghi spostamenti in ogni clima temperato.' },
+    { name:'Abito raffinato', cost:'15 mo', tier:1, desc:'Adatto a eventi formali; migliora la prima impressione nei contesti nobiliari.' },
+    { name:'Mantello foderato', cost:'5 mo', tier:0, desc:'Offre un buon isolamento termico nei climi freddi.' },
+    { name:'Kit da travestimento', cost:'25 mo', tier:1, desc:'Trucco, parrucche e abiti che facilitano la creazione di un travestimento credibile.' },
+    { name:'Stivali su misura', cost:'12 mo', tier:1, desc:'Comodi per lunghe camminate, riducono l\'affaticamento nei viaggi prolungati.' },
+    { name:'Guanti in pelle rinforzata', cost:'6 mo', tier:0, desc:'Proteggono le mani durante lavori manuali o climi rigidi.' },
+    { name:'Camicia di lino', cost:'3 mo', tier:0, desc:"Indumento leggero e traspirante, adatto al clima caldo." },
+    { name:'Pantaloni da lavoro', cost:'2 mo', tier:0, desc:"Robusti e resistenti, pensati per lavori manuali." },
+    { name:'Gonna da viaggio', cost:'3 mo', tier:0, desc:"Comoda e resistente, adatta a lunghi spostamenti." },
+    { name:'Cappello a tesa larga', cost:'4 mo', tier:0, desc:"Protegge dal sole durante i viaggi diurni." },
+    { name:'Sciarpa di lana', cost:'2 mo', tier:0, desc:"Utile per proteggersi dal freddo intenso." },
+    { name:'Cintura in cuoio', cost:'3 mo', tier:0, desc:"Accessorio pratico per fissare abiti o piccoli oggetti." },
+    { name:'Mantello con cappuccio', cost:'8 mo', tier:0, desc:"Protegge dalla pioggia e aiuta a passare inosservati." },
+    { name:'Abito da lutto', cost:'10 mo', tier:0, desc:"Vestiario formale scuro, indossato in occasioni di cordoglio." },
+    { name:'Vestito da cerimonia nuziale', cost:'40 mo', tier:2, desc:"Elegante abito riservato a matrimoni e grandi festeggiamenti." },
+    { name:'Uniforme da servitore', cost:'6 mo', tier:0, desc:"Abito semplice ma dignitoso indossato dal personale di servizio." },
+    { name:'Mantello foderato di pelliccia', cost:'25 mo', tier:1, desc:"Offre ottimo isolamento nei climi molto rigidi." },
+    { name:'Scarponi da montagna', cost:'15 mo', tier:1, desc:"Robusti stivali pensati per terreni impervi e freddi." },
+    { name:'Sandali leggeri', cost:'2 mo', tier:0, desc:"Calzature comode adatte ai climi caldi." },
+    { name:'Velo da cerimonia', cost:'12 mo', tier:1, desc:"Delicato tessuto indossato in occasioni formali o religiose." },
+    { name:'Giacca da caccia', cost:'18 mo', tier:1, desc:"Robusta e con molte tasche, pensata per escursioni prolungate." },
+    { name:'Abito da lutto elegante', cost:'20 mo', tier:1, desc:"Versione più raffinata dell'abito da lutto, per famiglie abbienti." },
+    { name:'Corpetto rinforzato', cost:'15 mo', tier:1, desc:"Indumento che dona una postura elegante e un po' di sostegno." },
+    { name:'Cappotto invernale', cost:'20 mo', tier:1, desc:"Pesante e caldo, indispensabile durante l'inverno." },
+    { name:'Abito da apprendista', cost:'5 mo', tier:0, desc:"Semplice divisa indossata dagli apprendisti di una gilda." },
+    { name:'Kit di rammendo da viaggio', cost:'3 mo', tier:0, desc:"Ago, filo e pezze di stoffa per riparazioni rapide." },
+    { name:'Cappuccio da viaggiatore', cost:'4 mo', tier:0, desc:"Protegge il volto da vento e polvere durante i lunghi tragitti." },
+    { name:'Fascia per capelli decorata', cost:'5 mo', tier:0, desc:"Semplice accessorio elegante per acconciature curate." },
+    { name:'Abito talare', cost:'15 mo', tier:1, desc:"Veste lunga e semplice, indossata da religiosi e studiosi." },
+    { name:'Farsetto imbottito', cost:'10 mo', tier:0, desc:"Indumento caldo indossato spesso sotto un'armatura leggera." },
+    { name:'Mantello da esploratore mimetico', cost:'30 mo', tier:1, desc:"Colori naturali che aiutano a confondersi nell'ambiente boschivo." },
+    { name:'Guanti eleganti in seta', cost:'10 mo', tier:1, desc:"Accessorio raffinato per abiti da cerimonia." },
+    { name:'Corsetto da equitazione', cost:'18 mo', tier:1, desc:"Pensato per offrire comfort e sostegno durante lunghe cavalcate." },
+    { name:'Toga cerimoniale', cost:'35 mo', tier:1, desc:"Ampia veste indossata in occasioni ufficiali o religiose." },
+    { name:'Cappello da giullare', cost:'8 mo', tier:0, desc:"Colorato e vistoso, indossato da intrattenitori di corte." },
+    { name:'Maschera di stoffa decorata', cost:'10 mo', tier:1, desc:"Utilizzata durante feste in maschera o cerimonie particolari." },
+    { name:'Abito da lavoro rinforzato', cost:'8 mo', tier:0, desc:"Resistente a strappi e usura, adatto a lavori pesanti." },
+    { name:'Stola ricamata', cost:'22 mo', tier:1, desc:"Accessorio elegante indossato sopra abiti formali." },
+    { name:'Calzamaglia da acrobata', cost:'12 mo', tier:1, desc:"Aderente e flessibile, pensata per movimenti acrobatici." },
+    { name:'Fazzoletto ricamato', cost:'2 mo', tier:0, desc:"Piccolo accessorio elegante, spesso donato come pegno d'affetto." },
+  ],
+  'Negozio di curiosità': [
+    { name:'Scatola musicale intarsiata', cost:'35 mo', tier:1, desc:'Suona una melodia se aperta; alcuni giurano porti fortuna, altri sostengono il contrario.' },
+    { name:'Bussola stranamente orientata', cost:'20 mo', tier:1, desc:'Punta sempre verso il mare più vicino, qualunque sia la direzione in cui ci si trovi.' },
+    { name:'Uovo di pietra levigata', cost:'15 mo', tier:0, desc:'Nessuno sa se sia un vero uovo pietrificato o solo un sasso ben lavorato.' },
+    { name:'Maschera di legno intagliato', cost:'25 mo', tier:1, desc:'Raffigura un volto sorridente; alcuni la trovano inquietante se osservata di notte.' },
+    { name:'Boccetta di profumo esotico', cost:'18 mo', tier:1, desc:'Ha un aroma che ricorda terre lontane, mai identificate con certezza.' },
+    { name:'Dado di osso inciso', cost:'12 mo', tier:0, desc:'Le facce mostrano simboli sconosciuti anziché numeri; il suo scopo originale è ignoto.' },
+    { name:'Palla di vetro con neve finta', cost:'10 mo', tier:0, desc:"Se scossa, piccoli frammenti bianchi fluttuano dentro il liquido." },
+    { name:'Marionetta di legno scolpita', cost:'15 mo', tier:0, desc:"Alcuni giurano che i suoi occhi seguano chi la osserva." },
+    { name:'Piccolo caleidoscopio', cost:'8 mo', tier:0, desc:"Ruotandolo si ammirano infiniti pattern di colori cangianti." },
+    { name:'Orologio con cifre invertite', cost:'20 mo', tier:1, desc:"Segna il tempo correttamente, ma con i numeri scritti al contrario." },
+    { name:'Ventaglio che canta se aperto rapidamente', cost:'18 mo', tier:1, desc:"Un piccolo meccanismo produce un suono melodico all'apertura." },
+    { name:'Bottiglia con una nave in miniatura', cost:'22 mo', tier:1, desc:"Capolavoro di pazienza artigianale, nessuno sa come sia stata inserita." },
+    { name:'Specchio che deforma leggermente i riflessi', cost:'15 mo', tier:0, desc:"Rende chiunque si guardi leggermente più buffo." },
+    { name:'Teschio di animale sconosciuto', cost:'25 mo', tier:1, desc:"Nessun naturalista è mai riuscito a identificare la specie." },
+    { name:'Piccola gabbia dorata vuota', cost:'12 mo', tier:0, desc:"Un tempo custodiva qualcosa, ma il proprietario non lo rivela." },
+    { name:'Burattino a fili senza operatore', cost:'20 mo', tier:1, desc:"Si muove in modo stranamente fluido quando manipolato." },
+    { name:'Vecchia moneta con simboli sconosciuti', cost:'10 mo', tier:0, desc:"Nessuno studioso locale ha mai identificato il regno di provenienza." },
+    { name:'Piccolo globo che gira da solo per pochi secondi', cost:'28 mo', tier:1, desc:"Un meccanismo interno lo fa ruotare se toccato." },
+    { name:'Ventaglio con piume di uccello raro', cost:'20 mo', tier:1, desc:"Le piume provengono da una specie non più avvistata da anni." },
+    { name:'Scacchiera con pezzi mancanti sostituiti da monete', cost:'15 mo', tier:0, desc:"Qualcuno ha completato un set incompleto con quello che aveva a disposizione." },
+    { name:'Fiala con sabbia di colori diversi a strati', cost:'8 mo', tier:0, desc:"Decorazione ottenuta versando sabbie colorate raccolte da luoghi lontani." },
+    { name:'Piccolo automa meccanico arrugginito', cost:'40 mo', tier:2, desc:"Un tempo compiva piccoli movimenti, ora funziona solo a intermittenza." },
+    { name:'Collana con ciondolo a forma di occhio', cost:'18 mo', tier:1, desc:"Alcuni la considerano di buon auspicio, altri esattamente il contrario." },
+    { name:'Vaso con motivo che cambia a seconda dell\'angolo', cost:'22 mo', tier:1, desc:"Un'illusione ottica creata con vernici sovrapposte." },
+    { name:'Piuma pietrificata', cost:'15 mo', tier:0, desc:"Una normale piuma, calcificata da un processo naturale sconosciuto." },
+    { name:'Piccolo strumento musicale a manovella', cost:'25 mo', tier:1, desc:"Suona una melodia semplice se girato lentamente." },
+    { name:'Statuetta che sembra osservare chi si allontana', cost:'20 mo', tier:1, desc:"Un effetto ottico dovuto alla posizione degli occhi scolpiti." },
+    { name:'Fiala con liquido che non si mescola mai', cost:'16 mo', tier:0, desc:"Due sostanze che restano perennemente separate nel contenitore." },
+    { name:'Vecchio mazzo di carte con un seme in più', cost:'20 mo', tier:1, desc:"Include un simbolo che non corrisponde a nessun gioco conosciuto." },
+    { name:'Piccola lente che ingrandisce in modo irregolare', cost:'12 mo', tier:0, desc:"Distorce le immagini in modo imprevedibile e divertente." },
+    { name:'Conchiglia che produce un suono se soffiata', cost:'10 mo', tier:0, desc:"Emette una nota grave e prolungata." },
+    { name:'Ombrello con manico a forma di animale', cost:'18 mo', tier:0, desc:"Elegante oggetto da collezione, oltre che utile in caso di pioggia." },
+    { name:'Bussola che punta sempre verso un punto fisso sconosciuto', cost:'30 mo', tier:1, desc:"Nessuno ha mai scoperto cosa indichi esattamente." },
+    { name:'Piccolo diorama in miniatura di un villaggio', cost:'25 mo', tier:1, desc:"Ricostruzione dettagliata di un insediamento non più esistente." },
+    { name:'Fischietto a forma di uccello', cost:'6 mo', tier:0, desc:"Riproduce un canto simile a quello di un passero." },
+    { name:'Tazza che scotta sempre più del previsto', cost:'8 mo', tier:0, desc:"Un difetto di lavorazione o una stranezza intenzionale, nessuno lo sa." },
+    { name:'Fiala con una piccola bolla d\'aria che non risale mai', cost:'20 mo', tier:1, desc:"Un fenomeno curioso mai del tutto spiegato dagli studiosi locali." },
+    { name:'Piccolo mappamondo con terre inventate', cost:'22 mo', tier:1, desc:"Raffigura continenti che non corrispondono a nessuna mappa conosciuta." },
+    { name:'Anello portachiavi con ciondoli tintinnanti', cost:'10 mo', tier:0, desc:"Produce un suono gradevole a ogni passo." },
+    { name:'Dado che cade sempre sullo stesso lato', cost:'15 mo', tier:0, desc:"Un piccolo difetto di fabbricazione, o forse qualcosa di più." },
+  ],
+  'Libreria': [
+    { name:'Manuale di storia locale', cost:'10 mo', tier:0, desc:'Racconta gli eventi principali della regione degli ultimi due secoli.' },
+    { name:'Tomo di lingue antiche', cost:'40 mo', tier:2, desc:'Utile per chi studia iscrizioni o testi scritti in lingue ormai dimenticate.' },
+    { name:'Diario di un esploratore', cost:'15 mo', tier:1, desc:'Descrive rotte e pericoli di terre lontane, con qualche imprecisione qua e là.' },
+    { name:'Pergamena vergine', cost:'1 mo', tier:0, desc:'Foglio pronto per essere scritto, ad esempio per annotazioni o trascrizioni.' },
+    { name:'Set da scrittura', cost:'5 mo', tier:0, desc:'Include penna d\'oca, inchiostro e un piccolo coltello per temperare; permette di scrivere lettere e appunti.' },
+    { name:'Atlante regionale', cost:'25 mo', tier:1, desc:'Raccoglie mappe delle terre circostanti, utili per pianificare un viaggio.' },
+    { name:'Racconto di viaggio popolare', cost:'8 mo', tier:0, desc:"Narra le avventure di un mercante in terre lontane." },
+    { name:'Trattato di botanica regionale', cost:'15 mo', tier:1, desc:"Descrive piante comuni e i loro usi tradizionali." },
+    { name:'Poema epico rilegato', cost:'12 mo', tier:0, desc:"Racconta in versi le gesta di un eroe leggendario." },
+    { name:'Manuale di aritmetica base', cost:'6 mo', tier:0, desc:"Utile per chi vuole imparare a far di conto." },
+    { name:'Bestiario illustrato', cost:'30 mo', tier:2, desc:"Raccoglie disegni e descrizioni di creature note e leggendarie." },
+    { name:'Trattato di araldica', cost:'18 mo', tier:1, desc:"Spiega simboli e stemmi delle principali casate nobiliari." },
+    { name:'Guida ai porti commerciali', cost:'12 mo', tier:0, desc:"Elenca rotte e tariffe dei principali scali marittimi." },
+    { name:'Compendio di leggi cittadine', cost:'10 mo', tier:0, desc:"Raccolta delle norme e delle ordinanze locali." },
+    { name:'Libro di poesie d\'amore', cost:'8 mo', tier:0, desc:"Raccolta di versi romantici di autori vari." },
+    { name:'Manuale di scacchi avanzati', cost:'10 mo', tier:1, desc:"Strategie e aperture per giocatori esperti." },
+    { name:'Trattato di astronomia', cost:'20 mo', tier:1, desc:"Descrive posizione e movimento dei principali corpi celesti." },
+    { name:'Raccolta di fiabe popolari', cost:'6 mo', tier:0, desc:"Storie tramandate oralmente e infine trascritte." },
+    { name:'Guida alle erbe commestibili', cost:'10 mo', tier:0, desc:"Elenca piante sicure da raccogliere durante un viaggio." },
+    { name:'Cronaca di una grande battaglia', cost:'15 mo', tier:1, desc:"Resoconto dettagliato di uno scontro storico rilevante." },
+    { name:'Manuale di calligrafia', cost:'8 mo', tier:0, desc:"Insegna a scrivere con stile e precisione." },
+    { name:'Trattato di ingegneria idraulica', cost:'25 mo', tier:2, desc:"Descrive tecniche per la costruzione di canali e pozzi." },
+    { name:'Vocabolario di lingua straniera', cost:'18 mo', tier:1, desc:"Utile per chi intende viaggiare in terre lontane." },
+    { name:'Raccolta di indovinelli antichi', cost:'5 mo', tier:0, desc:"Enigmi tramandati da generazioni di studiosi." },
+    { name:'Manuale di navigazione costiera', cost:'20 mo', tier:1, desc:"Insegna a orientarsi lungo le coste usando punti di riferimento." },
+    { name:'Trattato di filosofia morale', cost:'22 mo', tier:1, desc:"Discute questioni etiche secondo diverse scuole di pensiero." },
+    { name:'Libro di canti popolari', cost:'7 mo', tier:0, desc:"Raccolta di melodie tramandate nelle taverne di tutto il regno." },
+    { name:'Cronache di una città portuale', cost:'12 mo', tier:0, desc:"Racconta la storia e gli eventi principali di un importante scalo." },
+    { name:'Manuale di erboristeria di base', cost:'10 mo', tier:0, desc:"Introduzione alle proprietà delle piante più comuni." },
+    { name:'Trattato di storia militare', cost:'20 mo', tier:1, desc:"Analizza tattiche e strategie di conflitti passati." },
+    { name:'Almanacco agricolo', cost:'6 mo', tier:0, desc:"Previsioni stagionali utili per la semina e il raccolto." },
+    { name:'Libro di enigmi matematici', cost:'10 mo', tier:1, desc:"Raccolta di rompicapo per menti allenate al calcolo." },
+    { name:'Diario di viaggio illustrato', cost:'18 mo', tier:1, desc:"Racconto per immagini di un lungo pellegrinaggio." },
+    { name:'Manoscritto di poesia religiosa', cost:'15 mo', tier:1, desc:"Versi dedicati a una divinità venerata localmente." },
+    { name:'Trattato di alchimia introduttivo', cost:'25 mo', tier:1, desc:"Spiega i principi base della trasmutazione delle sostanze." },
+    { name:'Guida al commercio delle spezie', cost:'14 mo', tier:0, desc:"Elenca origini e valore delle spezie più ricercate." },
+    { name:'Racconto di fantasmi locali', cost:'6 mo', tier:0, desc:"Leggende horror ambientate nella regione circostante." },
+    { name:'Compendio di mitologia regionale', cost:'16 mo', tier:1, desc:"Raccoglie i miti fondativi delle culture locali." },
+    { name:'Manuale di scrittura di lettere formali', cost:'8 mo', tier:0, desc:"Insegna l'etichetta corretta per la corrispondenza ufficiale." },
+    { name:'Foglio di appunti sparsi', cost:'3 mo', tier:0, desc:"Pagine sciolte con annotazioni di uno studioso sconosciuto." },
+  ],
+  'Scuderia': [
+    { name:'Cavallo da soma', cost:'8 mo', tier:0, desc:'Può trasportare fino a 100 kg di carico senza affaticarsi rapidamente.' },
+    { name:'Cavallo da sella', cost:'75 mo', tier:1, desc:'Robusto destriero adatto ai lunghi viaggi, velocità di 18 metri.' },
+    { name:'Mulo', cost:'8 mo', tier:0, desc:'Animale resistente, ideale per trasportare provviste su terreni difficili.' },
+    { name:'Sella', cost:'10 mo', tier:0, desc:'Necessaria per cavalcare comodamente; include staffe e briglie.' },
+    { name:'Carro', cost:'100 mo', tier:2, desc:'Permette di trasportare grossi carichi su strada, trainato da uno o due animali.' },
+    { name:'Bisacce da sella', cost:'4 mo', tier:0, desc:'Si fissano alla sella e permettono di trasportare rifornimenti aggiuntivi durante il viaggio.' },
+    { name:'Pony da soma', cost:'15 mo', tier:0, desc:"Piccolo ma resistente, adatto a carichi moderati." },
+    { name:'Cavallo da tiro', cost:'40 mo', tier:1, desc:"Robusto animale usato per trainare carichi pesanti." },
+    { name:'Asino', cost:'8 mo', tier:0, desc:"Animale docile e resistente, ideale per terreni difficili." },
+    { name:'Cavallo da guerra leggero', cost:'150 mo', tier:2, desc:"Addestrato per il combattimento, agile e reattivo." },
+    { name:'Cavallo da guerra pesante', cost:'400 mo', tier:3, desc:"Grande e possente, usato dai cavalieri più equipaggiati." },
+    { name:'Cammello', cost:'50 mo', tier:1, desc:"Adatto a terreni aridi, resiste bene alla sete prolungata." },
+    { name:'Carretto leggero', cost:'20 mo', tier:1, desc:"Piccolo mezzo di trasporto trainato da un solo animale." },
+    { name:'Briglie decorate', cost:'8 mo', tier:0, desc:"Accessorio elegante per cavalcature di rappresentanza." },
+    { name:'Finimenti da tiro', cost:'15 mo', tier:0, desc:"Set completo necessario per aggiogare un animale a un carro." },
+    { name:'Ferri di cavallo (set)', cost:'2 mo', tier:0, desc:"Protezione essenziale per gli zoccoli durante lunghi tragitti." },
+    { name:'Coperta per cavallo', cost:'5 mo', tier:0, desc:"Protegge l'animale dal freddo durante le soste notturne." },
+    { name:'Fieno pressato (una balla)', cost:'1 mo', tier:0, desc:"Provviste alimentari per animali da soma o da sella." },
+    { name:'Museruola da lavoro', cost:'3 mo', tier:0, desc:"Utile per gestire animali difficili durante il trasporto." },
+    { name:'Spazzola per la cura del mantello', cost:'2 mo', tier:0, desc:"Utilizzata per la pulizia quotidiana della cavalcatura." },
+    { name:'Bardatura da parata', cost:'60 mo', tier:2, desc:"Elegante set decorativo per occasioni cerimoniali." },
+    { name:'Staffe rinforzate', cost:'6 mo', tier:0, desc:"Offrono maggiore stabilità durante la cavalcata." },
+    { name:'Cavallo da corsa', cost:'200 mo', tier:2, desc:"Allevato per la velocità, poco adatto a carichi pesanti." },
+    { name:'Carro coperto', cost:'150 mo', tier:2, desc:"Offre riparo dalle intemperie durante il trasporto di merci." },
+    { name:'Mangiatoia portatile', cost:'4 mo', tier:0, desc:"Utile per nutrire gli animali durante le soste in viaggio." },
+    { name:'Redini di ricambio', cost:'3 mo', tier:0, desc:"Set di scorta in caso di rottura durante il viaggio." },
+    { name:'Bisacce rinforzate per cavallo da soma', cost:'6 mo', tier:0, desc:"Permettono di trasportare carichi più pesanti in sicurezza." },
+    { name:'Cane da guardia addestrato', cost:'25 mo', tier:1, desc:"Fedele compagno utile per sorvegliare campi o proprietà." },
+    { name:'Falco da caccia addestrato', cost:'1000 mo', tier:3, desc:"Prezioso animale addestrato per la caccia con il falco." },
+    { name:'Gabbia da trasporto per piccoli animali', cost:'10 mo', tier:0, desc:"Utile per trasportare animali di piccola taglia in sicurezza." },
+    { name:'Cavallo anziano da lavoro', cost:'5 mo', tier:0, desc:"Meno veloce ma ancora capace di svolgere compiti leggeri." },
+    { name:'Set di campanelli per finimenti', cost:'3 mo', tier:0, desc:"Segnala la presenza di un carro o cavalcatura in avvicinamento." },
+    { name:'Copriferri invernali', cost:'4 mo', tier:0, desc:"Protezione aggiuntiva per gli zoccoli nei climi freddi." },
+    { name:'Carrozza semplice', cost:'300 mo', tier:2, desc:"Mezzo di trasporto chiuso, comodo per passeggeri di rango." },
+    { name:'Attrezzatura da mascalcia portatile', cost:'12 mo', tier:1, desc:"Set per la ferratura d'emergenza durante lunghi viaggi." },
+    { name:'Mulo da soma addestrato', cost:'20 mo', tier:1, desc:"Più docile e affidabile del mulo comune non addestrato." },
+    { name:'Bardatura leggera da esplorazione', cost:'18 mo', tier:1, desc:"Pensata per ridurre il peso durante viaggi lunghi." },
+    { name:'Cavallo da tiro giovane', cost:'30 mo', tier:1, desc:"Non ancora pienamente addestrato, ma promettente." },
+    { name:'Fischietto da richiamo per animali', cost:'3 mo', tier:0, desc:"Utile per richiamare cani o cavalcature addestrate." },
+    { name:'Campanaccio da pascolo', cost:'2 mo', tier:0, desc:"Utile per individuare animali al pascolo a distanza." },
+  ],
+  'Locanda/Taverna': [
+    { name:'Notte in camera comune', cost:'5 mr', tier:0, desc:'Letto condiviso in una stanza con altri viaggiatori.' },
+    { name:'Notte in camera privata', cost:'2 mo', tier:0, desc:'Stanza propria con porta chiusa a chiave.' },
+    { name:'Pasto caldo', cost:'3 mr', tier:0, desc:'Un pasto sostanzioso, spesso zuppa e pane fresco.' },
+    { name:'Boccale di birra', cost:'4 mr', tier:0, desc:'Bevanda locale, ottima per sciogliere la lingua degli avventori più chiacchieroni.' },
+    { name:'Bottiglia di vino pregiato', cost:'10 mo', tier:1, desc:'Annata rinomata, apprezzata da chi ama intrattenersi in buona compagnia.' },
+    { name:'Pasto per il cavallo', cost:'4 mr', tier:0, desc:'Fieno e biada a sufficienza per una notte di sosta.' },
+    { name:'Notte in suite di lusso', cost:'10 mo', tier:2, desc:"Stanza elegante con caminetto e vista sulla piazza principale." },
+    { name:'Pasto da viaggio confezionato', cost:'4 mr', tier:0, desc:"Cibo pronto da portare via, pratico per chi riparte subito." },
+    { name:'Colazione completa', cost:'5 mr', tier:0, desc:"Pane fresco, formaggio e frutta per iniziare bene la giornata." },
+    { name:'Bicchiere di idromele', cost:'6 mr', tier:0, desc:"Bevanda dolce fermentata a base di miele." },
+    { name:'Bottiglia di sidro locale', cost:'5 mr', tier:0, desc:"Bevanda leggera e fresca, popolare tra i contadini della zona." },
+    { name:'Zuppa della casa', cost:'3 mr', tier:0, desc:"Piatto caldo preparato con gli ingredienti disponibili del giorno." },
+    { name:'Dolce da forno', cost:'2 mr', tier:0, desc:"Piccolo dessert appena sfornato, ideale per concludere un pasto." },
+    { name:'Stalla per il cavallo (una notte)', cost:'3 mr', tier:0, desc:"Riparo sicuro e fieno per la cavalcatura durante la sosta." },
+    { name:'Bagno caldo privato', cost:'1 mo', tier:0, desc:"Un lusso apprezzato dopo giorni di viaggio polveroso." },
+    { name:'Servizio di lavanderia', cost:'5 mr', tier:0, desc:"Gli abiti vengono lavati e restituiti puliti entro un giorno." },
+    { name:'Musica dal vivo (serata)', cost:'2 mr', tier:0, desc:"Un cantastorie o un musicista allieta la serata degli avventori." },
+    { name:'Sala privata per riunioni', cost:'5 mo', tier:1, desc:"Stanza riservata per discussioni private o incontri d'affari." },
+    { name:'Bottiglia di whisky d\'orzo', cost:'15 mo', tier:1, desc:"Distillato forte e corposo, apprezzato dai viaggiatori esperti." },
+    { name:'Piatto di formaggi misti', cost:'8 mr', tier:0, desc:"Selezione di formaggi locali servita con pane e miele." },
+    { name:'Cena a base di selvaggina', cost:'1 mo', tier:1, desc:"Piatto sostanzioso a base di carne cacciata di recente." },
+    { name:'Notte in fienile (economica)', cost:'2 mr', tier:0, desc:"Sistemazione essenziale ma riparata dalle intemperie." },
+    { name:'Bevanda calda speziata', cost:'5 mr', tier:0, desc:"Perfetta per scaldarsi nelle sere fredde." },
+    { name:'Cesto da picnic da viaggio', cost:'1 mo', tier:0, desc:"Pasto freddo confezionato, comodo da consumare durante il tragitto." },
+    { name:'Bottiglia di vino da tavola', cost:'5 mo', tier:0, desc:"Vino semplice ma gradevole, adatto a tutti i palati." },
+    { name:'Camera con balcone', cost:'3 mo', tier:1, desc:"Stanza con vista, apprezzata dai viaggiatori più esigenti." },
+    { name:'Servizio di guardiania notturna per bagagli', cost:'3 mr', tier:0, desc:"Garantisce la sicurezza degli effetti personali durante la notte." },
+    { name:'Torta di frutta di stagione', cost:'4 mr', tier:0, desc:"Dolce preparato con la frutta fresca del momento." },
+    { name:'Banchetto per gruppo (a persona)', cost:'2 mo', tier:1, desc:"Pasto abbondante pensato per gruppi numerosi di viaggiatori." },
+    { name:'Bottiglia di birra scura artigianale', cost:'6 mr', tier:0, desc:"Birra corposa prodotta localmente dalla locanda stessa." },
+    { name:'Servizio di guida cittadina', cost:'5 mo', tier:1, desc:"Un residente locale accompagna gli ospiti alla scoperta della città." },
+    { name:'Sacco a pelo pulito extra', cost:'2 mo', tier:0, desc:"Fornito su richiesta per ospiti senza attrezzatura propria." },
+    { name:'Piatto tipico regionale', cost:'9 mr', tier:0, desc:"Specialità locale preparata secondo ricetta tradizionale." },
+    { name:'Servizio di sveglia mattutina', cost:'1 mr', tier:0, desc:"Il personale bussa alla porta all'orario richiesto." },
+    { name:'Bottiglia di liquore alle erbe', cost:'12 mo', tier:1, desc:"Digestivo forte preparato con una ricetta segreta della casa." },
+    { name:'Cena romantica per due', cost:'3 mo', tier:1, desc:"Tavolo riservato con candele e un menu speciale." },
+    { name:'Notte in camera con caminetto', cost:'4 mo', tier:1, desc:"Stanza confortevole con fuoco acceso durante le notti fredde." },
+    { name:'Bottiglia d\'acqua di sorgente imbottigliata', cost:'2 mr', tier:0, desc:"Acqua fresca e pura raccolta da una vicina sorgente." },
+    { name:'Pacchetto pernottamento con colazione', cost:'3 mo', tier:1, desc:"Include camera privata e colazione completa inclusa nel prezzo." },
+    { name:'Tazza di tisana della casa', cost:'3 mr', tier:0, desc:"Infuso caldo preparato secondo la ricetta della locanda." },
+  ],
+  'Tempio': [
+    { name:'Kit sacro', cost:'5 mo', tier:0, desc:'Include simbolo sacro, incenso e paramenti; necessario per condurre alcuni rituali religiosi.' },
+    { name:'Incenso rituale', cost:'1 mo', tier:0, desc:'Usato per purificare un\'area durante cerimonie o veglie.' },
+    { name:'Offerta votiva', cost:'5 mo', tier:0, desc:'Piccola statuetta da donare alla divinità del tempio in cambio di una preghiera.' },
+    { name:'Candele benedette (set da 5)', cost:'3 mo', tier:0, desc:'Utilizzate durante veglie e cerimonie, si dice ardano più a lungo del normale.' },
+    { name:'Rito di cura', cost:'25 mo', tier:1, desc:'Alcuni templi offrono cure tramite magia divina in cambio di un\'offerta; la disponibilità non è garantita.' },
+    { name:'Benedizione del sacerdote', cost:'10 mo', tier:0, desc:'Un breve rito che infonde speranza prima di un viaggio o un\'impresa importante.' },
+    { name:'Rosario benedetto', cost:'5 mo', tier:0, desc:"Utilizzato durante preghiere e meditazioni quotidiane." },
+    { name:'Manto cerimoniale', cost:'20 mo', tier:1, desc:"Indossato dai sacerdoti durante le funzioni principali." },
+    { name:'Acqua santa (fiala)', cost:'5 mo', tier:0, desc:"Consacrata secondo i riti del tempio, usata in cerimonie di purificazione." },
+    { name:'Simbolo sacro in legno', cost:'3 mo', tier:0, desc:"Versione semplice ed economica di un simbolo religioso." },
+    { name:'Simbolo sacro in argento', cost:'25 mo', tier:1, desc:"Versione pregiata di un simbolo religioso, spesso benedetta." },
+    { name:'Libro di preghiere', cost:'8 mo', tier:0, desc:"Raccolta di preghiere e inni dedicati alla divinità del tempio." },
+    { name:'Turibolo per incenso', cost:'10 mo', tier:0, desc:"Utilizzato per bruciare incenso durante le cerimonie." },
+    { name:'Offerta di fiori sacri', cost:'2 mo', tier:0, desc:"Fiori coltivati nei giardini del tempio, offerti in preghiera." },
+    { name:'Ex voto in cera', cost:'3 mo', tier:0, desc:"Piccola figura votiva realizzata a mano dai fedeli." },
+    { name:'Manoscritto religioso antico', cost:'40 mo', tier:2, desc:"Copia di un testo sacro risalente a diverse generazioni fa." },
+    { name:'Rito di benedizione per un\'arma', cost:'20 mo', tier:1, desc:"Il sacerdote consacra un'arma prima di un'impresa importante." },
+    { name:'Ampolla di olio sacro', cost:'12 mo', tier:1, desc:"Utilizzato in rituali di unzione e consacrazione." },
+    { name:'Statua votiva minore', cost:'15 mo', tier:0, desc:"Piccola effige della divinità, adatta a un altare domestico." },
+    { name:'Rito di purificazione', cost:'15 mo', tier:1, desc:"Cerimonia che si dice allontani energie negative da una persona o un luogo." },
+    { name:'Candela votiva profumata', cost:'2 mo', tier:0, desc:"Bruciata in preghiera, diffonde un aroma gradevole." },
+    { name:'Pergamena con preghiera trascritta a mano', cost:'10 mo', tier:0, desc:"Copiata amorevolmente da un devoto del tempio." },
+    { name:'Servizio funebre semplice', cost:'10 mo', tier:1, desc:"Rito di commiato officiato secondo la tradizione del tempio." },
+    { name:'Rito di matrimonio', cost:'30 mo', tier:1, desc:"Cerimonia officiata da un sacerdote per unire due persone." },
+    { name:'Amuleto benedetto contro la sfortuna', cost:'18 mo', tier:1, desc:"Si dice protegga il portatore da piccoli incidenti quotidiani." },
+    { name:'Sacchetto di incenso pregiato', cost:'6 mo', tier:0, desc:"Miscela speciale utilizzata nelle cerimonie più importanti." },
+    { name:'Consulto spirituale', cost:'10 mo', tier:0, desc:"Un sacerdote offre consiglio e guida su questioni personali." },
+    { name:'Rito di consacrazione per un luogo', cost:'40 mo', tier:2, desc:"Cerimonia che dedica formalmente un luogo alla divinità del tempio." },
+    { name:'Reliquia minore in prestito', cost:'50 mo', tier:2, desc:"Il tempio concede in prestito un piccolo oggetto sacro per un rituale." },
+    { name:'Coppa cerimoniale', cost:'25 mo', tier:1, desc:"Utilizzata durante rituali che prevedono libagioni." },
+    { name:'Rito di benedizione per un viaggio', cost:'12 mo', tier:1, desc:"Cerimonia che si dice protegga il viaggiatore lungo il cammino." },
+    { name:'Manto da novizio', cost:'6 mo', tier:0, desc:"Semplice veste indossata da chi inizia il percorso religioso." },
+    { name:'Corda di preghiera annodata', cost:'4 mo', tier:0, desc:"Utilizzata per contare le ripetizioni durante la meditazione." },
+    { name:'Rito di guarigione minore', cost:'20 mo', tier:1, desc:"Cerimonia che invoca il favore divino per accelerare una guarigione." },
+    { name:'Offerta di grano benedetto', cost:'2 mo', tier:0, desc:"Simbolo di abbondanza offerto durante le festività del raccolto." },
+    { name:'Iscrizione votiva su targa', cost:'15 mo', tier:1, desc:"Piccola targa commemorativa realizzata su richiesta di un fedele." },
+    { name:'Rito di esorcismo minore', cost:'60 mo', tier:2, desc:"Cerimonia che si dice scacci presenze indesiderate minori." },
+    { name:'Corona di alloro benedetta', cost:'20 mo', tier:1, desc:"Simbolo di vittoria o merito, benedetta per un'occasione speciale." },
+    { name:'Donazione per il restauro del tempio', cost:'5 mo', tier:0, desc:"Contributo che sostiene la manutenzione dell'edificio sacro." },
+    { name:'Piccola offerta di incenso sciolto', cost:'1 mo', tier:0, desc:"Semplice dono lasciato sull'altare dai fedeli di passaggio." },
+  ]
+};
+
+function generateShopItemList(){
+  const zoneSel = document.getElementById('shop-item-gen-zone');
+  const typeSel = document.getElementById('shop-item-gen-type');
+  const zoneVal = zoneSel ? zoneSel.value : 'random';
+  const typeVal = typeSel ? typeSel.value : 'random';
+
+  let zoneIndex = shopZoneTiers.indexOf(zoneVal);
+  if(zoneIndex === -1) zoneIndex = Math.floor(Math.random() * shopZoneTiers.length);
+
+  const MIN_RESULTS = 6;
+  let fullPool = [];
+  if(typeVal === 'random'){
+    Object.keys(shopItemsByType).forEach(key => {
+      shopItemsByType[key].forEach(item => fullPool.push(Object.assign({ shopType:key }, item)));
+    });
+  } else {
+    (shopItemsByType[typeVal] || []).forEach(item => fullPool.push(Object.assign({ shopType:typeVal }, item)));
+  }
+
+  let filteredPool = fullPool.filter(item => item.tier <= zoneIndex);
+  let zoneRelaxed = false;
+
+  if(filteredPool.length < MIN_RESULTS){
+    // Il filtro di zona è troppo restrittivo per questo tipo di negozio: si ignora il limite di tier
+    // e si completa la lista con gli oggetti di tier più basso disponibili, per garantire almeno 6 risultati.
+    zoneRelaxed = true;
+    const already = new Set(filteredPool);
+    const extras = fullPool
+      .filter(item => !already.has(item))
+      .sort((a, b) => a.tier - b.tier);
+    filteredPool = filteredPool.concat(extras).slice(0, Math.max(MIN_RESULTS, filteredPool.length));
+  }
+
+  let pool = filteredPool;
+
+  const out = document.getElementById('shop-item-gen-result');
+  if(!out) return;
+
+  if(!pool.length){
+    out.innerHTML = `<p style="font-size:14px; color:var(--text-dim); margin-top:4px;">Nessun oggetto disponibile con questi filtri. Prova a rendere i criteri meno restrittivi.</p>`;
+    return;
+  }
+
+  const desiredCount = Math.max(MIN_RESULTS, 5 + Math.floor(Math.random() * 8)); // tra 5 e 12 (almeno 6)
+  // Estrazione senza ripetizioni: se il pool è più piccolo del numero desiderato,
+  // la lista sarà semplicemente più corta (quanti oggetti unici sono disponibili).
+  const shuffled = pool.slice().sort(() => Math.random() - 0.5);
+  let chosen = shuffled.slice(0, Math.min(desiredCount, shuffled.length));
+
+  // Converte il costo (es. "5 mo", "12 ma", "3 mr") in un valore di rame per un ordinamento crescente coerente.
+  function costToCopper(costStr){
+    if(!costStr) return 0;
+    const m = String(costStr).trim().match(/^([\d.,]+)\s*(mr|ma|mo|mp)$/i);
+    if(!m) return 0;
+    const amount = parseFloat(m[1].replace(',', '.')) || 0;
+    const unit = m[2].toLowerCase();
+    const rate = { mr:1, ma:10, mo:100, mp:1000 };
+    return amount * (rate[unit] || 1);
+  }
+
+  chosen = chosen.slice().sort((a, b) => costToCopper(a.cost) - costToCopper(b.cost));
+
+  lastShopItemsGenerated = chosen;
+
+  out.innerHTML = `
+    ${zoneRelaxed ? `<p style="font-size:12.5px; color:var(--text-dim); margin:0 0 8px; font-style:italic;">Pochi oggetti disponibili per questa combinazione di zona e negozio: il filtro di zona è stato esteso per garantire almeno ${MIN_RESULTS} risultati.</p>` : ''}
+    <div style="display:flex; flex-direction:column;">
+      ${chosen.map((item, i) => `
+        <div style="padding:10px 14px; background:${i % 2 === 0 ? 'rgba(198,145,71,0.07)' : 'transparent'}; display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+              <strong style="color:var(--gold-bright); font-size:15px;">${item.name}</strong>
+              <span class="item-rarity-tag" style="background:var(--gold-bright)22; color:var(--gold-bright); border:1px solid var(--gold-bright)55; white-space:nowrap;">${item.cost}</span>
+            </div>
+            <p style="margin:6px 0 0; font-size:13.5px; line-height:1.5; color:var(--text-dim);">${item.desc}</p>
+          </div>
+          <button type="button" class="btn secondary small" title="Aggiungi all'inventario di un personaggio" onclick="openAddItemToCharModal(lastShopItemsGenerated[${i}].name, lastShopItemsGenerated[${i}].cost + ' — ' + lastShopItemsGenerated[${i}].desc)" style="flex-shrink:0; white-space:nowrap;">🎒 +</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+let lastShopItemsGenerated = [];
+let pendingItemToAdd = null;
+
+function openAddItemToCharModal(nome, note){
+  pendingItemToAdd = { nome: nome || '', note: note || '' };
+  const modal = document.getElementById('add-item-char-modal');
+  if(!modal) return;
+  const nameEl = document.getElementById('add-item-char-name');
+  if(nameEl) nameEl.textContent = pendingItemToAdd.nome;
+  const sel = document.getElementById('add-item-char-select');
+  if(sel){
+    sel.innerHTML = '<option value="">— scegli un personaggio —</option>' +
+      roster.map(c=>`<option value="${c.id}">${c.nome} (${c.classe.nome} L${c.livello})</option>`).join('');
+    sel.value = '';
+  }
+  const note2 = document.getElementById('add-item-char-note');
+  if(note2){ note2.style.display = 'none'; note2.textContent = ''; }
+  modal.classList.add('active');
+}
+function closeAddItemToCharModal(){
+  const modal = document.getElementById('add-item-char-modal');
+  if(modal) modal.classList.remove('active');
+  pendingItemToAdd = null;
+}
+function closeAddItemToCharModalOnBg(event){
+  if(event.target && event.target.id === 'add-item-char-modal') closeAddItemToCharModal();
+}
+function confirmAddItemToChar(){
+  const sel = document.getElementById('add-item-char-select');
+  const id = sel ? sel.value : '';
+  const note = document.getElementById('add-item-char-note');
+  if(!id){
+    if(note){ note.style.display = 'block'; note.textContent = 'Seleziona prima un personaggio.'; }
+    return;
+  }
+  if(!pendingItemToAdd) return;
+  const c = roster.find(r=>String(r.id)===String(id));
+  if(!c) return;
+  if(!Array.isArray(c.inventario)) c.inventario = [];
+  c.inventario.push({ nome: pendingItemToAdd.nome, qta: 1, peso: 0, note: pendingItemToAdd.note });
+  syncInventoryToRelatedState(c);
+  if(typeof renderInventoryCharSelect === 'function') renderInventoryCharSelect();
+  if(note){
+    note.style.display = 'block';
+    note.textContent = `Aggiunto all'inventario di ${c.nome}.`;
+  }
+  setTimeout(closeAddItemToCharModal, 700);
 }
 
 function openItemGenModal(){
@@ -7960,6 +7860,7 @@ function generateRandomItem(){
     return;
   }
   const item = pool[Math.floor(Math.random()*pool.length)];
+  lastMagicItemGenerated = item;
   const color = rarityColors[item.rarity] || 'var(--gold-bright)';
   const magicColor = item.magic ? 'var(--arcane)' : 'var(--text-dim)';
   const magicLabel = item.magic ? '✨ Magico' : '🔩 Non Magico';
@@ -7968,15 +7869,21 @@ function generateRandomItem(){
     : '';
   out.innerHTML = `
     <div class="item-result-card">
-      <span class="item-rarity-tag" style="background:${color}22; color:${color}; border:1px solid ${color}55;">${item.rarity}</span>
-      <span class="item-rarity-tag" style="background:${magicColor}22; color:${magicColor}; border:1px solid ${magicColor}55; margin-left:6px;">${magicLabel}</span>
-      <h3 style="font-family:inherit; font-weight:800; margin:0 0 8px; font-size:19px; color:var(--text-main);">${item.name}</h3>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+        <div>
+          <span class="item-rarity-tag" style="background:${color}22; color:${color}; border:1px solid ${color}55;">${item.rarity}</span>
+          <span class="item-rarity-tag" style="background:${magicColor}22; color:${magicColor}; border:1px solid ${magicColor}55; margin-left:6px;">${magicLabel}</span>
+        </div>
+        <button type="button" class="btn secondary small" title="Aggiungi all'inventario di un personaggio" onclick="openAddItemToCharModal(lastMagicItemGenerated.name, lastMagicItemGenerated.desc)" style="flex-shrink:0; white-space:nowrap;">🎒 +</button>
+      </div>
+      <h3 style="font-family:inherit; font-weight:800; margin:8px 0 8px; font-size:19px; color:var(--text-main);">${item.name}</h3>
       <p style="margin:0 0 10px; font-size:13px; color:var(--text-dim);"><b>Tipologia:</b> ${item.type} &nbsp;·&nbsp; <b>Ritrovato in:</b> ${item.area}</p>
       ${damageHtml}
       <p style="margin:0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${item.desc}</p>
     </div>
   `;
 }
+let lastMagicItemGenerated = null;
 
 const FULLSCREEN_ICON_EXPAND = `
     <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
