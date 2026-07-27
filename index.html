@@ -168,6 +168,20 @@ header.site::before{ content:none; }
   left:22px;
   right:auto;
 }
+.shop-inventory-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  padding:12px 0;
+  border-bottom:1px solid var(--panel-line);
+}
+.shop-inventory-row:last-child{ border-bottom:none; }
+.shop-inventory-name{ font-weight:700; color:var(--text-main); font-size:14.5px; }
+.shop-inventory-meta{ font-size:12px; color:var(--text-dim); margin-top:2px; }
+.shop-inventory-damage{ font-size:12.5px; color:var(--blood-bright); margin-top:6px; }
+.shop-inventory-desc{ font-size:13px; line-height:1.5; color:var(--text-dim); margin-top:6px; max-width:420px; }
+.shop-inventory-price{ font-weight:800; color:var(--gold-bright); font-size:14.5px; white-space:nowrap; flex:none; }
 #ios-install-modal .modal-card{max-width:360px; text-align:center;}
 #ios-install-modal .ios-step{display:flex; align-items:center; gap:10px; text-align:left; margin:14px 0; font-size:14px; color:var(--text-main);}
 #ios-install-modal .ios-step svg{flex:none; width:22px; height:22px; color:var(--gold-bright);}
@@ -1416,6 +1430,16 @@ body.dice-fullscreen-active{ overflow:hidden; }
         </g>
       </svg>
     </button>
+    <button class="header-icon-btn" onclick="openShopGenModal()" title="Generatore di Negozio" aria-label="Generatore di Negozio">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 10L10 4H38L40 10V14H8V10Z" fill="currentColor"/>
+        <path d="M7 14H41L39.5 21C39 23 37 24.5 35 24.5C32.8 24.5 31 22.7 31 20.5C31 22.7 29.2 24.5 27 24.5C24.8 24.5 23 22.7 23 20.5C23 22.7 21.2 24.5 19 24.5C16.8 24.5 15 22.7 15 20.5C15 22.7 13.2 24.5 11 24.5C9 24.5 7 23 6.5 21L7 14Z" fill="currentColor"/>
+        <rect x="10" y="24" width="4" height="16" rx="0.8" fill="currentColor" opacity="0.85"/>
+        <rect x="34" y="24" width="4" height="16" rx="0.8" fill="currentColor" opacity="0.85"/>
+        <rect x="20" y="27" width="8" height="13" rx="1" fill="currentColor"/>
+        <rect x="9" y="39" width="30" height="3" rx="1.2" fill="currentColor"/>
+      </svg>
+    </button>
   </div>
   <h1 class="site-title">Il Forgiatore</h1>
   <p style="margin:16px auto 0; max-width:560px; font-size:12.5px; color:var(--text-dim);">
@@ -1797,6 +1821,43 @@ body.dice-fullscreen-active{ overflow:hidden; }
       <button class="btn" type="button" onclick="generateRandomItem()">⚄ Genera oggetto</button>
     </div>
     <div id="item-gen-result" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shop-gen-modal" onclick="closeShopGenModalOnBg(event)">
+  <div class="modal-card" style="max-width:640px;">
+    <button class="modal-close" onclick="closeShopGenModal()">✕</button>
+    <h2 style="font-family:inherit; font-weight:800; color:var(--gold-bright); margin-top:0; font-size:24px;">🏪 Generatore di Negozio</h2>
+    <p style="font-size:13.5px; color:var(--text-dim); margin-top:-6px;">Genera una bottega con nome, proprietario e inventario casuale a prezzi coerenti con rarità (D&amp;D 2024).</p>
+    <div class="field" style="margin-top:14px;">
+      <label for="shop-gen-type">Tipo di negozio</label>
+      <select id="shop-gen-type">
+        <option value="random">Qualsiasi</option>
+        <option value="Fabbro">Fabbro</option>
+        <option value="Armaiolo">Armaiolo</option>
+        <option value="Erboristeria">Erboristeria</option>
+        <option value="Alchimista">Alchimista</option>
+        <option value="Gioielleria">Gioielleria</option>
+        <option value="Antiquario">Antiquario</option>
+        <option value="Sartoria">Sartoria</option>
+        <option value="Negozio di curiosità">Negozio di curiosità</option>
+        <option value="Emporio">Emporio (generico)</option>
+        <option value="Bottega Arcana">Bottega Arcana</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <label for="shop-gen-size">Dimensione insediamento</label>
+      <select id="shop-gen-size">
+        <option value="random">Qualsiasi</option>
+        <option value="Villaggio">Villaggio (oggetti comuni e non comuni)</option>
+        <option value="Città">Città (fino a rari)</option>
+        <option value="Metropoli">Metropoli (fino a molto rari)</option>
+      </select>
+    </div>
+    <div class="sheet-actions" style="margin-top:16px;">
+      <button class="btn" type="button" onclick="generateRandomShop()">⚄ Genera negozio</button>
+    </div>
+    <div id="shop-gen-result" style="margin-top:16px;"></div>
   </div>
 </div>
 
@@ -6726,6 +6787,186 @@ function generateRandomItem(){
       <p style="margin:0 0 10px; font-size:13px; color:var(--text-dim);"><b>Tipologia:</b> ${item.type} &nbsp;·&nbsp; <b>Ritrovato in:</b> ${item.area}</p>
       ${damageHtml}
       <p style="margin:0; font-size:14.5px; line-height:1.5; color:var(--text-dim);">${item.desc}</p>
+    </div>
+  `;
+}
+
+/* ---------- Generatore di Negozio ---------- */
+
+const shopTypesDB = [
+  { key:"Fabbro", label:"Fabbro", icon:"⚒️", areas:["Fabbro"], preferTypes:["Arma","Armatura","Scudo"], magicChance:0.15, sizeRange:[5,8] },
+  { key:"Armaiolo", label:"Armaiolo", icon:"🛡️", areas:["Armaiolo"], preferTypes:["Arma","Armatura","Scudo"], magicChance:0.25, sizeRange:[5,8] },
+  { key:"Erboristeria", label:"Erboristeria", icon:"🌿", areas:["Erboristeria"], preferTypes:["Pozione"], magicChance:0.6, sizeRange:[6,10] },
+  { key:"Alchimista", label:"Alchimista", icon:"⚗️", areas:["Alchimista"], preferTypes:["Pozione","Oggetto Meraviglioso"], magicChance:0.7, sizeRange:[6,10] },
+  { key:"Gioielleria", label:"Gioielleria", icon:"💍", areas:["Gioielleria"], preferTypes:["Anello","Oggetto Meraviglioso"], magicChance:0.5, sizeRange:[4,7] },
+  { key:"Antiquario", label:"Antiquario", icon:"🏺", areas:["Antiquario"], preferTypes:["Oggetto Meraviglioso","Bastone","Bacchetta"], magicChance:0.55, sizeRange:[4,7] },
+  { key:"Sartoria", label:"Sartoria", icon:"🧵", areas:["Sartoria"], preferTypes:["Indumento"], magicChance:0.35, sizeRange:[4,7] },
+  { key:"Negozio di curiosità", label:"Negozio di curiosità", icon:"🔮", areas:["Negozio di curiosità"], preferTypes:[], magicChance:0.45, sizeRange:[5,9] },
+  { key:"Emporio", label:"Emporio", icon:"📦", areas:["Emporio","Mercato","Locanda","Porto"], preferTypes:[], magicChance:0.05, sizeRange:[6,10] },
+  { key:"Bottega Arcana", label:"Bottega Arcana", icon:"✨", areas:["Torre del mago"], preferTypes:["Bastone","Bacchetta","Anello","Arma","Armatura"], magicChance:0.95, sizeRange:[4,6] }
+];
+
+const shopSettlementCaps = {
+  "Villaggio": ["Comune","Non Comune"],
+  "Città": ["Comune","Non Comune","Raro"],
+  "Metropoli": ["Comune","Non Comune","Raro","Molto Raro"]
+};
+
+const shopNamePrefixes = ["Il Calderone","La Bisaccia","Il Baule","L'Insegna","La Torre","Il Grifone","Lo Scrigno","La Chiave","Il Martello","La Lanterna","Il Corvo","La Fenice","Il Drago","La Rosa","L'Ancora","Il Falco"];
+const shopNameSuffixes = ["Fischiante","d'Oro","Incantato","Silenzioso","del Viandante","Errante","Scintillante","Nascosto","Antico","del Mercante","Fortunato","Segreto","del Nord","Fedele","Curioso","Radioso"];
+const shopOwnerFirstNames = ["Bramwell","Odalys","Torvin","Elenwen","Garrick","Mirelle","Cassian","Thessaly","Doran","Ysolde","Wendric","Anouk","Baldric","Selwyn","Perrin","Isolde"];
+const shopOwnerLastNames = ["Forgiacupa","Manoferma","Occhiodargento","Barbagrigia","Vendinodi","Piedeleggero","Colcuore","Bassoscudo","Nottealta","Sassoruvido","Filodoro","Occhiovivo"];
+
+function shopRandPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function generateShopName(){
+  return `${shopRandPick(shopNamePrefixes)} ${shopRandPick(shopNameSuffixes)}`;
+}
+function generateShopOwner(){
+  return `${shopRandPick(shopOwnerFirstNames)} ${shopRandPick(shopOwnerLastNames)}`;
+}
+
+/* Fasce di prezzo coerenti con le linee guida D&D 2024 (in mo), per rarità di oggetti magici */
+const magicPriceRanges = {
+  "Comune": [50, 100],
+  "Non Comune": [101, 500],
+  "Raro": [501, 5000],
+  "Molto Raro": [5001, 50000],
+  "Leggendario": [50001, 200000],
+  "Artefatto": [null, null]
+};
+
+/* Fasce di prezzo per oggetti non magici, in base alla tipologia */
+function mundanePriceRange(item){
+  if(item.type === "Armatura") return [10, 75];
+  if(item.type === "Scudo") return [5, 10];
+  if(item.type === "Arma") return [1, 15];
+  if(item.type === "Pozione") return [1, 20];
+  if(item.type === "Indumento") return [1, 25];
+  return [1, 20];
+}
+
+/* Arrotonda un prezzo in modo "naturale" da mercante, a seconda dell'ordine di grandezza */
+function niceRoundPrice(v){
+  if(v < 20) return Math.max(1, Math.round(v));
+  if(v < 100) return Math.round(v/5)*5;
+  if(v < 1000) return Math.round(v/10)*10;
+  if(v < 10000) return Math.round(v/50)*50;
+  return Math.round(v/100)*100;
+}
+
+function getCoherentPrice(item){
+  if(item.rarity === "Artefatto") return null; // non in vendita
+  const [lo, hi] = item.magic ? magicPriceRanges[item.rarity] : mundanePriceRange(item);
+  if(lo == null) return null;
+  const raw = lo + Math.random()*(hi-lo);
+  return niceRoundPrice(raw);
+}
+
+function formatMo(v){
+  return v.toLocaleString('it-IT') + ' mo';
+}
+
+function openShopGenModal(){
+  const modal = document.getElementById('shop-gen-modal');
+  if(modal) modal.classList.add('active');
+}
+function closeShopGenModal(){
+  const modal = document.getElementById('shop-gen-modal');
+  if(modal) modal.classList.remove('active');
+}
+function closeShopGenModalOnBg(event){
+  if(event.target && event.target.id === 'shop-gen-modal') closeShopGenModal();
+}
+
+function generateRandomShop(){
+  const typeSel = document.getElementById('shop-gen-type');
+  const sizeSel = document.getElementById('shop-gen-size');
+  const out = document.getElementById('shop-gen-result');
+  if(!out) return;
+
+  const typeKey = typeSel ? typeSel.value : 'random';
+  const sizeKey = sizeSel ? sizeSel.value : 'random';
+
+  const shopType = typeKey === 'random' ? shopRandPick(shopTypesDB) : shopTypesDB.find(s => s.key === typeKey) || shopRandPick(shopTypesDB);
+  const settlement = sizeKey === 'random' ? shopRandPick(Object.keys(shopSettlementCaps)) : sizeKey;
+  const allowedRarities = shopSettlementCaps[settlement] || shopSettlementCaps["Città"];
+
+  // Pool coerente col tipo di negozio: prima per area, poi (se serve) per tipologia preferita
+  let pool = magicItemsDB.filter(it => shopType.areas.includes(it.area));
+  if(pool.length < 4 && shopType.preferTypes.length){
+    pool = magicItemsDB.filter(it => shopType.preferTypes.includes(it.type));
+  }
+  if(!pool.length){
+    pool = magicItemsDB.slice();
+  }
+
+  // Filtra per rarità coerente con la dimensione dell'insediamento (gli oggetti non magici passano sempre)
+  let filteredPool = pool.filter(it => !it.magic || allowedRarities.includes(it.rarity) || it.rarity === "Comune");
+  if(!filteredPool.length) filteredPool = pool;
+
+  const [minSize, maxSize] = shopType.sizeRange;
+  const targetSize = Math.min(filteredPool.length, minSize + Math.floor(Math.random()*(maxSize-minSize+1)));
+
+  // Selezione senza ripetizioni, con una leggera preferenza per la coerenza magica del negozio
+  const shuffled = filteredPool.slice().sort(() => Math.random()-0.5);
+  let inventory = [];
+  for(const it of shuffled){
+    if(inventory.length >= targetSize) break;
+    const wantMagic = Math.random() < shopType.magicChance;
+    if(inventory.length < targetSize - 1 && it.magic !== wantMagic && shuffled.length - shuffled.indexOf(it) > (targetSize - inventory.length)) continue;
+    inventory.push(it);
+  }
+  if(inventory.length < targetSize){
+    for(const it of shuffled){
+      if(inventory.length >= targetSize) break;
+      if(!inventory.includes(it)) inventory.push(it);
+    }
+  }
+
+  const priced = inventory
+    .map(it => ({ item: it, price: getCoherentPrice(it) }))
+    .filter(p => p.price !== null)
+    .sort((a,b) => a.price - b.price);
+
+  const shopName = generateShopName();
+  const shopOwner = generateShopOwner();
+  const totalValue = priced.reduce((sum,p) => sum + p.price, 0);
+
+  const rowsHtml = priced.map(p => {
+    const it = p.item;
+    const color = rarityColors[it.rarity] || 'var(--gold-bright)';
+    const magicColor = it.magic ? 'var(--arcane)' : 'var(--text-dim)';
+    const magicLabel = it.magic ? '✨ Magico' : '🔩 Non Magico';
+    const damageHtml = it.damage
+      ? `<div class="shop-inventory-damage"><b>⚔️ Danno:</b> ${it.damage}</div>`
+      : '';
+    return `
+      <div class="shop-inventory-row">
+        <div>
+          <div class="shop-inventory-name">${it.name}</div>
+          <div class="shop-inventory-meta">
+            <span style="color:${color};">${it.rarity}</span> &nbsp;·&nbsp;
+            <span style="color:${magicColor};">${magicLabel}</span> &nbsp;·&nbsp;
+            ${it.type} &nbsp;·&nbsp; Ritrovato in: ${it.area}
+          </div>
+          ${damageHtml}
+          <div class="shop-inventory-desc">${it.desc}</div>
+        </div>
+        <div class="shop-inventory-price">${formatMo(p.price)}</div>
+      </div>
+    `;
+  }).join('');
+
+  out.innerHTML = `
+    <div class="item-result-card">
+      <span class="item-rarity-tag" style="background:var(--gold-bright)22; color:var(--gold-bright); border:1px solid var(--gold-bright)55;">${shopType.icon} ${shopType.label}</span>
+      <span class="item-rarity-tag" style="background:var(--arcane)22; color:var(--arcane); border:1px solid var(--arcane)55; margin-left:6px;">${settlement}</span>
+      <h3 style="font-family:inherit; font-weight:800; margin:10px 0 2px; font-size:20px; color:var(--text-main);">${shopName}</h3>
+      <p style="margin:0 0 12px; font-size:13px; color:var(--text-dim);">Proprietario: <b>${shopOwner}</b> &nbsp;·&nbsp; Valore inventario: <b style="color:var(--gold-bright);">${formatMo(totalValue)}</b></p>
+      <div>
+        ${rowsHtml || '<p style="font-size:14px; color:var(--text-dim);">Il negozio è momentaneamente sprovvisto di merce. Riprova a generare.</p>'}
+      </div>
     </div>
   `;
 }
