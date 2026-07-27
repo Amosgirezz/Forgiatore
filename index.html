@@ -1191,6 +1191,16 @@ footer.site{
 .dice-panel.dice-fullscreen .dice-icon svg{width:88px;height:88px;}
 body.dice-fullscreen-active{ overflow:hidden; }
 #dice-roll-fullscreen-btn svg{ width:16px; height:16px; }
+.dice-icon-rolling{
+  animation:diceBounceAnim 0.5s cubic-bezier(.36,.07,.19,.97) infinite;
+}
+@keyframes diceBounceAnim{
+  0%{ transform:translateY(0) rotate(0deg); }
+  25%{ transform:translateY(-16px) rotate(90deg); }
+  50%{ transform:translateY(0) rotate(180deg); }
+  75%{ transform:translateY(-8px) rotate(270deg); }
+  100%{ transform:translateY(0) rotate(360deg); }
+}
 #diceArea, #modalDiceArea{
  display:grid !important;
  grid-template-columns:repeat(4, minmax(76px, 1fr));
@@ -1606,6 +1616,14 @@ body.dice-fullscreen-active{ overflow:hidden; }
           </div>
           <div class="inventory-body" id="dice-roll-body">
             <div id="diceArea"></div>
+            <div class="dice-bonus-row" style="margin-top:14px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span style="font-size:13px; color:var(--text-main); opacity:0.85;">Modificatore:</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button type="button" class="btn secondary small" style="padding:2px 10px; min-width:auto;" onclick="chgDiceBonus(-1)">−</button>
+                <input type="number" id="diceBonusInput" value="0" step="1" style="width:64px; text-align:center; background:var(--panel); color:var(--text-main); border:1px solid var(--panel-line); border-radius:8px; padding:4px 6px; font-size:14px;" oninput="setDiceBonus(this.value)">
+                <button type="button" class="btn secondary small" style="padding:2px 10px; min-width:auto;" onclick="chgDiceBonus(1)">+</button>
+              </div>
+            </div>
             <div style="margin-top:16px; display:flex; gap:10px;">
               <button class="btn small" onclick="rollDice()">Lancia i dadi</button>
               <button class="btn secondary small" onclick="resetDice()">Azzera</button>
@@ -5784,6 +5802,36 @@ function chgModal(d,v){
 }
 
 function rollModalDice(){
+  let hasDiceSel = false;
+  diceTypes.forEach(d=>{ if(modalDiceSel[d] > 0) hasDiceSel = true; });
+  if (!hasDiceSel) return;
+
+  const modalArea = document.getElementById("modalDiceArea");
+  let animatedIcons = [];
+  if(modalArea){
+    diceTypes.forEach(d=>{
+      if(modalDiceSel[d] > 0){
+        const row = modalArea.querySelector(`#mq${d}`)?.closest('.dice-row');
+        const iconEl = row ? row.querySelector('.dice-icon svg') : null;
+        if(iconEl){
+          iconEl.classList.add('dice-icon-rolling');
+          iconEl.style.animationDelay = `${(Math.random()*0.2).toFixed(2)}s`;
+          animatedIcons.push(iconEl);
+        }
+      }
+    });
+  }
+
+  const resEl = document.getElementById("modalDiceResults");
+  if(resEl) resEl.innerHTML = '';
+
+  setTimeout(function(){
+    animatedIcons.forEach(el=>{ el.classList.remove('dice-icon-rolling'); el.style.animationDelay=''; });
+    doRollModalDice();
+  }, 600);
+}
+
+function doRollModalDice(){
   let out='', tot=0;
   let hasDice = false;
 
@@ -6143,10 +6191,51 @@ function initDice(){
   a.innerHTML=diceTypes.map(d=>`<div class="dice-row"><div class="dice-icon" style="cursor:pointer" onclick="chg(${d},1)">${icon(d)}<span class="dice-badge" id="q${d}">0</span></div></div>`).join('');
   window.diceSel={};
   diceTypes.forEach(x=>diceSel[x]=0);
+  window.diceBonus=0;
+  const bi=document.getElementById('diceBonusInput');
+  if(bi) bi.value=0;
+}
+function chgDiceBonus(delta){
+  window.diceBonus=(parseInt(window.diceBonus,10)||0)+delta;
+  const bi=document.getElementById('diceBonusInput');
+  if(bi) bi.value=window.diceBonus;
+}
+function setDiceBonus(val){
+  let n=parseInt(val,10);
+  if(isNaN(n)) n=0;
+  window.diceBonus=n;
 }
 function chg(d,v){diceSel[d]=Math.max(0,diceSel[d]+v);const el=document.getElementById("q"+d);el.textContent=diceSel[d];el.classList.toggle("has-qty", diceSel[d]>0);}
-function rollDice(){let out='',tot=0;let rollsParts=[];diceTypes.forEach(d=>{if(diceSel[d]>0){let arr=[];let s=0;for(let i=0;i<diceSel[d];i++){let r=Math.floor(Math.random()*d)+1;arr.push(r);s+=r;}tot+=s;out+=`<p style="margin:4px 0; font-size:15px;"><b>${diceSel[d]}d${d}</b>: ${arr.join(", ")} = <b>${s}</b></p>`;rollsParts.push(`${diceSel[d]}d${d}: [${arr.join(", ")}]`);}});out+=`<hr style="border-color:var(--panel-line); margin:10px 0;"><h3 style="font-family:inherit; font-weight:700; font-size:14px; color:var(--gold-bright); margin:0;">Totale: ${tot}</h3>`;document.getElementById("diceResults").innerHTML=out;if(rollsParts.length){pushDiceHistory({type:'Lancio Dadi', source:'', rollsText: rollsParts.join(' + '), modText:'', total: tot});}}
-function resetDice(){diceTypes.forEach(d=>{diceSel[d]=0;const el=document.getElementById("q"+d);el.textContent=0;el.classList.remove("has-qty");});document.getElementById("diceResults").innerHTML='';}
+function rollDice(){
+  const resultsEl=document.getElementById("diceResults");
+  const diceArea=document.getElementById("diceArea");
+  let animatedIcons=[];
+  if(diceArea){
+    diceTypes.forEach(d=>{
+      if(diceSel[d]>0){
+        const row=diceArea.querySelector(`#q${d}`)?.closest('.dice-row');
+        const iconEl=row ? row.querySelector('.dice-icon svg') : null;
+        if(iconEl){
+          iconEl.classList.add('dice-icon-rolling');
+          iconEl.style.animationDelay=`${(Math.random()*0.2).toFixed(2)}s`;
+          animatedIcons.push(iconEl);
+        }
+      }
+    });
+  }
+  const hasDice = animatedIcons.length>0;
+  const doRoll = function(){
+    animatedIcons.forEach(el=>{ el.classList.remove('dice-icon-rolling'); el.style.animationDelay=''; });
+    let out='',tot=0;let rollsParts=[];diceTypes.forEach(d=>{if(diceSel[d]>0){let arr=[];let s=0;for(let i=0;i<diceSel[d];i++){let r=Math.floor(Math.random()*d)+1;arr.push(r);s+=r;}tot+=s;out+=`<p style="margin:4px 0; font-size:15px;"><b>${diceSel[d]}d${d}</b>: ${arr.join(", ")} = <b>${s}</b></p>`;rollsParts.push(`${diceSel[d]}d${d}: [${arr.join(", ")}]`);}});const bonus=parseInt(window.diceBonus,10)||0;let modText='';if(bonus!==0){tot+=bonus;modText=(bonus>0?'+':'')+bonus;out+=`<p style="margin:4px 0; font-size:15px;"><b>Modificatore</b>: ${modText}</p>`;}out+=`<hr style="border-color:var(--panel-line); margin:10px 0;"><h3 style="font-family:inherit; font-weight:700; font-size:14px; color:var(--gold-bright); margin:0;">Totale: ${tot}</h3>`;resultsEl.innerHTML=out;if(rollsParts.length || bonus!==0){pushDiceHistory({type:'Lancio Dadi', source:'', rollsText: rollsParts.join(' + '), modText: modText, total: tot});}
+  };
+  if(hasDice){
+    resultsEl.innerHTML='';
+    setTimeout(doRoll, 600);
+  } else {
+    doRoll();
+  }
+}
+function resetDice(){diceTypes.forEach(d=>{diceSel[d]=0;const el=document.getElementById("q"+d);el.textContent=0;el.classList.remove("has-qty");});window.diceBonus=0;const bi=document.getElementById('diceBonusInput');if(bi) bi.value=0;document.getElementById("diceResults").innerHTML='';}
 
 const magicItemsDB = [
   { name:"Pozione di Cura", desc:"Se ne beve il contenuto per recuperare una piccola quantità di punti ferita.", rarity:"Comune", type:"Pozione", area:"Erboristeria", magic:true },
