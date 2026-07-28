@@ -1432,6 +1432,13 @@ footer.site{
   .roster-remove, .remove-c{min-width:30px; min-height:30px;}
 }
 
+@keyframes diceRollSpin{
+  0%{ transform: rotate(0deg) scale(1); }
+  25%{ transform: rotate(100deg) scale(1.08); }
+  50%{ transform: rotate(200deg) scale(0.95); }
+  75%{ transform: rotate(290deg) scale(1.05); }
+  100%{ transform: rotate(360deg) scale(1); }
+}
 </style>
 </head>
 <body>
@@ -1698,6 +1705,12 @@ footer.site{
           </div>
           <div class="inventory-body" id="dice-roll-body">
             <div id="diceArea"></div>
+            <div style="margin-top:12px; display:flex; align-items:center; gap:8px;">
+              <label for="dice-roll-modifier" style="margin-bottom:0; font-size:13.5px;">Modificatore:</label>
+              <button type="button" class="btn secondary small" onclick="stepDiceModifier('dice-roll-modifier',-1)" style="padding:4px 10px;">−</button>
+              <input type="number" id="dice-roll-modifier" value="0" style="width:60px; padding:6px 8px; font-size:14px; text-align:center;" title="Aggiungi o sottrai un valore al risultato">
+              <button type="button" class="btn secondary small" onclick="stepDiceModifier('dice-roll-modifier',1)" style="padding:4px 10px;">+</button>
+            </div>
             <div style="margin-top:16px; display:flex; gap:10px;">
               <button class="btn small" onclick="rollDice()">Lancia i dadi</button>
               <button class="btn secondary small" onclick="resetDice()">Azzera</button>
@@ -6281,9 +6294,11 @@ function rollModalDice(){
   }
 
   let rollsParts = [];
+  let rolledTypes = [];
   diceTypes.forEach(d=>{
     if(modalDiceSel[d] > 0){
       hasDice = true;
+      rolledTypes.push(d);
       let arr = [];
       let s = 0;
       for(let i=0; i<modalDiceSel[d]; i++){
@@ -6299,6 +6314,8 @@ function rollModalDice(){
 
   if (!hasDice) return;
 
+  rolledTypes.forEach(d => spinDiceIcon("mq"+d));
+
   tot += modValue;
   if (modValue !== 0) {
       out += `<p style="margin:4px 0; font-size:15px; color:var(--text-main);">Modificatore: <b>${modValue >= 0 ? '+' : ''}${modValue}</b> ${modLabel}</p>`;
@@ -6306,15 +6323,17 @@ function rollModalDice(){
 
   out += `<hr style="border-color:var(--panel-line); margin:10px 0;"><h3 style="font-family:inherit; font-weight:700; font-size:14px; color:var(--gold-bright); margin:0;">Totale: ${tot}</h3>`;
   const resEl = document.getElementById("modalDiceResults");
-  if(resEl) resEl.innerHTML = out;
 
-  pushDiceHistory({
-    type: 'Lancio Rapido',
-    source: '',
-    rollsText: rollsParts.join(' + '),
-    modText: modValue !== 0 ? `${modValue >= 0 ? '+' : ''}${modValue} ${modLabel}` : '',
-    total: tot
-  });
+  setTimeout(()=>{
+    if(resEl) resEl.innerHTML = out;
+    pushDiceHistory({
+      type: 'Lancio Rapido',
+      source: '',
+      rollsText: rollsParts.join(' + '),
+      modText: modValue !== 0 ? `${modValue >= 0 ? '+' : ''}${modValue} ${modLabel}` : '',
+      total: tot
+    });
+  }, 400);
 }
 
 function resetModalDice(){
@@ -6359,7 +6378,12 @@ function onModalStatModifierChange(){
   const custMod = document.getElementById('modalCustomModifier');
   const skillSel = document.getElementById('modalSkillModifier');
   if(!selMod) return;
-  custMod.style.display = (selMod.value === 'custom') ? 'block' : 'none';
+  const showCustom = (selMod.value === 'custom');
+  custMod.style.display = showCustom ? 'block' : 'none';
+  const minusBtn = document.getElementById('modalCustomModifier-minus');
+  const plusBtn = document.getElementById('modalCustomModifier-plus');
+  if(minusBtn) minusBtn.style.display = showCustom ? 'inline-block' : 'none';
+  if(plusBtn) plusBtn.style.display = showCustom ? 'inline-block' : 'none';
 
   const ab = selMod.options[selMod.selectedIndex].getAttribute('data-ab') || '';
   if(!skillSel) return;
@@ -6553,7 +6577,9 @@ function showDetails(id){
           <option value="${mod(s.car)}" data-ab="car">Carisma (${fmtMod(mod(s.car))})</option>
           <option value="custom" data-ab="">Manuale...</option>
         </select>
+        <button type="button" class="btn secondary small" onclick="stepDiceModifier('modalCustomModifier',-1)" style="padding:4px 10px; display:none;" id="modalCustomModifier-minus">−</button>
         <input type="number" id="modalCustomModifier" value="0" style="width: 80px; display: none; padding: 6px 10px; font-size: 14px;" title="Modificatore personalizzato">
+        <button type="button" class="btn secondary small" onclick="stepDiceModifier('modalCustomModifier',1)" style="padding:4px 10px; display:none;" id="modalCustomModifier-plus">+</button>
         <select id="modalSkillModifier" style="width: auto; min-width: 180px; padding: 6px 10px; font-size: 14px; display:none;" onchange="onModalSkillModifierChange();">
           <option value="">Solo modificatore (nessuna abilità)</option>
         </select>
@@ -6564,7 +6590,9 @@ function showDetails(id){
     modifierHtml = `
       <div style="margin-top: 14px; margin-bottom: 14px; display:flex; align-items:center; gap:10px; flex-wrap: wrap;">
         <label for="modalCustomModifier" style="margin-bottom:0;">Modificatore extra:</label>
+        <button type="button" class="btn secondary small" onclick="stepDiceModifier('modalCustomModifier',-1)" style="padding:4px 10px;">−</button>
         <input type="number" id="modalCustomModifier" value="0" style="width: 80px; padding: 6px 10px; font-size: 14px;">
+        <button type="button" class="btn secondary small" onclick="stepDiceModifier('modalCustomModifier',1)" style="padding:4px 10px;">+</button>
         <input type="hidden" id="modalStatModifier" value="custom">
       </div>
     `;
@@ -6628,6 +6656,12 @@ function onCombatFreeNoteInput(el){
   }
 }
 
+function stepDiceModifier(inputId, delta){
+  const el = document.getElementById(inputId);
+  if(!el) return;
+  const cur = parseInt(el.value) || 0;
+  el.value = cur + delta;
+}
 function initDice(){
   const a=document.getElementById("diceArea");
   if(!a)return;
@@ -6636,8 +6670,17 @@ function initDice(){
   diceTypes.forEach(x=>diceSel[x]=0);
 }
 function chg(d,v){diceSel[d]=Math.max(0,diceSel[d]+v);const el=document.getElementById("q"+d);el.textContent=diceSel[d];el.classList.toggle("has-qty", diceSel[d]>0);}
-function rollDice(){let out='',tot=0;let rollsParts=[];diceTypes.forEach(d=>{if(diceSel[d]>0){let arr=[];let s=0;for(let i=0;i<diceSel[d];i++){let r=Math.floor(Math.random()*d)+1;arr.push(r);s+=r;}tot+=s;out+=`<p style="margin:4px 0; font-size:15px;"><b>${diceSel[d]}d${d}</b>: ${arr.join(", ")} = <b>${s}</b></p>`;rollsParts.push(`${diceSel[d]}d${d}: [${arr.join(", ")}]`);}});out+=`<hr style="border-color:var(--panel-line); margin:10px 0;"><h3 style="font-family:inherit; font-weight:700; font-size:14px; color:var(--gold-bright); margin:0;">Totale: ${tot}</h3>`;document.getElementById("diceResults").innerHTML=out;if(rollsParts.length){pushDiceHistory({type:'Lancio Dadi', source:'', rollsText: rollsParts.join(' + '), modText:'', total: tot});}}
-function resetDice(){diceTypes.forEach(d=>{diceSel[d]=0;const el=document.getElementById("q"+d);el.textContent=0;el.classList.remove("has-qty");});document.getElementById("diceResults").innerHTML='';}
+function spinDiceIcon(badgeId){
+  const badge = document.getElementById(badgeId);
+  if(!badge) return;
+  const svg = badge.previousElementSibling;
+  if(!svg) return;
+  svg.style.animation = 'none';
+  void svg.offsetWidth; // forza il reflow per poter ripetere l'animazione a ogni tiro
+  svg.style.animation = 'diceRollSpin 0.4s ease-in-out';
+}
+function rollDice(){let out='',tot=0;let rollsParts=[];let rolledTypes=[];diceTypes.forEach(d=>{if(diceSel[d]>0){rolledTypes.push(d);let arr=[];let s=0;for(let i=0;i<diceSel[d];i++){let r=Math.floor(Math.random()*d)+1;arr.push(r);s+=r;}tot+=s;out+=`<p style="margin:4px 0; font-size:15px;"><b>${diceSel[d]}d${d}</b>: ${arr.join(", ")} = <b>${s}</b></p>`;rollsParts.push(`${diceSel[d]}d${d}: [${arr.join(", ")}]`);}});if(!rollsParts.length)return;rolledTypes.forEach(d=>spinDiceIcon("q"+d));const modEl=document.getElementById("dice-roll-modifier");const modValue=modEl?(parseInt(modEl.value)||0):0;tot+=modValue;if(modValue!==0){out+=`<p style="margin:4px 0; font-size:15px; color:var(--text-main);">Modificatore: <b>${modValue>=0?'+':''}${modValue}</b></p>`;}out+=`<hr style="border-color:var(--panel-line); margin:10px 0;"><h3 style="font-family:inherit; font-weight:700; font-size:14px; color:var(--gold-bright); margin:0;">Totale: ${tot}</h3>`;setTimeout(()=>{document.getElementById("diceResults").innerHTML=out;pushDiceHistory({type:'Lancio Dadi', source:'', rollsText: rollsParts.join(' + '), modText: modValue!==0?`${modValue>=0?'+':''}${modValue}`:'', total: tot});},400);}
+function resetDice(){diceTypes.forEach(d=>{diceSel[d]=0;const el=document.getElementById("q"+d);el.textContent=0;el.classList.remove("has-qty");});document.getElementById("diceResults").innerHTML='';const modEl=document.getElementById("dice-roll-modifier");if(modEl)modEl.value=0;}
 
 const magicItemsDB = [
   { name:"Pozione di Cura", desc:"Se ne beve il contenuto per recuperare una piccola quantità di punti ferita.", rarity:"Comune", type:"Pozione", area:"Erboristeria", magic:true },
